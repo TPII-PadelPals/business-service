@@ -1,0 +1,27 @@
+services:
+  db:
+    restart: "no"
+    ports:
+      - "5432:5432"
+
+  service-template:
+    restart: "no"
+    ports:
+      - "8000:8000"
+    build: .
+    command:
+      - fastapi
+      - run
+      - --reload
+      - "app/main.py"
+    develop:
+      watch:
+        - path: .
+          action: sync
+          target: /app
+          ignore:
+            - .venv
+        - path: ./pyproject.toml
+          action: rebuild
+    volumes:
+      - ./htmlcov:/app/htmlcov
