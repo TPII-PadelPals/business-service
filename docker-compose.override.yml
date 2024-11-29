@@ -2,7 +2,7 @@ services:
   db:
     restart: "no"
     ports:
-      - "5432:5432"
+      - "5440:5432"
 
   service-template:
     restart: "no"
