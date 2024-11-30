@@ -28,11 +28,10 @@ class Business(BusinessBase, table=True):
 
 
 # Properties to return via API, id is always required
-# class BusinessPublic(BusinessBase):
-#     id: uuid.UUID
-#     owner_id: uuid.UUID
+class BusinessPublic(BusinessBase):
+    id: uuid.UUID
 
 
-# class BusinesssPublic(SQLModel):
+# class BusinesssesPublic(SQLModel):
 #     data: list[BusinessPublic]
 #     count: int
