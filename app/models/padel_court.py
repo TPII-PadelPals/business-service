@@ -28,5 +28,6 @@ class PadelCourt(PadelCourtBase, table=True):
 
 
 # Properties to return via API, id is always required
-# class PadelCourtPublic(PadelCourtBase):
-#     id: int
+class PadelCourtPublic(PadelCourtBase):
+    id: int
+    business_id: uuid.UUID
