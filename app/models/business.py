@@ -20,8 +20,6 @@ class BusinessCreate(BusinessBase):
 class Business(BusinessBase, table=True):
     __tablename__ = BUSINESS_TABLE_NAME
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    # name: str = Field(max_length=255)
-    # location: str = Field(min_length=1, max_length=255)
 
 
 # Properties to return via API, id is always required

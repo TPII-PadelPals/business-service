@@ -28,12 +28,12 @@ async def test_create_padel_court(db):
 
 
 async def test_create_padel_court_with_nonexistent_business_id_return_exception(db):
-    nonexitent_business_id = uuid.uuid4()
+    nonexistent_business_id = uuid.uuid4()
 
     repository = PadelCourtRepository(db)
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("1500000"))
 
     with pytest.raises(BusinessNotFoundException) as e:
-        await repository.create_padel_court(nonexitent_business_id, padel_court)
+        await repository.create_padel_court(nonexistent_business_id, padel_court)
 
     assert str(e.value) == "Business not found"
