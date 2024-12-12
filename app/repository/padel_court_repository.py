@@ -1,6 +1,8 @@
 import uuid
 
+from app.models.business import Business
 from app.models.padel_court import PadelCourt, PadelCourtCreate
+from app.utilities.exceptions import BusinessNotFoundException
 
 
 class PadelCourtRepository:
@@ -10,6 +12,9 @@ class PadelCourtRepository:
     async def create_padel_court(
         self, business_id: uuid.UUID, padel_court_in: PadelCourtCreate
     ) -> PadelCourt:
+        business = await self.session.get(Business, business_id)
+        if not business:
+            raise BusinessNotFoundException()
         new_padel_court = PadelCourt.model_validate(
             padel_court_in, update={"business_id": business_id}
         )
