@@ -1,14 +1,11 @@
 from decimal import Decimal
 
-import pytest
-
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
 from app.repository.padel_court_repository import PadelCourtRepository
 
 
-@pytest.mark.asyncio
 async def test_create_padel_court(db):
     repository = BusinessRepository(db)
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")

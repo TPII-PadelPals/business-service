@@ -10,10 +10,10 @@ router = APIRouter()
 
 
 @router.post("/", response_model=BusinessPublic, status_code=status.HTTP_201_CREATED)
-async def create_business(*, session: SessionDep, item_in: BusinessCreate) -> Any:
+async def create_business(*, session: SessionDep, business_in: BusinessCreate) -> Any:
     """
     Create a new Business.
     """
     repo = BusinessRepository(session)
-    item = await repo.create_business(item_in)
+    item = await repo.create_business(business_in)
     return item

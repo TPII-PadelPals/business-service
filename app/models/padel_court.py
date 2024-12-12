@@ -22,8 +22,6 @@ class PadelCourtCreate(PadelCourtBase):
 class PadelCourt(PadelCourtBase, table=True):
     __tablename__ = PADEL_COURT_TABLE_NAME
     id: int = Field(default=None, primary_key=True)
-    name: str = Field(..., min_length=1, max_length=255)
-    price_per_hour: Decimal = Field(...)
     business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
 
 
