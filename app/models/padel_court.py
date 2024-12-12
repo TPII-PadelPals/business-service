@@ -7,11 +7,13 @@ from app.models.business import BUSINESS_TABLE_NAME
 
 PADEL_COURT_TABLE_NAME = "padel_courts"
 
+MIN_PRICE_PER_HOUR = 0
+
 
 # Shared properties
 class PadelCourtBase(SQLModel):
-    name: str = Field(..., min_length=1, max_length=255)
-    price_per_hour: Decimal = Field(...)
+    name: str = Field(min_length=1, max_length=255)
+    price_per_hour: Decimal = Field(gt=MIN_PRICE_PER_HOUR)
 
 
 # Properties to receive on item creation
