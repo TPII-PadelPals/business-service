@@ -20,8 +20,10 @@ class BusinessCreate(BusinessBase):
 class Business(BusinessBase, table=True):
     __tablename__ = BUSINESS_TABLE_NAME
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    owner_id: uuid.UUID = Field(nullable=False)
 
 
 # Properties to return via API, id is always required
 class BusinessPublic(BusinessBase):
     id: uuid.UUID
+    owner_id: uuid.UUID

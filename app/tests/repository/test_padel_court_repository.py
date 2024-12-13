@@ -13,8 +13,9 @@ from app.utilities.exceptions import BusinessNotFoundException
 async def test_create_padel_court(db):
     repository = BusinessRepository(db)
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
+    owner_id = uuid.uuid4()
 
-    created_business = await repository.create_business(business_data)
+    created_business = await repository.create_business(owner_id, business_data)
 
     repository = PadelCourtRepository(db)
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("15000.00"))

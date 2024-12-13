@@ -1,4 +1,4 @@
-from typing import Any
+import uuid
 
 from fastapi import APIRouter, status
 
@@ -10,10 +10,12 @@ router = APIRouter()
 
 
 @router.post("/", response_model=BusinessPublic, status_code=status.HTTP_201_CREATED)
-async def create_business(*, session: SessionDep, business_in: BusinessCreate) -> Any:
+async def create_business(
+    *, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
+) -> BusinessPublic:
     """
     Create a new Business.
     """
     repo = BusinessRepository(session)
-    item = await repo.create_business(business_in)
+    item = await repo.create_business(owner_id, business_in)
     return item
