@@ -8,3 +8,7 @@ NOT_ENOUGH_PERMISSIONS = {
 # Item responses
 ITEM_NOT_FOUND = {status.HTTP_404_NOT_FOUND: {"description": "Item not found"}}
 ITEM_RESPONSES = {**ITEM_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
+
+# Business responses
+BUSINESS_NOT_FOUND = {status.HTTP_404_NOT_FOUND: {"description": "Business not found"}}
+BUSINESS_RESPONSES = {**BUSINESS_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}

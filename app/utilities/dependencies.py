@@ -24,6 +24,12 @@ async def get_user_id_param(user_id: Annotated[UUID, Query()]) -> None:
         raise NotEnoughPermissionsException()
 
 
+# TODO: retirar código repetido
+async def get_business_id_param(business_id: Annotated[UUID, Query()]) -> None:
+    if not business_id:
+        raise NotEnoughPermissionsException()
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None, None]:
     async_session = sessionmaker(
         bind=engine, class_=AsyncSession, expire_on_commit=False

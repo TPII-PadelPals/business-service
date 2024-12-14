@@ -19,3 +19,17 @@ class NotEnoughPermissionsException(HTTPException):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
+
+
+class BusinessNotFoundHTTPException(HTTPException):
+    def __init__(self, error_message: str) -> None:
+        super().__init__(status_code=status.HTTP_404_NOT_FOUND, detail=error_message)
+
+
+class BusinessNotFoundException(Exception):
+    def __init__(self):
+        super().__init__("Business not found")
+
+
+class UnauthorizedPadelCourtOperationException(Exception):
+    pass
