@@ -29,3 +29,7 @@ class BusinessNotFoundHTTPException(HTTPException):
 class BusinessNotFoundException(Exception):
     def __init__(self):
         super().__init__("Business not found")
+
+
+class UnauthorizedPadelCourtOperationException(Exception):
+    pass

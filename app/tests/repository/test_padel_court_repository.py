@@ -7,7 +7,10 @@ from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
 from app.repository.padel_court_repository import PadelCourtRepository
-from app.utilities.exceptions import BusinessNotFoundException
+from app.utilities.exceptions import (
+    BusinessNotFoundException,
+    UnauthorizedPadelCourtOperationException,
+)
 
 
 async def test_create_padel_court(db):
@@ -29,26 +32,12 @@ async def test_create_padel_court(db):
 
 
 async def test_create_padel_court_with_nonexistent_business_id_return_exception(db):
-    nonexistent_business_id = uuid.uuid4()
-
-    repository = PadelCourtRepository(db)
-    padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("1500000"))
-
-    with pytest.raises(BusinessNotFoundException) as e:
-        await repository.create_padel_court(nonexistent_business_id, padel_court)
-
-    assert str(e.value) == "Business not found"
-
-
-@pytest.mark.skip
-async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(db):
     repository = BusinessRepository(db)
-    business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
+    business_data = BusinessCreate(name="Padel Ya", location="Av La plata 3010")
     owner_id = uuid.uuid4()
+    nonexistent_business_id = uuid.uuid4()
 
     created_business = await repository.create_business(owner_id, business_data)
-
-    nonexistent_business_id = uuid.uuid4()
 
     repository = PadelCourtRepository(db)
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("1500000"))
@@ -59,3 +48,21 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(d
         )
 
     assert str(e.value) == "Business not found"
+
+
+async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(db):
+    repository = BusinessRepository(db)
+    business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
+    owner_id = uuid.uuid4()
+
+    created_business = await repository.create_business(owner_id, business_data)
+
+    unauthorized_owner_id = uuid.uuid4()
+
+    repository = PadelCourtRepository(db)
+    padel_court = PadelCourtCreate(name="Cancha 5", price_per_hour=Decimal("12000"))
+
+    with pytest.raises(UnauthorizedPadelCourtOperationException):
+        await repository.create_padel_court(
+            unauthorized_owner_id, created_business.id, padel_court
+        )

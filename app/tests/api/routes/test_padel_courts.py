@@ -1,6 +1,5 @@
 import uuid
 
-import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
@@ -78,7 +77,6 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
     assert content["detail"] == "Business not found"
 
 
-@pytest.mark.skip
 async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
     async_client: TestClient, x_api_key_header: dict[str, str]
 ) -> None:
@@ -100,7 +98,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         json=padel_court_data,
-        params={"business_id": new_business.id, "owner_id:": unauthorized_owner_id},
+        params={"business_id": new_business["id"], "owner_id": unauthorized_owner_id},
     )
 
     assert response.status_code == 403

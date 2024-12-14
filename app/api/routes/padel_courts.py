@@ -8,6 +8,8 @@ from app.utilities.dependencies import SessionDep, get_business_id_param
 from app.utilities.exceptions import (
     BusinessNotFoundException,
     BusinessNotFoundHTTPException,
+    NotEnoughPermissionsException,
+    UnauthorizedPadelCourtOperationException,
 )
 from app.utilities.messages import BUSINESS_RESPONSES
 
@@ -39,3 +41,5 @@ async def create_padel_court(
         return padel_court
     except BusinessNotFoundException as e:
         raise BusinessNotFoundHTTPException(error_message=str(e))
+    except UnauthorizedPadelCourtOperationException:
+        raise NotEnoughPermissionsException()
