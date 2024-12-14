@@ -22,14 +22,20 @@ router = APIRouter()
     dependencies=[Depends(get_business_id_param)],
 )
 async def create_padel_court(
-    *, session: SessionDep, business_id: uuid.UUID, padel_court_in: PadelCourtCreate
+    *,
+    session: SessionDep,
+    owner_id: uuid.UUID,
+    business_id: uuid.UUID,
+    padel_court_in: PadelCourtCreate,
 ) -> PadelCourtPublic:
     """
     Create new Padel Court.
     """
     try:
         repo = PadelCourtRepository(session)
-        padel_court = await repo.create_padel_court(business_id, padel_court_in)
+        padel_court = await repo.create_padel_court(
+            owner_id, business_id, padel_court_in
+        )
         return padel_court
     except BusinessNotFoundException as e:
         raise BusinessNotFoundHTTPException(error_message=str(e))

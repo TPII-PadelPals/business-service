@@ -10,7 +10,10 @@ class PadelCourtRepository:
         self.session = session
 
     async def create_padel_court(
-        self, business_id: uuid.UUID, padel_court_in: PadelCourtCreate
+        self,
+        _owner_id: uuid.UUID,
+        business_id: uuid.UUID,
+        padel_court_in: PadelCourtCreate,
     ) -> PadelCourt:
         business = await self.session.get(Business, business_id)
         if not business:
