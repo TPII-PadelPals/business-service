@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
@@ -8,7 +8,7 @@ from app.tests.utils.items import create_random_item
 
 
 async def test_create_item(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     user_id = uuid.uuid4()
     data = {"title": "Foo", "description": "Fighters"}
@@ -27,10 +27,10 @@ async def test_create_item(
 
 
 async def test_read_item(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     response = await async_client.get(
         f"{settings.API_V1_STR}/items/{item.id}",
         headers=x_api_key_header,
@@ -45,7 +45,7 @@ async def test_read_item(
 
 
 async def test_read_item_not_found(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     user_id = uuid.uuid4()
     response = await async_client.get(
@@ -59,10 +59,10 @@ async def test_read_item_not_found(
 
 
 async def test_read_item_not_authorized(
-    async_client: TestClient, db: AsyncSession
+    async_client: AsyncClient, session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     response = await async_client.get(
         f"{settings.API_V1_STR}/items/{item.id}",
         headers={"x-api-key": "wrong-key"},
@@ -74,10 +74,10 @@ async def test_read_item_not_authorized(
 
 
 async def test_read_item_not_enough_permissions(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     response = await async_client.get(
         f"{settings.API_V1_STR}/items/{item.id}",
         headers=x_api_key_header,
@@ -89,10 +89,10 @@ async def test_read_item_not_enough_permissions(
 
 
 async def test_read_item_not_owner(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     user_id_2 = uuid.uuid4()
     response = await async_client.get(
         f"{settings.API_V1_STR}/items/{item.id}",
@@ -105,11 +105,11 @@ async def test_read_item_not_owner(
 
 
 async def test_read_items(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    await create_random_item(user_id, db)
-    await create_random_item(user_id, db)
+    await create_random_item(user_id, session)
+    await create_random_item(user_id, session)
     response = await async_client.get(
         f"{settings.API_V1_STR}/items/",
         headers=x_api_key_header,
@@ -122,10 +122,10 @@ async def test_read_items(
 
 
 async def test_update_item(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     data = {"title": "Updated title", "description": "Updated description"}
     response = await async_client.put(
         f"{settings.API_V1_STR}/items/{item.id}",
@@ -142,7 +142,7 @@ async def test_update_item(
 
 
 async def test_update_item_not_found(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     user_id = uuid.uuid4()
     data = {"title": "Updated title", "description": "Updated description"}
@@ -158,10 +158,10 @@ async def test_update_item_not_found(
 
 
 async def test_update_item_not_enough_permissions(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     data = {"title": "Updated title", "description": "Updated description"}
     response = await async_client.put(
         f"{settings.API_V1_STR}/items/{item.id}",
@@ -175,10 +175,10 @@ async def test_update_item_not_enough_permissions(
 
 
 async def test_update_item_not_owner(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     user_id_2 = uuid.uuid4()
     data = {"title": "Updated title", "description": "Updated description"}
     response = await async_client.put(
@@ -193,10 +193,10 @@ async def test_update_item_not_owner(
 
 
 async def test_delete_item(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     response = await async_client.delete(
         f"{settings.API_V1_STR}/items/{item.id}",
         headers=x_api_key_header,
@@ -208,7 +208,7 @@ async def test_delete_item(
 
 
 async def test_delete_item_not_found(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     user_id = uuid.uuid4()
     response = await async_client.delete(
@@ -222,10 +222,10 @@ async def test_delete_item_not_found(
 
 
 async def test_delete_item_not_enough_permissions(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     response = await async_client.delete(
         f"{settings.API_V1_STR}/items/{item.id}",
         headers=x_api_key_header,
@@ -237,10 +237,10 @@ async def test_delete_item_not_enough_permissions(
 
 
 async def test_delete_item_not_owner(
-    async_client: TestClient, x_api_key_header: dict[str, str], db: AsyncSession
+    async_client: AsyncClient, x_api_key_header: dict[str, str], session: AsyncSession
 ) -> None:
     user_id = uuid.uuid4()
-    item = await create_random_item(user_id, db)
+    item = await create_random_item(user_id, session)
     user_id_2 = uuid.uuid4()
     response = await async_client.delete(
         f"{settings.API_V1_STR}/items/{item.id}",
