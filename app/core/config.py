@@ -51,7 +51,7 @@ class TestSettings(Settings):
             password=self.POSTGRES_PASSWORD,
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT_EXT,
-            path=self.POSTGRES_DB + "_test",
+            path=self.POSTGRES_DB_TESTING,
         )
 
 
