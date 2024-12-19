@@ -1,13 +1,13 @@
 import uuid
 from http import HTTPStatus
 
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.core.config import settings
 
 
 async def test_create_business(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ):
     owner_id = uuid.uuid4()
     business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
@@ -26,7 +26,7 @@ async def test_create_business(
 
 
 async def test_create_business_without_owner_id(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ):
     business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
 

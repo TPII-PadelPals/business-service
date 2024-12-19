@@ -1,11 +1,13 @@
 import uuid
 
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from app.models.business import BusinessCreate
 from app.repository.business_repository import BusinessRepository
 
 
-async def test_create_business(db):
-    repository = BusinessRepository(db)
+async def test_create_business(session: AsyncSession):
+    repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
 

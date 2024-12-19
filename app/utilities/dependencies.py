@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
-from app.core.db import engine
+from app.core.db import get_async_engine
 from app.utilities.exceptions import (
     NotAuthorizedException,
     NotEnoughPermissionsException,
@@ -32,7 +32,9 @@ async def get_business_id_param(business_id: Annotated[UUID, Query()]) -> None:
 
 async def get_db() -> AsyncGenerator[AsyncSession, None, None]:
     async_session = sessionmaker(
-        bind=engine, class_=AsyncSession, expire_on_commit=False
+        bind=get_async_engine(),
+        class_=AsyncSession,
+        expire_on_commit=False,  # type: ignore[call-overload]
     )
     async with async_session() as session:
         yield session

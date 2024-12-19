@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.core.config import settings
 
@@ -19,7 +19,7 @@ async def _create_business(
 
 
 async def test_create_padel_court_with_existing_business(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -50,7 +50,7 @@ async def test_create_padel_court_with_existing_business(
 
 
 async def test_create_padel_court_with_nonexisting_business_id_returns_error(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
     nonexisting_business_id = uuid.uuid4()
@@ -78,7 +78,7 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
 
 
 async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
-    async_client: TestClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
 

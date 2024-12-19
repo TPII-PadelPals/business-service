@@ -55,7 +55,7 @@ docker compose watch
 
 - Automatic interactive documentation with Swagger UI: http://localhost:8000/docs
 
-- Postgres db: http://localhost:5440
+- Postgres db: http://localhost:5450
 
 #### To check the logs, run (in another terminal):
 
