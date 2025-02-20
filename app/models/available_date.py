@@ -27,10 +27,6 @@ class AvailableDateCreate(AvailableDateBase):
     number_of_games: int = Field(default=1)
 
 
-    def __get_number_of_games(self) -> int:
-        return self.number_of_games
-
-
     def validate_create(self) -> None:
         if self.number_of_games <= 0:
             raise NotAcceptableException("number_of_games cannot be less than 0")
@@ -67,8 +63,8 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
     @classmethod
     def from_create(cls, create: AvailableDateCreate) -> list["AvailableDate"]:
         result = []
-        number_of_games = create.__get_number_of_games()
-        data = create.model_dump(exclude={'number_of_games'})
+        data = create.model_dump()
+        number_of_games = data['number_of_games']
         # data["is_reserved"] = False
         for i_game in range(number_of_games):
             available_date = cls(**data)

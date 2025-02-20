@@ -24,6 +24,8 @@ async def test_one_available_date_form_create() -> None:
     assert len(available_date_list) == 1
     available_date = available_date_list[0]
     for key, value in data.items():
+        if key == "number_of_games":
+            continue
         assert getattr(available_date, key) == value
     assert available_date.is_reserved is False
 
@@ -45,10 +47,12 @@ async def test_more_available_date_form_create() -> None:
     assert len(available_date_list) == 5
     for available_date in available_date_list:
         for key, value in data.items():
-            if key == "initial_hour":
-                data = getattr(available_date, key)
-                assert data in initial_hour_list
-                initial_hour_list.remove(data)
+            if key == "number_of_games":
+                continue
+            elif key == "initial_hour":
+                initial_hour = getattr(available_date, key)
+                assert initial_hour in initial_hour_list
+                initial_hour_list.remove(initial_hour)
                 continue
             assert getattr(available_date, key) == value
         assert available_date.is_reserved is False
@@ -60,7 +64,7 @@ async def test_limit_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 0,
-        "number_of_games":23,
+        "number_of_games":24,
     }
     initial_hour_list = [False] * 24
     create = AvailableDateCreate(**data)
@@ -71,7 +75,9 @@ async def test_limit_available_date_form_create() -> None:
     assert len(available_date_list) == 24
     for available_date in available_date_list:
         for key, value in data.items():
-            if key == "initial_hour":
+            if key == "number_of_games":
+                continue
+            elif key == "initial_hour":
                 pos = getattr(available_date, key)
                 initial_hour_list[pos] = True
                 continue
