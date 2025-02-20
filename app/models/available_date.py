@@ -3,27 +3,27 @@ import uuid
 from sqlmodel import Field, SQLModel
 
 
-AVAILABILITY_TABLE_NAME = "padel_court_availability"
+AVAILABILITY_TABLE_NAME = "padel_court_available_date"
 
 
 # Shared properties
-class AvailabilityBase(SQLModel):
+class AvailableDateBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
 
 
 # Properties to receive on item creation
-class AvailabilityBaseCreate(AvailabilityBase):
+class AvailableDateCreate(AvailableDateBase):
     pass
 
 
 # Properties to receive on item update
-class AvailabilityBaseUpdate(AvailabilityBase):
+class AvailableDateBaseUpdate(AvailableDateBase):
     title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore[assignment]
 
 
 # Database model, database table inferred from class name
-class Availability(AvailabilityBase, table=True):
+class AvailableDate(AvailableDateBase, table=True):
     __tablename__ = AVAILABILITY_TABLE_NAME
     id: int = Field(default_factory=uuid.uuid4, primary_key=True)
     title: str = Field(max_length=255)
@@ -31,11 +31,11 @@ class Availability(AvailabilityBase, table=True):
 
 
 # Properties to return via API, id is always required
-class AvailabilityPublic(AvailabilityBase):
+class AvailableDatePublic(AvailableDateBase):
     id: uuid.UUID
     owner_id: uuid.UUID
 
 
-class ItemsPublic(SQLModel):
-    data: list[AvailabilityPublic]
+class AvailableDatesPublic(SQLModel):
+    data: list[AvailableDatePublic]
     count: int
