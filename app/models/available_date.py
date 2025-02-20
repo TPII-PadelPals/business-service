@@ -1,10 +1,9 @@
 import uuid
+import datetime
 
 from sqlalchemy import UniqueConstraint
 from typing import ClassVar
-from sqlalchemy import BIGINT
 from sqlmodel import Field, SQLModel
-from datetime import date
 
 from app.utilities.exceptions import NotAcceptableException
 
@@ -13,13 +12,13 @@ AVAILABILITY_TABLE_NAME = "padel_court_available_date"
 
 # Shared properties
 class AvailableDateBase(SQLModel):
-    TIME_LIMIT_MIN:ClassVar[int] = 0
-    TIME_LIMIT_MAX:ClassVar[int] = 23
-    TIME_OF_GAME:ClassVar[int] = 1
+    TIME_LIMIT_MIN: ClassVar[int] = 0
+    TIME_LIMIT_MAX: ClassVar[int] = 23
+    TIME_OF_GAME: ClassVar[int] = 1
 
-    court_id: uuid.UUID = Field(foreign_key="padel_courts.id", ondelete="CASCADE")
+    court_id: int = Field(foreign_key="padel_courts.id", ondelete="CASCADE")
     business_id: uuid.UUID = Field(foreign_key="businesses.id", ondelete="CASCADE")
-    date: date = Field()
+    date: datetime.date = Field()
     initial_hour: int = Field(default=0, ge=TIME_LIMIT_MIN, le=TIME_LIMIT_MAX)
 
 
@@ -28,11 +27,11 @@ class AvailableDateCreate(AvailableDateBase):
     number_of_games: int = Field(default=1)
 
 
-    def __get_number_of_games(self):
+    def __get_number_of_games(self) -> int:
         return self.number_of_games
 
 
-    def validate(self) -> None:
+    def validate_create(self) -> None:
         if self.number_of_games <= 0:
             raise NotAcceptableException("number_of_games cannot be less than 0")
         if (self.number_of_games * self.TIME_OF_GAME) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
@@ -41,7 +40,7 @@ class AvailableDateCreate(AvailableDateBase):
 
 # Private and in-mutable properties
 class AvailableDateImmutable(SQLModel):
-    id: BIGINT = Field(primary_key=True)
+    id: int = Field(primary_key=True)
 
 
 # Database model, database table inferred from class name
@@ -61,7 +60,7 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
     )
 
 
-    def _increment_initial_hour(self, increment: int):
+    def _increment_initial_hour(self, increment: int) -> None:
         self.initial_hour += increment
 
 
@@ -72,14 +71,14 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         data = create.model_dump(exclude={'number_of_games'})
         # data["is_reserved"] = False
         for i_game in range(number_of_games):
-            available_date = AvailableDate(**data)
+            available_date = cls(**data)
             increment = i_game * cls.TIME_OF_GAME
             available_date._increment_initial_hour(increment)
             result.append(available_date)
         return result
 
 
-    def set_reserve(self):
+    def set_reserve(self) -> None:
         self.is_reserved = True
 
 

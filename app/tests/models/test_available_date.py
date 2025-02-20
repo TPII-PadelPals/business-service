@@ -3,13 +3,12 @@ import uuid
 from datetime import date
 
 import pytest
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.available_date import AvailableDateCreate, AvailableDate, AvailableDatePublic, AvailableDatesPublic
 from app.utilities.exceptions import NotAcceptableException
 
 
-async def test_one_available_date_form_create():
+async def test_one_available_date_form_create() -> None:
     data = {
         "court_id": uuid.uuid4(),
         "business_id": uuid.uuid4(),
@@ -18,7 +17,7 @@ async def test_one_available_date_form_create():
         "number_of_games":1,
     }
     create = AvailableDateCreate(**data)
-    create.validate()
+    create.validate_create()
     # test
     available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
     # assert
@@ -29,7 +28,7 @@ async def test_one_available_date_form_create():
     assert available_date.is_reserved is False
 
 
-async def test_more_available_date_form_create():
+async def test_more_available_date_form_create() -> None:
     data = {
         "court_id": uuid.uuid4(),
         "business_id": uuid.uuid4(),
@@ -39,7 +38,7 @@ async def test_more_available_date_form_create():
     }
     initial_hour_list = [5, 6, 7, 8, 9]
     create = AvailableDateCreate(**data)
-    create.validate()
+    create.validate_create()
     # test
     available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
     # assert
@@ -55,7 +54,7 @@ async def test_more_available_date_form_create():
         assert available_date.is_reserved is False
 
 
-async def test_limit_available_date_form_create():
+async def test_limit_available_date_form_create() -> None:
     data = {
         "court_id": uuid.uuid4(),
         "business_id": uuid.uuid4(),
@@ -65,7 +64,7 @@ async def test_limit_available_date_form_create():
     }
     initial_hour_list = [False] * 24
     create = AvailableDateCreate(**data)
-    create.validate()
+    create.validate_create()
     # test
     available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
     # assert
@@ -82,7 +81,7 @@ async def test_limit_available_date_form_create():
         assert initial_hour
 
 
-async def test_create_invalid_exceed_hour():
+async def test_create_invalid_exceed_hour() -> None:
     data = {
         "court_id": uuid.uuid4(),
         "business_id": uuid.uuid4(),
@@ -94,11 +93,11 @@ async def test_create_invalid_exceed_hour():
     create = AvailableDateCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
-        create.validate()
+        create.validate_create()
     assert e.value.detail == "The information is not acceptable. Reason: number_of_games cannot exceed the time of one day."
 
 
-async def test_create_invalid_number_games():
+async def test_create_invalid_number_games() -> None:
     data = {
         "court_id": uuid.uuid4(),
         "business_id": uuid.uuid4(),
@@ -110,11 +109,11 @@ async def test_create_invalid_number_games():
     create = AvailableDateCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
-        create.validate()
+        create.validate_create()
     assert e.value.detail == "The information is not acceptable. Reason: number_of_games cannot be less than 0."
 
 
-async def test_available_date_set_reserve():
+async def test_available_date_set_reserve() -> None:
     data = {
         "id": 15,
         "court_id": uuid.uuid4(),
@@ -131,7 +130,7 @@ async def test_available_date_set_reserve():
     assert available_date.is_reserved is True
 
 
-async def test_public_from_private():
+async def test_public_from_private() -> None:
     data = {
         "id": 15,
         "court_id": uuid.uuid4(),
@@ -151,7 +150,7 @@ async def test_public_from_private():
         assert getattr(available_date_public, key) == value
 
 
-async def test_publics_from_private():
+async def test_publics_from_private() -> None:
     data = {
         "id": 15,
         "court_id": uuid.uuid4(),
