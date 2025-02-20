@@ -23,7 +23,7 @@ async def add_available_date(
         session: SessionDep,
         user_id: uuid.UUID,
         court_id: uuid.UUID,
-        item_in: AvailableDateCreate
+        available_date_in: AvailableDateCreate
 ) -> Any:
     """
     Create new item.
@@ -43,7 +43,7 @@ async def delete_available_date(
         session: SessionDep,
         user_id: uuid.UUID,
         court_id: uuid.UUID,
-        item_in: AvailableDateCreate
+        available_date_in: AvailableDateCreate
 ) -> Any:
     """
     Delete a item.
@@ -63,7 +63,7 @@ async def modify_available_date(
         session: SessionDep,
         user_id: uuid.UUID,
         court_id: uuid.UUID,
-        item_in: AvailableDateCreate
+        available_date_in: AvailableDateCreate
 ) -> Any:
     """
     Update an item.
@@ -101,6 +101,8 @@ async def reserve_available_date(
         *,
         session: SessionDep,
         court_id: uuid.UUID,
+        date: date,
+        hour: int,
 ) -> Any:
     """
     Update an item.
