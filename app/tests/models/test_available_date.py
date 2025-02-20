@@ -120,7 +120,6 @@ async def test_available_date_set_reserve() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games":1,
         "is_reserved": False
     }
     available_date = AvailableDate(**data)
@@ -137,7 +136,6 @@ async def test_public_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games":1,
         "is_reserved": False
     }
     available_date = AvailableDate(**data)
@@ -157,7 +155,6 @@ async def test_publics_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games":1,
         "is_reserved": False
     }
     available_date = AvailableDate(**data)
