@@ -1,10 +1,11 @@
 import uuid
 
+from sqlmodel import select, and_
 from app.models.business import Business
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.utilities.exceptions import (
     BusinessNotFoundException,
-    UnauthorizedPadelCourtOperationException,
+    UnauthorizedPadelCourtOperationException, NotFoundException,
 )
 
 
@@ -30,3 +31,12 @@ class PadelCourtRepository:
         await self.session.commit()
         await self.session.refresh(new_padel_court)
         return new_padel_court
+
+
+    async def get_padel_court(self, court_name: str, business_id: uuid.UUID) -> PadelCourt:
+        query = select(Business).where(and_(PadelCourt.name == court_name, PadelCourt.business_id == business_id))
+        result = await self.session.exec(query)
+        padel_court = result.first()
+        if not padel_court:
+            raise NotFoundException("padel court")
+        return padel_court

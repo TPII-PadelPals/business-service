@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import businesses, items, items_service, padel_courts
+from app.api.routes import businesses, items, items_service, padel_courts, available_date
 
 api_router = APIRouter()
 api_router.include_router(items.router, prefix="/items", tags=["items"])
@@ -10,4 +10,7 @@ api_router.include_router(
 )
 api_router.include_router(
     items_service.router, prefix="/items-service", tags=["items-service"]
+)
+api_router.include_router(
+    available_date.router, prefix="/padel-courts-available-date", tags=["padel-courts-available-date"]
 )

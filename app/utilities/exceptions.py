@@ -35,9 +35,15 @@ class UnauthorizedPadelCourtOperationException(Exception):
     pass
 
 
-
 class NotAcceptableException(HTTPException):
     def __init__(self, reason: str) -> None:
         super().__init__(
             status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"The information is not acceptable. Reason: {reason}."
+        )
+
+
+class UnauthorizedUserException(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not the owner"
         )

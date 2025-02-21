@@ -71,3 +71,24 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
         await repository.create_padel_court(
             unauthorized_owner_id, created_business.id, padel_court
         )
+
+
+async def test_get_padel_court(session: AsyncSession):
+    repository = BusinessRepository(session)
+    business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
+    owner_id = uuid.uuid4()
+
+    created_business = await repository.create_business(owner_id, business_data)
+
+    repository = PadelCourtRepository(session)
+    padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("15000.00"))
+
+    created_padel_court = await repository.create_padel_court(
+        owner_id, created_business.id, padel_court
+    )
+    # test
+    padel_court = await repository.get_padel_court()
+
+
+    assert created_padel_court.name == padel_court.name
+    assert created_padel_court.price_per_hour == padel_court.price_per_hour

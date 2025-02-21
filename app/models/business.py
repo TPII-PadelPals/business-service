@@ -23,6 +23,10 @@ class Business(BusinessBase, table=True):
     owner_id: uuid.UUID = Field(nullable=False)
 
 
+    def is_a_owner(self, user_id: uuid.UUID) -> bool:
+        return self.owner_id == user_id
+
+
 # Properties to return via API, id is always required
 class BusinessPublic(BusinessBase):
     id: uuid.UUID
