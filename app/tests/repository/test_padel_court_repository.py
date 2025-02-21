@@ -87,8 +87,8 @@ async def test_get_padel_court(session: AsyncSession):
         owner_id, created_business.id, padel_court
     )
     # test
-    padel_court = await repository.get_padel_court()
+    padel_court = await repository.get_padel_court("Padel Si", created_business.id)
+    # assert
 
-
-    assert created_padel_court.name == padel_court.name
-    assert created_padel_court.price_per_hour == padel_court.price_per_hour
+    assert padel_court.name == created_padel_court.name
+    assert padel_court.price_per_hour == created_padel_court.price_per_hour
