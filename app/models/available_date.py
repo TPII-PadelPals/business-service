@@ -1,7 +1,7 @@
 import uuid
 import datetime
 
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import UniqueConstraint, ForeignKey, ForeignKeyConstraint
 from typing import ClassVar
 from sqlmodel import Field, SQLModel
 
@@ -16,10 +16,18 @@ class AvailableDateBase(SQLModel):
     TIME_LIMIT_MAX: ClassVar[int] = 23
     TIME_OF_GAME: ClassVar[int] = 1
 
-    court_id: int = Field(foreign_key="padel_courts.id", ondelete="CASCADE")
-    business_id: uuid.UUID = Field(foreign_key="businesses.id", ondelete="CASCADE")
+    court_name: str = Field(min_length=1, max_length=255, nullable=False)
+    business_id: uuid.UUID = Field(nullable=False)
     date: datetime.date = Field()
     initial_hour: int = Field(default=0, ge=TIME_LIMIT_MIN, le=TIME_LIMIT_MAX)
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["business_id", "court_name"],  # Claves en la tabla actual
+            ["padel_courts.business_id", "padel_courts.name"],  # Claves en la tabla padre
+            name="fk_padel_court_unique_ref",
+        ),
+    )
 
 
 # Properties to receive on item creation
@@ -47,7 +55,7 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
 
     __table_args__ = (
         UniqueConstraint(
-            "court_id",
+            "court_name",
             "business_id",
             "initial_hour",
             "date",

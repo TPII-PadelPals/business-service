@@ -10,7 +10,7 @@ from app.utilities.exceptions import NotAcceptableException
 
 async def test_one_available_date_form_create() -> None:
     data = {
-        "court_id": 25,
+        "court_name": "25",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
@@ -32,7 +32,7 @@ async def test_one_available_date_form_create() -> None:
 
 async def test_more_available_date_form_create() -> None:
     data = {
-        "court_id": 35,
+        "court_name": "35",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
@@ -60,7 +60,7 @@ async def test_more_available_date_form_create() -> None:
 
 async def test_limit_available_date_form_create() -> None:
     data = {
-        "court_id": 4,
+        "court_name": "4",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 0,
@@ -89,7 +89,7 @@ async def test_limit_available_date_form_create() -> None:
 
 async def test_create_invalid_exceed_hour() -> None:
     data = {
-        "court_id": 7,
+        "court_name": "7",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
@@ -105,7 +105,7 @@ async def test_create_invalid_exceed_hour() -> None:
 
 async def test_create_invalid_number_games() -> None:
     data = {
-        "court_id": 8,
+        "court_name": "8",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 12,
@@ -122,7 +122,7 @@ async def test_create_invalid_number_games() -> None:
 async def test_available_date_set_reserve() -> None:
     data = {
         "id": 15,
-        "court_id": 8,
+        "court_name": "8",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
@@ -138,7 +138,7 @@ async def test_available_date_set_reserve() -> None:
 async def test_public_from_private() -> None:
     data = {
         "id": 15,
-        "court_id": 35,
+        "court_name": "35",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
@@ -157,7 +157,7 @@ async def test_public_from_private() -> None:
 async def test_publics_from_private() -> None:
     data = {
         "id": 15,
-        "court_id": 7,
+        "court_name": "7",
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
