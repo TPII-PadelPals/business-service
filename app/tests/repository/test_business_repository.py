@@ -22,9 +22,9 @@ async def test_get_business(session: AsyncSession):
     repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
-    await repository.create_business(owner_id, business_data)
+    new_business = await repository.create_business(owner_id, business_data)
     # test
-    business = await repository.get_business(owner_id)
+    business = await repository.get_business(new_business.id)
 
     assert business.name == business_data.name
     assert business.location == business_data.location

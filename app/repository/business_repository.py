@@ -21,8 +21,8 @@ class BusinessRepository:
         return new_business
 
 
-    async def get_business(self, owner_id: uuid.UUID) -> Business:
-        query = select(Business).where(Business.owner_id == owner_id)
+    async def get_business(self, id: uuid.UUID) -> Business:
+        query = select(Business).where(Business.id == id)
         result = await self.session.exec(query)
         business = result.first()
         if not business:
