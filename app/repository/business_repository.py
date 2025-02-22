@@ -5,7 +5,7 @@ from app.utilities.exceptions import BusinessNotFoundException
 from sqlmodel import select
 
 class BusinessRepository:
-    def __init__(self, session):
+    def __init__(self, session) -> None:
         self.session = session
 
 

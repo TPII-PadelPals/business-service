@@ -18,6 +18,6 @@ class AvailableDateService:
         service_aux = VerificationOfCourtOwnerService()
         await service_aux.verification_of_court_owner(session, user_id, court_name, business_id)
 
-        repo = AvailableDateRepository(session)
         available_date_in.validate_create()
+        repo = AvailableDateRepository(session)
         return await repo.create_available_dates(available_date_in)

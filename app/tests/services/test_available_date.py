@@ -11,7 +11,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def create_available_dates(session: AsyncSession) -> None:
-    business_repository = BusinessRepository(session)
     business_data = {
         "name":"Padel Ya",
         "location": "Av La plata 210"
@@ -23,6 +22,8 @@ async def create_available_dates(session: AsyncSession) -> None:
         "price_per_hour":Decimal("15000.00")
     }
     padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -34,7 +35,7 @@ async def create_available_dates(session: AsyncSession) -> None:
 
     service = AvailableDateService()
     data_available_date = {
-        "court_name": "35",
+        "court_name": str("35"),
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
@@ -45,7 +46,7 @@ async def create_available_dates(session: AsyncSession) -> None:
     available_dates = await service.create_available_date(
         session,
         owner_id,
-        padel_court_data["name"],
+        str(padel_court_data["name"]),
         business_id,
         available_date_create
     )

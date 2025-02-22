@@ -21,7 +21,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
     padel_court_data = {
-        "name":"Padel Si",
+        "name": str("Padel Si"),
         "price_per_hour":Decimal("15000.00")
     }
     padel_court_in = PadelCourtCreate(**padel_court_data)
@@ -38,7 +38,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     await service.verification_of_court_owner(
         session,
         owner_id,
-        padel_court_data["name"],
+        str(padel_court_data["name"]),
         business_id
     )
 
@@ -58,14 +58,14 @@ async def test_verification_fail_not_business_of_court_owner_service(session: As
 
 
 async def test_verification_fail_not_owner_of_court_owner_service(session: AsyncSession) -> None:
-    # assert
-    business_repository = BusinessRepository(session)
     business_data = {
         "name":"Padel Ya",
         "location": "Av La plata 210"
     }
     business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
+
+    business_repository = BusinessRepository(session)
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
 
@@ -92,14 +92,14 @@ async def test_verification_fail_not_owner_of_court_owner_service(session: Async
 
 
 async def test_verification_fail_not_court_of_court_owner_service(session: AsyncSession) -> None:
-    # assert
-    business_repository = BusinessRepository(session)
     business_data = {
         "name":"Padel Ya",
         "location": "Av La plata 210"
     }
     business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
+
+    business_repository = BusinessRepository(session)
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
 

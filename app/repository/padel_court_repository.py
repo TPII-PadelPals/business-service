@@ -3,6 +3,7 @@ import uuid
 from sqlmodel import select, and_
 from app.models.business import Business
 from app.models.padel_court import PadelCourt, PadelCourtCreate
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.utilities.exceptions import (
     BusinessNotFoundException,
     UnauthorizedPadelCourtOperationException, NotFoundException,
@@ -10,7 +11,7 @@ from app.utilities.exceptions import (
 
 
 class PadelCourtRepository:
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create_padel_court(

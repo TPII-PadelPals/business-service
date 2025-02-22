@@ -82,7 +82,7 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
     padel_court_data = {
-        "name":"Padel Si",
+        "name": str("Padel Si"),
         "price_per_hour":Decimal("15000.00")
     }
     padel_court_repository = PadelCourtRepository(session)
@@ -96,7 +96,7 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     await session.commit()
     await session.refresh(new_padel_court)
     # test
-    padel_court = await padel_court_repository.get_padel_court(padel_court_data["name"], business_id)
+    padel_court = await padel_court_repository.get_padel_court(str(padel_court_data["name"]), business_id)
     # assert
 
     assert padel_court.name == padel_court_data["name"]

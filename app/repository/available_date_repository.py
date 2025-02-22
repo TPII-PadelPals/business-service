@@ -1,8 +1,9 @@
 from app.models.available_date import AvailableDateCreate, AvailableDate
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 class AvailableDateRepository:
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
 
