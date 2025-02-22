@@ -40,4 +40,3 @@ class PadelCourtRepository:
         if not padel_court:
             raise NotFoundException("padel court")
         return padel_court
-    
