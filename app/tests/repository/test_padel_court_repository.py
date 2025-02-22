@@ -5,7 +5,7 @@ import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.business import BusinessCreate
-from app.models.padel_court import PadelCourtCreate
+from app.models.padel_court import PadelCourtCreate, PadelCourt
 from app.repository.business_repository import BusinessRepository
 from app.repository.padel_court_repository import PadelCourtRepository
 from app.utilities.exceptions import (
@@ -73,22 +73,31 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
         )
 
 
-async def test_get_padel_court(session: AsyncSession):
-    repository = BusinessRepository(session)
-    business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
+async def test_get_padel_court(session: AsyncSession) -> None:
+    business_repository = BusinessRepository(session)
+    business_data = {
+        "name":"Padel Ya",
+        "location": "Av La plata 210"
+    }
+    business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
-
-    created_business = await repository.create_business(owner_id, business_data)
-
-    repository = PadelCourtRepository(session)
-    padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("15000.00"))
-
-    created_padel_court = await repository.create_padel_court(
-        owner_id, created_business.id, padel_court
+    padel_court_data = {
+        "name":"Padel Si",
+        "price_per_hour":Decimal("15000.00")
+    }
+    padel_court_repository = PadelCourtRepository(session)
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
     )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
     # test
-    padel_court = await repository.get_padel_court("Padel Si", created_business.id)
+    padel_court = await padel_court_repository.get_padel_court(padel_court_data["name"], business_id)
     # assert
 
-    assert padel_court.name == created_padel_court.name
-    assert padel_court.price_per_hour == created_padel_court.price_per_hour
+    assert padel_court.name == padel_court_data["name"]
+    assert padel_court.price_per_hour == padel_court_data["price_per_hour"]

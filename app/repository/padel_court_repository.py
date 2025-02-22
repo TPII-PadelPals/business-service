@@ -34,9 +34,10 @@ class PadelCourtRepository:
 
 
     async def get_padel_court(self, court_name: str, business_id: uuid.UUID) -> PadelCourt:
-        query = select(Business).where(and_(PadelCourt.name == court_name, PadelCourt.business_id == business_id))
+        query = select(PadelCourt).where(and_(PadelCourt.name == court_name, PadelCourt.business_id == business_id))
         result = await self.session.exec(query)
         padel_court = result.first()
         if not padel_court:
             raise NotFoundException("padel court")
         return padel_court
+        # raise NotFoundException("padel court")
