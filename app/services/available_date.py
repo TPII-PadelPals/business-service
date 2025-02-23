@@ -1,9 +1,12 @@
 import uuid
 
+from sqlalchemy.exc import IntegrityError
+
 from app.models.available_date import AvailableDateCreate, AvailableDate
 from app.repository.available_date_repository import AvailableDateRepository
 from app.services.verification_of_court_owner_service import VerificationOfCourtOwnerService
 from app.utilities.dependencies import SessionDep
+from app.utilities.exceptions import NotUniqueException
 
 
 class AvailableDateService:
@@ -20,4 +23,11 @@ class AvailableDateService:
 
         available_date_in.validate_create()
         repo = AvailableDateRepository(session)
-        return await repo.create_available_dates(available_date_in)
+        try:
+            result = await repo.create_available_dates(available_date_in)
+            return result
+        except IntegrityError:
+            session.rollback()
+            raise NotUniqueException("available date")
+        except Exception as e:
+            raise e
