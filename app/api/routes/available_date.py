@@ -18,7 +18,6 @@ service = AvailableDateService()
     response_model=AvailableDatesPublic,
     status_code=status.HTTP_201_CREATED,
     responses={**NOT_ENOUGH_PERMISSIONS},  # type: ignore[dict-item]
-    dependencies=[Depends(get_user_id_param)],
 )
 async def add_available_date(
         *,
@@ -40,7 +39,6 @@ async def add_available_date(
     response_model=None,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={**NOT_ENOUGH_PERMISSIONS},  # type: ignore[dict-item]
-    dependencies=[Depends(get_user_id_param)],
 )
 async def delete_available_date(
         *,
@@ -62,7 +60,6 @@ async def delete_available_date(
     response_model=AvailableDatesPublic,
     status_code=status.HTTP_200_OK,
     responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
-    dependencies=[Depends(get_user_id_param)],
 )
 async def get_available_dates(
         *,
@@ -74,7 +71,7 @@ async def get_available_dates(
     """
     Get all item.
     """
-    available_dates = await service.get_available_date(session, business_id, court_name, date)
+    available_dates = await service.get_available_date(session, court_name, business_id, date)
     return AvailableDatesPublic.from_private(available_dates)
 
 
@@ -83,7 +80,6 @@ async def get_available_dates(
     response_model=AvailableDatePublic,
     status_code=status.HTTP_200_OK,
     responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
-    dependencies=[Depends(get_user_id_param)],
 )
 async def reserve_available_date(
         *,
@@ -96,5 +92,5 @@ async def reserve_available_date(
     """
     Update an item.
     """
-    available_date = await service.update_for_reserve_available_date(session, business_id, court_name, date, hour)
+    available_date = await service.update_for_reserve_available_date(session, court_name, business_id, date, hour)
     return AvailableDatePublic.from_private(available_date)
