@@ -5,6 +5,8 @@ from app.models.available_date import AvailableDateCreate, AvailableDate
 from sqlmodel.ext.asyncio.session import AsyncSession
 from datetime import date
 
+from app.utilities.exceptions import NotFoundException, CourtAlreadyReservedException
+
 
 class AvailableDateRepository:
     def __init__(self, session: AsyncSession) -> None:
@@ -35,7 +37,7 @@ class AvailableDateRepository:
             )
         )
         available_dates = await self.session.exec(query)
-        if not available_dates:
+        if available_dates is None:
             return []
         return list(available_dates.all())
 
@@ -54,10 +56,48 @@ class AvailableDateRepository:
             )
         )
         available_dates = await self.session.exec(query)
-        if not available_dates:
+        if available_dates is None:
             return
         for available_date in available_dates:
             await self.session.delete(available_date)
         await self.session.commit()
         for available_date in available_dates:
             await self.session.refresh(available_date)
+
+
+    async def update_to_reserve_available_date(
+            self,
+            court_name: str,
+            business_id: uuid.UUID,
+            date: date,
+            hour: int,
+    ) -> AvailableDate:
+        query = select(AvailableDate).where(
+            and_(
+                AvailableDate.date==date,
+                AvailableDate.court_name==court_name,
+                AvailableDate.business_id==business_id,
+                AvailableDate.initial_hour==hour
+            )
+        )
+        available_date_result = await self.session.exec(query)
+        available_date: AvailableDate = available_date_result.first()
+        if available_date is None:
+            raise NotFoundException("available date")
+        if available_date.get_is_reserved():
+            raise CourtAlreadyReservedException(court_name)
+        available_date.set_reserve()
+        self.session.add(available_date)
+        await self.session.commit()
+        await self.session.refresh(available_date)
+        return available_date
+
+
+    # async def update_to_replace_available_dates(self, create_available_date: AvailableDateCreate) -> list[AvailableDate]:
+    #     available_date_list = AvailableDate.from_create(create_available_date)
+    #     for available_date in available_date_list:
+    #         self.session.add(available_date)
+    #     await self.session.commit()
+    #     for available_date in available_date_list:
+    #         await self.session.refresh(available_date)
+    #     return available_date_list

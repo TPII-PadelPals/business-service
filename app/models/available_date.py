@@ -86,8 +86,8 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         self.is_reserved = True
 
 
-    # def get_is_reserved(self):
-    #     return self.is_reserved
+    def get_is_reserved(self):
+        return self.is_reserved
 
 
 # Properties to return via API, id is always required
