@@ -53,27 +53,7 @@ async def delete_available_date(
     """
     Delete a item.
     """
-    return
-
-
-@router.put(
-    "/",
-    response_model=AvailableDatePublic,
-    status_code=status.HTTP_200_OK,
-    responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
-    dependencies=[Depends(get_user_id_param)],
-)
-async def modify_available_date(
-        *,
-        session: SessionDep,
-        user_id: uuid.UUID,
-        court_name: str,
-        business_id: uuid.UUID,
-        available_date_in: AvailableDateCreate,
-) -> Any:
-    """
-    Update an item.
-    """
+    await service.delete_available_date(session, user_id, court_name, business_id, date)
     return
 
 
@@ -94,7 +74,8 @@ async def get_available_dates(
     """
     Get all item.
     """
-    return
+    available_dates = await service.get_available_date(session, business_id, court_name, date)
+    return AvailableDatesPublic.from_private(available_dates)
 
 
 @router.patch(
@@ -115,4 +96,5 @@ async def reserve_available_date(
     """
     Update an item.
     """
-    return
+    available_date = await service.update_for_reserve_available_date(session, business_id, court_name, date, hour)
+    return AvailableDatePublic.from_private(available_date)

@@ -65,7 +65,7 @@ class AvailableDateRepository:
             await self.session.refresh(available_date)
 
 
-    async def update_to_reserve_available_date(
+    async def update_for_reserve_available_date(
             self,
             court_name: str,
             business_id: uuid.UUID,
@@ -91,13 +91,3 @@ class AvailableDateRepository:
         await self.session.commit()
         await self.session.refresh(available_date)
         return available_date
-
-
-    # async def update_to_replace_available_dates(self, create_available_date: AvailableDateCreate) -> list[AvailableDate]:
-    #     available_date_list = AvailableDate.from_create(create_available_date)
-    #     for available_date in available_date_list:
-    #         self.session.add(available_date)
-    #     await self.session.commit()
-    #     for available_date in available_date_list:
-    #         await self.session.refresh(available_date)
-    #     return available_date_list

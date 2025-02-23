@@ -73,7 +73,6 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         result = []
         data = create.model_dump()
         number_of_games = data['number_of_games']
-        # data["is_reserved"] = False
         for i_game in range(number_of_games):
             available_date = cls(**data)
             increment = i_game * cls.TIME_OF_GAME

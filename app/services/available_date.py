@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from sqlalchemy.exc import IntegrityError
@@ -31,3 +32,44 @@ class AvailableDateService:
             raise NotUniqueException("available date")
         except Exception as e:
             raise e
+
+
+    async def get_available_date(
+            self,
+            session: SessionDep,
+            court_name: str,
+            business_id: uuid.UUID,
+            date: datetime.date
+    ) -> list[AvailableDate]:
+        repo = AvailableDateRepository(session)
+        available_dates = await repo.get_available_dates(court_name, business_id, date)
+        return available_dates
+
+
+    async def update_for_reserve_available_date(
+            self,
+            session: SessionDep,
+            court_name: str,
+            business_id: uuid.UUID,
+            date: datetime.date,
+            hour: int,
+    ) -> AvailableDate:
+        repo = AvailableDateRepository(session)
+        available_date = await repo.update_for_reserve_available_date(court_name, business_id, date, hour)
+        return available_date
+
+
+    async def delete_available_date(
+            self,
+            session: SessionDep,
+            user_id: uuid.UUID,
+            court_name: str,
+            business_id: uuid.UUID,
+            date: datetime.date,
+    ) -> None:
+        service_aux = VerificationOfCourtOwnerService()
+        await service_aux.verification_of_court_owner(session, user_id, court_name, business_id)
+
+        repo = AvailableDateRepository(session)
+        await repo.delete_available_date(court_name, business_id, date)
+        return

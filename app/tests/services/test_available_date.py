@@ -11,7 +11,7 @@ from app.repository.business_repository import BusinessRepository
 from app.services.available_date import AvailableDateService
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.utilities.exceptions import NotUniqueException
+from app.utilities.exceptions import NotUniqueException, UnauthorizedUserException
 
 
 async def create_available_dates(session: AsyncSession) -> None:
@@ -116,3 +116,116 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         )
     # assert
     assert e.value.detail == "available date already exists."
+
+
+async def test_delete_empty_date(session: AsyncSession) -> None:
+    business_data = {
+        "name":"Padel Ya",
+        "location": "Av La plata 210"
+    }
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {
+        "name":"Padel Si",
+        "price_per_hour":Decimal("15000.00")
+    }
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+
+
+    service = AvailableDateService()
+    # test
+    await service.delete_available_date(session, owner_id, padel_court_data["name"], business_id, date(2025, 1, 1))
+
+
+async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
+    business_data = {
+        "name":"Padel Ya",
+        "location": "Av La plata 210"
+    }
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {
+        "name":"Padel Si",
+        "price_per_hour":Decimal("15000.00")
+    }
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+
+    not_owner = uuid.uuid4()
+    limit = 100
+    while not_owner == owner_id:
+        not_owner = uuid.uuid4()
+        limit -= 1
+        if limit == 0:
+            assert False
+
+
+    service = AvailableDateService()
+    # test
+    with pytest.raises(UnauthorizedUserException) as e:
+        await service.delete_available_date(session, not_owner, padel_court_data["name"], business_id, date(2025, 1, 1))
+    # assert
+    assert e.value.detail == "User is not the owner"
+
+
+
+
+async def test_delete(session: AsyncSession) -> None:
+    business_data = {
+        "name":"Padel Ya",
+        "location": "Av La plata 210"
+    }
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {
+        "name":"Padel Si",
+        "price_per_hour":Decimal("15000.00")
+    }
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+
+    create_date = date(2025, 1, 1)
+
+    service = AvailableDateService()
+    data_available_date = {
+        "court_name": str("35"),
+        "business_id": uuid.uuid4(),
+        "date": date(2025, 1, 1),
+        "initial_hour": 5,
+        "number_of_games":5,
+    }
+    available_date_create = AvailableDateCreate(**data_available_date)
+    await service.create_available_date(session, owner_id, padel_court_data["name"], business_id, available_date_create)
+    # test
+    await service.delete_available_date(session, owner_id, padel_court_data["name"], business_id, create_date)
+    response_get = await service.get_available_date(session, padel_court_data["name"], business_id, data_available_date["date"])
+    # assert
+    assert len(response_get) == 0
