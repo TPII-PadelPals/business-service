@@ -27,7 +27,7 @@ class AvailableDateService:
             result = await repo.create_available_dates(available_date_in)
             return result
         except IntegrityError:
-            session.rollback()
+            await session.rollback()
             raise NotUniqueException("available date")
         except Exception as e:
             raise e
