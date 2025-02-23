@@ -38,7 +38,8 @@ class UnauthorizedPadelCourtOperationException(Exception):
 class NotAcceptableException(HTTPException):
     def __init__(self, reason: str) -> None:
         super().__init__(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"The information is not acceptable. Reason: {reason}."
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail=f"The information is not acceptable. Reason: {reason}.",
         )
 
 

@@ -1,13 +1,14 @@
 import uuid
 
+from sqlmodel import select
+
 from app.models.business import Business, BusinessCreate
 from app.utilities.exceptions import BusinessNotFoundException
-from sqlmodel import select
+
 
 class BusinessRepository:
     def __init__(self, session) -> None:
         self.session = session
-
 
     async def create_business(
         self, owner_id: uuid.UUID, business_in: BusinessCreate
@@ -19,7 +20,6 @@ class BusinessRepository:
         await self.session.commit()
         await self.session.refresh(new_business)
         return new_business
-
 
     async def get_business(self, id: uuid.UUID) -> Business:
         query = select(Business).where(Business.id == id)

@@ -22,7 +22,6 @@ class Business(BusinessBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     owner_id: uuid.UUID = Field(nullable=False)
 
-
     def is_a_owner(self, user_id: uuid.UUID) -> bool:
         return self.owner_id == user_id
 

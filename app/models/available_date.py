@@ -1,8 +1,8 @@
-import uuid
 import datetime
-
-from sqlalchemy import UniqueConstraint, ForeignKey, ForeignKeyConstraint
+import uuid
 from typing import ClassVar
+
+from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 from app.utilities.exceptions import NotAcceptableException
@@ -24,7 +24,10 @@ class AvailableDateBase(SQLModel):
     __table_args__ = (
         ForeignKeyConstraint(
             ["business_id", "court_name"],  # Claves en la tabla actual
-            ["padel_courts.business_id", "padel_courts.name"],  # Claves en la tabla padre
+            [
+                "padel_courts.business_id",
+                "padel_courts.name",
+            ],  # Claves en la tabla padre
             name="fk_padel_court_unique_ref",
         ),
     )
@@ -34,12 +37,15 @@ class AvailableDateBase(SQLModel):
 class AvailableDateCreate(AvailableDateBase):
     number_of_games: int = Field(default=1)
 
-
     def validate_create(self) -> None:
         if self.number_of_games <= 0:
             raise NotAcceptableException("number_of_games cannot be less than 0")
-        if (self.number_of_games * self.TIME_OF_GAME) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
-            raise NotAcceptableException("number_of_games cannot exceed the time of one day")
+        if (
+            self.number_of_games * self.TIME_OF_GAME
+        ) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
+            raise NotAcceptableException(
+                "number_of_games cannot exceed the time of one day"
+            )
 
 
 # Private and in-mutable properties
@@ -52,7 +58,6 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
     __tablename__ = AVAILABILITY_TABLE_NAME
     is_reserved: bool = Field(default=False)
 
-
     __table_args__ = (
         UniqueConstraint(
             "court_name",
@@ -63,16 +68,14 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         ),
     )
 
-
     def _increment_initial_hour(self, increment: int) -> None:
         self.initial_hour += increment
-
 
     @classmethod
     def from_create(cls, create: AvailableDateCreate) -> list["AvailableDate"]:
         result = []
         data = create.model_dump()
-        number_of_games = data['number_of_games']
+        number_of_games = data["number_of_games"]
         for i_game in range(number_of_games):
             available_date = cls(**data)
             increment = i_game * cls.TIME_OF_GAME
@@ -80,10 +83,8 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
             result.append(available_date)
         return result
 
-
     def set_reserve(self) -> None:
         self.is_reserved = True
-
 
     def get_is_reserved(self) -> bool:
         return self.is_reserved
@@ -92,7 +93,6 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
 # Properties to return via API, id is always required
 class AvailableDatePublic(AvailableDateBase):
     is_reserved: bool = Field(default=False)
-
 
     @classmethod
     def from_private(cls, available_day: AvailableDate) -> "AvailableDatePublic":
@@ -104,10 +104,9 @@ class AvailableDatesPublic(SQLModel):
     data: list[AvailableDatePublic]
     count: int
 
-
     @classmethod
     def from_private(
-            cls, available_day_list: list[AvailableDate]
+        cls, available_day_list: list[AvailableDate]
     ) -> "AvailableDatesPublic":
         data = []
         for match_player in available_day_list:

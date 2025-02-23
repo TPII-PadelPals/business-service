@@ -5,7 +5,7 @@ import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.business import BusinessCreate
-from app.models.padel_court import PadelCourtCreate, PadelCourt
+from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
 from app.repository.padel_court_repository import PadelCourtRepository
 from app.utilities.exceptions import (
@@ -60,7 +60,9 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
-    created_business = await business_repository.create_business(owner_id, business_data)
+    created_business = await business_repository.create_business(
+        owner_id, business_data
+    )
 
     unauthorized_owner_id = uuid.uuid4()
 
@@ -75,16 +77,10 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
 
 async def test_get_padel_court(session: AsyncSession) -> None:
     business_repository = BusinessRepository(session)
-    business_data = {
-        "name":"Padel Ya",
-        "location": "Av La plata 210"
-    }
+    business_data = {"name": "Padel Ya", "location": "Av La plata 210"}
     business = BusinessCreate(**business_data)
     owner_id = uuid.uuid4()
-    padel_court_data = {
-        "name": str("Padel Si"),
-        "price_per_hour":Decimal("15000.00")
-    }
+    padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_repository = PadelCourtRepository(session)
     padel_court_in = PadelCourtCreate(**padel_court_data)
     created_business = await business_repository.create_business(owner_id, business)
@@ -96,7 +92,9 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     await session.commit()
     await session.refresh(new_padel_court)
     # test
-    padel_court = await padel_court_repository.get_padel_court(str(padel_court_data["name"]), business_id)
+    padel_court = await padel_court_repository.get_padel_court(
+        str(padel_court_data["name"]), business_id
+    )
     # assert
 
     assert padel_court.name == padel_court_data["name"]

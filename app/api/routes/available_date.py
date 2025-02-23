@@ -1,17 +1,22 @@
 import uuid
+from datetime import date
 from typing import Any
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 
-from datetime import date
-from app.models.available_date import AvailableDatePublic, AvailableDateCreate, AvailableDatesPublic
+from app.models.available_date import (
+    AvailableDateCreate,
+    AvailableDatePublic,
+    AvailableDatesPublic,
+)
 from app.services.available_date import AvailableDateService
-from app.utilities.dependencies import SessionDep, get_user_id_param
+from app.utilities.dependencies import SessionDep
 from app.utilities.messages import ITEM_RESPONSES, NOT_ENOUGH_PERMISSIONS
 
 router = APIRouter()
 
 service = AvailableDateService()
+
 
 @router.post(
     "/",
@@ -20,17 +25,19 @@ service = AvailableDateService()
     responses={**NOT_ENOUGH_PERMISSIONS},  # type: ignore[dict-item]
 )
 async def add_available_date(
-        *,
-        session: SessionDep,
-        user_id: uuid.UUID,
-        court_name: str,
-        business_id: uuid.UUID,
-        available_date_in: AvailableDateCreate
+    *,
+    session: SessionDep,
+    user_id: uuid.UUID,
+    court_name: str,
+    business_id: uuid.UUID,
+    available_date_in: AvailableDateCreate,
 ) -> Any:
     """
     Create new item.
     """
-    available_dates = await service.create_available_date(session, user_id, court_name, business_id, available_date_in)
+    available_dates = await service.create_available_date(
+        session, user_id, court_name, business_id, available_date_in
+    )
     return AvailableDatesPublic.from_private(available_dates)
 
 
@@ -41,12 +48,12 @@ async def add_available_date(
     responses={**NOT_ENOUGH_PERMISSIONS},  # type: ignore[dict-item]
 )
 async def delete_available_date(
-        *,
-        session: SessionDep,
-        user_id: uuid.UUID,
-        court_name: str,
-        business_id: uuid.UUID,
-        date: date,
+    *,
+    session: SessionDep,
+    user_id: uuid.UUID,
+    court_name: str,
+    business_id: uuid.UUID,
+    date: date,
 ) -> Any:
     """
     Delete a item.
@@ -62,16 +69,18 @@ async def delete_available_date(
     responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
 )
 async def get_available_dates(
-        *,
-        session: SessionDep,
-        court_name: str,
-        business_id: uuid.UUID,
-        date: date,
+    *,
+    session: SessionDep,
+    court_name: str,
+    business_id: uuid.UUID,
+    date: date,
 ) -> Any:
     """
     Get all item.
     """
-    available_dates = await service.get_available_date(session, court_name, business_id, date)
+    available_dates = await service.get_available_date(
+        session, court_name, business_id, date
+    )
     return AvailableDatesPublic.from_private(available_dates)
 
 
@@ -82,15 +91,17 @@ async def get_available_dates(
     responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
 )
 async def reserve_available_date(
-        *,
-        session: SessionDep,
-        court_name: str,
-        business_id: uuid.UUID,
-        date: date,
-        hour: int,
+    *,
+    session: SessionDep,
+    court_name: str,
+    business_id: uuid.UUID,
+    date: date,
+    hour: int,
 ) -> Any:
     """
     Update an item.
     """
-    available_date = await service.update_for_reserve_available_date(session, court_name, business_id, date, hour)
+    available_date = await service.update_for_reserve_available_date(
+        session, court_name, business_id, date, hour
+    )
     return AvailableDatePublic.from_private(available_date)

@@ -1,10 +1,14 @@
 import uuid
-
 from datetime import date
 
 import pytest
 
-from app.models.available_date import AvailableDateCreate, AvailableDate, AvailableDatePublic, AvailableDatesPublic
+from app.models.available_date import (
+    AvailableDate,
+    AvailableDateCreate,
+    AvailableDatePublic,
+    AvailableDatesPublic,
+)
 from app.utilities.exceptions import NotAcceptableException
 
 
@@ -14,7 +18,7 @@ async def test_one_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games":1,
+        "number_of_games": 1,
     }
     create = AvailableDateCreate(**data)
     create.validate_create()
@@ -36,7 +40,7 @@ async def test_more_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
-        "number_of_games":5,
+        "number_of_games": 5,
     }
     initial_hour_list = [5, 6, 7, 8, 9]
     create = AvailableDateCreate(**data)
@@ -64,7 +68,7 @@ async def test_limit_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 0,
-        "number_of_games":24,
+        "number_of_games": 24,
     }
     initial_hour_list = [False] * 24
     create = AvailableDateCreate(**data)
@@ -93,14 +97,17 @@ async def test_create_invalid_exceed_hour() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games":2,
+        "number_of_games": 2,
     }
     # test
     create = AvailableDateCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
         create.validate_create()
-    assert e.value.detail == "The information is not acceptable. Reason: number_of_games cannot exceed the time of one day."
+    assert (
+        e.value.detail
+        == "The information is not acceptable. Reason: number_of_games cannot exceed the time of one day."
+    )
 
 
 async def test_create_invalid_number_games() -> None:
@@ -109,14 +116,17 @@ async def test_create_invalid_number_games() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 12,
-        "number_of_games":0,
+        "number_of_games": 0,
     }
     # test
     create = AvailableDateCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
         create.validate_create()
-    assert e.value.detail == "The information is not acceptable. Reason: number_of_games cannot be less than 0."
+    assert (
+        e.value.detail
+        == "The information is not acceptable. Reason: number_of_games cannot be less than 0."
+    )
 
 
 async def test_available_date_set_reserve() -> None:
@@ -126,7 +136,7 @@ async def test_available_date_set_reserve() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "is_reserved": False
+        "is_reserved": False,
     }
     available_date = AvailableDate(**data)
     # test
@@ -142,7 +152,7 @@ async def test_public_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "is_reserved": False
+        "is_reserved": False,
     }
     available_date = AvailableDate(**data)
     # test
@@ -161,7 +171,7 @@ async def test_publics_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "is_reserved": False
+        "is_reserved": False,
     }
     available_date = AvailableDate(**data)
     # test

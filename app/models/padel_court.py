@@ -27,7 +27,6 @@ class PadelCourt(PadelCourtBase, table=True):
     id: int = Field(default=None, primary_key=True)
     business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
 
-
     __table_args__ = (
         UniqueConstraint(
             "name",

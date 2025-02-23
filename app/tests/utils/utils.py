@@ -2,8 +2,9 @@ import random
 import string
 import uuid
 
-from app.core.config import settings
 from httpx import AsyncClient
+
+from app.core.config import settings
 
 
 def random_lower_string() -> str:
@@ -16,7 +17,11 @@ def get_x_api_key_header() -> dict[str, str]:
 
 
 async def create_business_for_routes(
-        async_client: AsyncClient, x_api_key, name: str, location: str, parameters: dict[str, str | int]
+    async_client: AsyncClient,
+    x_api_key,
+    name: str,
+    location: str,
+    parameters: dict[str, str | int],
 ) -> dict[str, str]:
     business_data = {"name": name, "location": location}
     response = await async_client.post(
@@ -29,12 +34,12 @@ async def create_business_for_routes(
 
 
 async def create_padel_court_for_routes(
-        async_client: AsyncClient,
-        x_api_key_header: dict[str, str],
-        name: str,
-        price_per_hour: str,
-        business_data: dict[str, str],
-        owner_id: uuid.UUID,
+    async_client: AsyncClient,
+    x_api_key_header: dict[str, str],
+    name: str,
+    price_per_hour: str,
+    business_data: dict[str, str],
+    owner_id: uuid.UUID,
 ) -> dict[str, str]:
     padel_court_data = {"name": name, "price_per_hour": price_per_hour}
 
