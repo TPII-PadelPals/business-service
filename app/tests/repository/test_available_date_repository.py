@@ -87,7 +87,7 @@ async def test_get_available_dates(session: AsyncSession) -> None:
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    dates = await repository_available_date.get_available_dates(padel_court_data["name"], business_id, available_date_create_date)
+    dates = await repository_available_date.get_available_dates(str(padel_court_data["name"]), business_id, available_date_create_date)
     # assert
     assert len(dates) == 5
 
@@ -130,7 +130,7 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
 
     date_whitout_available_dates = datetime.date(2025, 1, 2)
     # test
-    dates = await repository_available_date.get_available_dates(padel_court_data["name"], business_id, date_whitout_available_dates)
+    dates = await repository_available_date.get_available_dates(str(padel_court_data["name"]), business_id, date_whitout_available_dates)
     # assert
     assert len(dates) == 0
 
@@ -181,8 +181,8 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    await repository_available_date.delete_available_date(padel_court_data["name"], business_id, available_date_create_date)
-    dates = await repository_available_date.get_available_dates(padel_court_data["name"], business_id, available_date_create_date)
+    await repository_available_date.delete_available_date(str(padel_court_data["name"]), business_id, available_date_create_date)
+    dates = await repository_available_date.get_available_dates(str(padel_court_data["name"]), business_id, available_date_create_date)
     # assert
     assert len(dates) == 0
 
@@ -247,8 +247,8 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    date = await repository_available_date.update_for_reserve_available_date(padel_court_data["name"], business_id, available_date_create_date, 5)
-    dates = await repository_available_date.get_available_dates(padel_court_data["name"], business_id, available_date_create_date)
+    date = await repository_available_date.update_for_reserve_available_date(str(padel_court_data["name"]), business_id, available_date_create_date, 5)
+    dates = await repository_available_date.get_available_dates(str(padel_court_data["name"]), business_id, available_date_create_date)
     # assert
     assert len(dates) == 1
     assert dates[0].get_is_reserved()
@@ -290,8 +290,8 @@ async def test_update_to_reserve_court_reserved_available_date_invalid(session: 
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    await repository_available_date.update_for_reserve_available_date(padel_court_data["name"], business_id, available_date_create_date, 5)
+    await repository_available_date.update_for_reserve_available_date(str(padel_court_data["name"]), business_id, available_date_create_date, 5)
     with pytest.raises(CourtAlreadyReservedException) as e:
-        await repository_available_date.update_for_reserve_available_date(padel_court_data["name"], business_id, available_date_create_date, 5)
+        await repository_available_date.update_for_reserve_available_date(str(padel_court_data["name"]), business_id, available_date_create_date, 5)
     # assert
     assert e.value.detail == f"The court {padel_court_data["name"]} is already reserved."

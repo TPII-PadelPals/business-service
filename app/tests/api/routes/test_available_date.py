@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from starlette import status
 
 from app.core.config import settings
-from app.tests.utils.utils import _create_business, _create_padel_court
+from app.tests.utils.utils import create_business_for_routes, create_padel_court_for_routes
 
 
 async def test_create_available_dates(
@@ -12,18 +12,18 @@ async def test_create_available_dates(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -48,7 +48,7 @@ async def test_create_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     # assert
     assert response is not None
@@ -62,18 +62,18 @@ async def test_create_available_dates_not_owner_401(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -98,7 +98,7 @@ async def test_create_available_dates_not_owner_401(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": uuid.uuid4(), "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(uuid.uuid4()), "court_name": str(court_name)},
     )
     # assert
     assert response is not None
@@ -110,18 +110,18 @@ async def test_invalid_create_available_dates_409_crate_over_time(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -145,7 +145,7 @@ async def test_invalid_create_available_dates_409_crate_over_time(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
 
     assert created_available_days is not None
@@ -162,7 +162,7 @@ async def test_invalid_create_available_dates_409_crate_over_time(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date_new,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     # assert
     assert response is not None
@@ -174,18 +174,18 @@ async def test_multiple_valid_create_available_dates(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -208,7 +208,7 @@ async def test_multiple_valid_create_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     # test
@@ -223,7 +223,7 @@ async def test_multiple_valid_create_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date_new_after,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     data_available_date_new_before = {
         "court_name": court_name,
@@ -236,7 +236,7 @@ async def test_multiple_valid_create_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date_new_before,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     # assert
     assert created_available_days_after is not None
@@ -254,18 +254,18 @@ async def test_get_available_dates(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -288,7 +288,7 @@ async def test_get_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     # test
@@ -314,18 +314,18 @@ async def test_update_for_reserve_available_dates(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -348,7 +348,7 @@ async def test_update_for_reserve_available_dates(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     # test
@@ -388,18 +388,18 @@ async def test_update_for_reserve_available_dates_whit_invalid_hour(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -422,7 +422,7 @@ async def test_update_for_reserve_available_dates_whit_invalid_hour(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     # test
@@ -446,18 +446,18 @@ async def test_delete_all_available_dates_in_a_date(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -480,7 +480,7 @@ async def test_delete_all_available_dates_in_a_date(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     await async_client.patch(
@@ -528,18 +528,18 @@ async def test_delete_available_dates_no_owner(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
-        parameters={"owner_id": owner_id},
+        parameters={"owner_id": str(owner_id)},
     )
     assert new_business is not None
 
     court_name = str("cancha 0")
 
-    new_padel_court = await _create_padel_court(
+    new_padel_court = await create_padel_court_for_routes(
         async_client=async_client,
         x_api_key_header=x_api_key_header,
         name=court_name,
@@ -562,7 +562,7 @@ async def test_delete_available_dates_no_owner(
         f"{settings.API_V1_STR}/padel-courts-available-date/",
         headers=x_api_key_header,
         json=data_available_date,
-        params={"business_id": str(business_id), "user_id": owner_id, "court_name": str(court_name)},
+        params={"business_id": str(business_id), "user_id": str(owner_id), "court_name": str(court_name)},
     )
     assert created_available_days is not None
     await async_client.patch(

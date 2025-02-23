@@ -56,19 +56,19 @@ async def test_create_padel_court_with_nonexistent_business_id_return_exception(
 async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
     session: AsyncSession,
 ):
-    repository = BusinessRepository(session)
+    business_repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
-    created_business = await repository.create_business(owner_id, business_data)
+    created_business = await business_repository.create_business(owner_id, business_data)
 
     unauthorized_owner_id = uuid.uuid4()
 
-    repository = PadelCourtRepository(session)
+    padel_court_repository = PadelCourtRepository(session)
     padel_court = PadelCourtCreate(name="Cancha 5", price_per_hour=Decimal("12000"))
 
     with pytest.raises(UnauthorizedPadelCourtOperationException):
-        await repository.create_padel_court(
+        await padel_court_repository.create_padel_court(
             unauthorized_owner_id, created_business.id, padel_court
         )
 

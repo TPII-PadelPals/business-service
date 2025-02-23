@@ -15,9 +15,9 @@ def get_x_api_key_header() -> dict[str, str]:
     return headers
 
 
-async def _create_business(
-        async_client: AsyncClient, x_api_key, name: str, location: str, parameters: dict[str, int]
-):
+async def create_business_for_routes(
+        async_client: AsyncClient, x_api_key, name: str, location: str, parameters: dict[str, str | int]
+) -> dict[str, str]:
     business_data = {"name": name, "location": location}
     response = await async_client.post(
         f"{settings.API_V1_STR}/businesses/",
@@ -25,23 +25,23 @@ async def _create_business(
         json=business_data,
         params=parameters,
     )
-    return response.json()
+    return dict(response.json())
 
 
-async def _create_padel_court(
+async def create_padel_court_for_routes(
         async_client: AsyncClient,
         x_api_key_header: dict[str, str],
         name: str,
         price_per_hour: str,
         business_data: dict[str, str],
         owner_id: uuid.UUID,
-):
+) -> dict[str, str]:
     padel_court_data = {"name": name, "price_per_hour": price_per_hour}
 
     response = await async_client.post(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         json=padel_court_data,
-        params={"business_id": business_data["id"], "owner_id": owner_id},
+        params={"business_id": str(business_data["id"]), "owner_id": str(owner_id)},
     )
-    return response.json()
+    return dict(response.json())

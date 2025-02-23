@@ -81,7 +81,7 @@ class AvailableDateRepository:
             )
         )
         available_date_result = await self.session.exec(query)
-        available_date: AvailableDate = available_date_result.first()
+        available_date: AvailableDate | None = available_date_result.first()
         if available_date is None:
             raise NotFoundException("available date")
         if available_date.get_is_reserved():

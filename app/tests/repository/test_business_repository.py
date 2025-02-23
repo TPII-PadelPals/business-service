@@ -18,7 +18,7 @@ async def test_create_business(session: AsyncSession):
     assert created_business.owner_id == owner_id
 
 
-async def test_get_business(session: AsyncSession):
+async def test_get_business(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()

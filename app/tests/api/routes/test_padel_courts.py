@@ -3,7 +3,7 @@ import uuid
 from httpx import AsyncClient
 
 from app.core.config import settings
-from app.tests.utils.utils import _create_business
+from app.tests.utils.utils import create_business_for_routes
 
 
 async def test_create_padel_court_with_existing_business(
@@ -11,7 +11,7 @@ async def test_create_padel_court_with_existing_business(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
@@ -42,7 +42,7 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
     owner_id = uuid.uuid4()
     nonexisting_business_id = uuid.uuid4()
 
-    _new_business = await _create_business(
+    _new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
@@ -69,7 +69,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
+    new_business = await create_business_for_routes(
         async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",

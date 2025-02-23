@@ -85,7 +85,7 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         self.is_reserved = True
 
 
-    def get_is_reserved(self):
+    def get_is_reserved(self) -> bool:
         return self.is_reserved
 
 

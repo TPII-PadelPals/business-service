@@ -144,7 +144,7 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
 
     service = AvailableDateService()
     # test
-    await service.delete_available_date(session, owner_id, padel_court_data["name"], business_id, date(2025, 1, 1))
+    await service.delete_available_date(session, owner_id, str(padel_court_data["name"]), business_id, date(2025, 1, 1))
 
 
 async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
@@ -182,7 +182,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
     service = AvailableDateService()
     # test
     with pytest.raises(UnauthorizedUserException) as e:
-        await service.delete_available_date(session, not_owner, padel_court_data["name"], business_id, date(2025, 1, 1))
+        await service.delete_available_date(session, not_owner, str(padel_court_data["name"]), business_id, date(2025, 1, 1))
     # assert
     assert e.value.detail == "User is not the owner"
 
@@ -218,14 +218,14 @@ async def test_delete(session: AsyncSession) -> None:
     data_available_date = {
         "court_name": str("35"),
         "business_id": uuid.uuid4(),
-        "date": date(2025, 1, 1),
+        "date": create_date,
         "initial_hour": 5,
         "number_of_games":5,
     }
     available_date_create = AvailableDateCreate(**data_available_date)
-    await service.create_available_date(session, owner_id, padel_court_data["name"], business_id, available_date_create)
+    await service.create_available_date(session, owner_id, str(padel_court_data["name"]), business_id, available_date_create)
     # test
-    await service.delete_available_date(session, owner_id, padel_court_data["name"], business_id, create_date)
-    response_get = await service.get_available_date(session, padel_court_data["name"], business_id, data_available_date["date"])
+    await service.delete_available_date(session, owner_id, str(padel_court_data["name"]), business_id, create_date)
+    response_get = await service.get_available_date(session, str(padel_court_data["name"]), business_id, create_date)
     # assert
     assert len(response_get) == 0
