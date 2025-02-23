@@ -37,8 +37,8 @@ async def add_available_date(
 
 @router.delete(
     "/",
-    response_model=AvailableDatePublic,
-    status_code=status.HTTP_201_CREATED,
+    response_model=None,
+    status_code=status.HTTP_204_NO_CONTENT,
     responses={**NOT_ENOUGH_PERMISSIONS},  # type: ignore[dict-item]
     dependencies=[Depends(get_user_id_param)],
 )
@@ -46,7 +46,7 @@ async def delete_available_date(
         *,
         session: SessionDep,
         user_id: uuid.UUID,
-        court_id: int,
+        court_name: str,
         business_id: uuid.UUID,
         date: date,
 ) -> Any:
@@ -67,7 +67,7 @@ async def modify_available_date(
         *,
         session: SessionDep,
         user_id: uuid.UUID,
-        court_id: int,
+        court_name: str,
         business_id: uuid.UUID,
         available_date_in: AvailableDateCreate,
 ) -> Any:
@@ -87,7 +87,7 @@ async def modify_available_date(
 async def get_available_dates(
         *,
         session: SessionDep,
-        court_id: int,
+        court_name: str,
         business_id: uuid.UUID,
         date: date,
 ) -> Any:
@@ -107,7 +107,7 @@ async def get_available_dates(
 async def reserve_available_date(
         *,
         session: SessionDep,
-        court_id: int,
+        court_name: str,
         business_id: uuid.UUID,
         date: date,
         hour: int,
