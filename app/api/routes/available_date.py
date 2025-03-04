@@ -33,7 +33,7 @@ async def add_available_date(
     available_date_in: AvailableDateCreate,
 ) -> Any:
     """
-    Create new item.
+    Create new available date, enabling games on the date.
     """
     available_dates = await service.create_available_date(
         session, user_id, court_name, business_id, available_date_in
