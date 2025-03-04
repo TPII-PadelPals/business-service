@@ -57,7 +57,7 @@ class AvailableDateRepository:
         for available_date in available_dates:
             await self.session.refresh(available_date)
 
-    async def update_for_reserve_available_date(
+    async def reserve_available_time(
         self,
         court_name: str,
         business_id: uuid.UUID,

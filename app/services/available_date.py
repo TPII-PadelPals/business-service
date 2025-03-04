@@ -57,7 +57,7 @@ class AvailableDateService:
         hour: int,
     ) -> AvailableDate:
         repo = AvailableDateRepository(session)
-        available_date = await repo.update_for_reserve_available_date(
+        available_date = await repo.reserve_available_time(
             court_name, business_id, date, hour
         )
         return available_date

@@ -199,7 +199,7 @@ async def test_update_to_reserve_invalid_available_dates_not_exist(
     # test
 
     with pytest.raises(NotFoundException) as e:
-        await repository_available_date.update_for_reserve_available_date(
+        await repository_available_date.reserve_available_time(
             padel_court_name, business_id, date_whitout_available_dates, 8
         )
     # assert
@@ -235,7 +235,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    date = await repository_available_date.update_for_reserve_available_date(
+    date = await repository_available_date.reserve_available_time(
         str(padel_court_data["name"]), business_id, available_date_create_date, 5
     )
     dates = await repository_available_date.get_available_dates(
@@ -278,11 +278,11 @@ async def test_update_to_reserve_court_reserved_available_date_invalid(
     create = AvailableDateCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
-    await repository_available_date.update_for_reserve_available_date(
+    await repository_available_date.reserve_available_time(
         str(padel_court_data["name"]), business_id, available_date_create_date, 5
     )
     with pytest.raises(CourtAlreadyReservedException) as e:
-        await repository_available_date.update_for_reserve_available_date(
+        await repository_available_date.reserve_available_time(
             str(padel_court_data["name"]), business_id, available_date_create_date, 5
         )
     # assert
