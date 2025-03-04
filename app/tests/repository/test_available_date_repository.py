@@ -243,8 +243,8 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     )
     # assert
     assert len(dates) == 1
-    assert dates[0].get_is_reserved()
-    assert date.get_is_reserved()
+    assert dates[0].is_reserved()
+    assert date.is_reserved()
 
 
 async def test_update_to_reserve_court_reserved_available_date_invalid(

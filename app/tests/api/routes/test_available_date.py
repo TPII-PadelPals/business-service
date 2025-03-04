@@ -443,7 +443,9 @@ async def test_update_for_reserve_available_dates(
     assert get_available_days.status_code == status.HTTP_200_OK
     get_result = get_available_days.json()
     assert get_result.get("count") == 5
-    assert reserve.json().get("is_reserved")
+    print(reserve.json().keys())
+    # assert reserve.json().get("is_reserved")
+    assert reserve.json().get("reserve")
 
 
 async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_404(

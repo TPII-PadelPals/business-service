@@ -56,7 +56,7 @@ class AvailableDateImmutable(SQLModel):
 # Database model, database table inferred from class name
 class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
     __tablename__ = AVAILABILITY_TABLE_NAME
-    is_reserved: bool = Field(default=False)
+    reserve: bool = Field(default=False)
 
     __table_args__ = (
         UniqueConstraint(
@@ -84,15 +84,15 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         return result
 
     def set_reserve(self) -> None:
-        self.is_reserved = True
+        self.reserve = True
 
-    def get_is_reserved(self) -> bool:
-        return self.is_reserved
+    def is_reserved(self) -> bool:
+        return self.reserve
 
 
 # Properties to return via API, id is always required
 class AvailableDatePublic(AvailableDateBase):
-    is_reserved: bool = Field(default=False)
+    reserve: bool = Field(default=False)
 
     @classmethod
     def from_private(cls, available_day: AvailableDate) -> "AvailableDatePublic":
@@ -109,7 +109,7 @@ class AvailableDatesPublic(SQLModel):
         cls, available_day_list: list[AvailableDate]
     ) -> "AvailableDatesPublic":
         data = []
-        for match_player in available_day_list:
-            data.append(AvailableDatePublic.from_private(match_player))
+        for available_day in available_day_list:
+            data.append(AvailableDatePublic.from_private(available_day))
         count = len(available_day_list)
         return cls(data=data, count=count)

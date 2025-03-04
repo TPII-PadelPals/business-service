@@ -31,7 +31,7 @@ async def test_one_available_date_form_create() -> None:
         if key == "number_of_games":
             continue
         assert getattr(available_date, key) == value
-    assert available_date.is_reserved is False
+    assert available_date.reserve is False
 
 
 async def test_more_available_date_form_create() -> None:
@@ -59,7 +59,7 @@ async def test_more_available_date_form_create() -> None:
                 initial_hour_list.remove(initial_hour)
                 continue
             assert getattr(available_date, key) == value
-        assert available_date.is_reserved is False
+        assert available_date.reserve is False
 
 
 async def test_limit_available_date_form_create() -> None:
@@ -86,7 +86,7 @@ async def test_limit_available_date_form_create() -> None:
                 initial_hour_list[pos] = True
                 continue
             assert getattr(available_date, key) == value
-        assert available_date.is_reserved is False
+        assert available_date.reserve is False
     for initial_hour in initial_hour_list:
         assert initial_hour
 
@@ -142,7 +142,7 @@ async def test_available_date_set_reserve() -> None:
     # test
     available_date.set_reserve()
     # assert
-    assert available_date.is_reserved is True
+    assert available_date.reserve is True
 
 
 async def test_public_from_private() -> None:
@@ -152,7 +152,7 @@ async def test_public_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "is_reserved": False,
+        "reserve": False,
     }
     available_date = AvailableDate(**data)
     # test
@@ -171,7 +171,7 @@ async def test_publics_from_private() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "is_reserved": False,
+        "reserve": False,
     }
     available_date = AvailableDate(**data)
     # test

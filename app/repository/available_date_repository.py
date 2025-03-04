@@ -76,7 +76,7 @@ class AvailableDateRepository:
         available_date: AvailableDate | None = available_date_result.first()
         if available_date is None:
             raise NotFoundException("available date")
-        if available_date.get_is_reserved():
+        if available_date.is_reserved():
             raise CourtAlreadyReservedException(court_name)
         available_date.set_reserve()
         self.session.add(available_date)
