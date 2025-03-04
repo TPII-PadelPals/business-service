@@ -595,7 +595,7 @@ async def test_delete_all_available_dates_in_a_date(
     assert get_result.get("count") == 0
 
 
-async def test_delete_available_dates_no_owner(
+async def test_delete_available_dates_with_not_authorized_owner_user_id_returns_401(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -665,3 +665,4 @@ async def test_delete_available_dates_no_owner(
     # assert
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response_delete.text == '{"detail":"User is not the owner"}'
