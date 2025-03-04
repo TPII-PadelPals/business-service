@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models.available_date import AvailableDateCreate
+from app.models.available_date import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.available_date_repository import AvailableDateRepository
@@ -34,11 +34,11 @@ async def test_create_available_dates(session: AsyncSession) -> None:
         "business_id": business_id,
         "date": datetime.date(2025, 1, 1),
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     # test
     dates = await repository_available_date.create_available_dates(create)
     # assert
@@ -68,11 +68,11 @@ async def test_get_available_dates(session: AsyncSession) -> None:
         "business_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
     dates = await repository_available_date.get_available_dates(
@@ -105,11 +105,11 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
         "business_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
 
     date_whitout_available_dates = datetime.date(2025, 1, 2)
@@ -156,11 +156,11 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
         "business_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
     await repository_available_date.delete_available_date(
@@ -228,11 +228,11 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
         "business_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
-        "number_of_games": 1,
+        "n_matches": 1,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
     date = await repository_available_date.reserve_available_time(
@@ -271,11 +271,11 @@ async def test_update_to_reserve_court_reserved_available_date_invalid(
         "business_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
-        "number_of_games": 1,
+        "n_matches": 1,
     }
 
     repository_available_date = AvailableDateRepository(session)
-    create = AvailableDateCreate(**available_date_create_data)
+    create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_dates(create)
     # test
     await repository_available_date.reserve_available_time(

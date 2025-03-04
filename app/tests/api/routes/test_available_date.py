@@ -44,7 +44,7 @@ async def test_create_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     # test
     response = await async_client.post(
@@ -109,7 +109,7 @@ async def test_create_available_dates_with_another_owner_id_returns_401(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     # test
     response = await async_client.post(
@@ -161,7 +161,7 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -181,7 +181,7 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "7",
-        "number_of_games": "1",
+        "n_matches": "1",
     }
     # test
     response = await async_client.post(
@@ -233,7 +233,7 @@ async def test_multiple_valid_create_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -252,7 +252,7 @@ async def test_multiple_valid_create_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "10",
-        "number_of_games": "3",
+        "n_matches": "3",
     }
     created_available_days_after = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -269,7 +269,7 @@ async def test_multiple_valid_create_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "4",
-        "number_of_games": "1",
+        "n_matches": "1",
     }
     created_available_days_before = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -325,7 +325,7 @@ async def test_get_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -401,7 +401,7 @@ async def test_update_for_reserve_available_dates(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -481,7 +481,7 @@ async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_4
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -544,7 +544,7 @@ async def test_delete_all_available_dates_in_a_date(
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
@@ -630,7 +630,7 @@ async def test_delete_available_dates_with_not_authorized_owner_user_id_returns_
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
-        "number_of_games": "5",
+        "n_matches": "5",
     }
     created_available_days = await async_client.post(
         f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",

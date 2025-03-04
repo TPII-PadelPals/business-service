@@ -7,14 +7,14 @@ from sqlmodel import Field, SQLModel
 
 from app.utilities.exceptions import NotAcceptableException
 
-AVAILABILITY_TABLE_NAME = "padel_court_available_date"
+AVAILABILITY_TABLE_NAME = "padel_court_available_dates"
 
 
 # Shared properties
-class AvailableDateBase(SQLModel):
+class AvailableMatchBase(SQLModel):
     TIME_LIMIT_MIN: ClassVar[int] = 0
     TIME_LIMIT_MAX: ClassVar[int] = 23
-    TIME_OF_GAME: ClassVar[int] = 1
+    TIME_OF_MATCH: ClassVar[int] = 1
 
     court_name: str = Field(min_length=1, max_length=255, nullable=False)
     business_id: uuid.UUID = Field(nullable=False)
@@ -34,29 +34,25 @@ class AvailableDateBase(SQLModel):
 
 
 # Properties to receive on item creation
-class AvailableDateCreate(AvailableDateBase):
-    number_of_games: int = Field(default=1)
+class AvailableMatchCreate(AvailableMatchBase):
+    n_matches: int = Field(default=1)
 
     def validate_create(self) -> None:
-        if self.number_of_games <= 0:
-            raise NotAcceptableException("number_of_games cannot be less than 0")
+        if self.n_matches <= 0:
+            raise NotAcceptableException("n_matches cannot be less than 0")
         if (
-            self.number_of_games * self.TIME_OF_GAME
+                self.n_matches * self.TIME_OF_MATCH
         ) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
             raise NotAcceptableException(
-                "number_of_games cannot exceed the time of one day"
+                "n_matches cannot exceed the time of one day"
             )
 
 
-# Private and in-mutable properties
-class AvailableDateImmutable(SQLModel):
-    id: int = Field(primary_key=True)
-
-
 # Database model, database table inferred from class name
-class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
+class AvailableMatch(AvailableMatchBase, table=True):
     __tablename__ = AVAILABILITY_TABLE_NAME
     reserve: bool = Field(default=False)
+    id: int = Field(primary_key=True)
 
     __table_args__ = (
         UniqueConstraint(
@@ -72,13 +68,13 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
         self.initial_hour += increment
 
     @classmethod
-    def from_create(cls, create: AvailableDateCreate) -> list["AvailableDate"]:
+    def from_create(cls, create: AvailableMatchCreate) -> list["AvailableMatch"]:
         result = []
         data = create.model_dump()
-        number_of_games = data["number_of_games"]
-        for i_game in range(number_of_games):
+        n_matches = data["n_matches"]
+        for i_game in range(n_matches):
             available_date = cls(**data)
-            increment = i_game * cls.TIME_OF_GAME
+            increment = i_game * cls.TIME_OF_MATCH
             available_date._increment_initial_hour(increment)
             result.append(available_date)
         return result
@@ -91,25 +87,25 @@ class AvailableDate(AvailableDateBase, AvailableDateImmutable, table=True):
 
 
 # Properties to return via API, id is always required
-class AvailableDatePublic(AvailableDateBase):
+class AvailableMatchPublic(AvailableMatchBase):
     reserve: bool = Field(default=False)
 
     @classmethod
-    def from_private(cls, available_day: AvailableDate) -> "AvailableDatePublic":
+    def from_private(cls, available_day: AvailableMatch) -> "AvailableMatchPublic":
         data = available_day.model_dump()
         return cls(**data)
 
 
 class AvailableDatesPublic(SQLModel):
-    data: list[AvailableDatePublic]
+    data: list[AvailableMatchPublic]
     count: int
 
     @classmethod
     def from_private(
-        cls, available_day_list: list[AvailableDate]
+        cls, available_day_list: list[AvailableMatch]
     ) -> "AvailableDatesPublic":
         data = []
         for available_day in available_day_list:
-            data.append(AvailableDatePublic.from_private(available_day))
+            data.append(AvailableMatchPublic.from_private(available_day))
         count = len(available_day_list)
         return cls(data=data, count=count)

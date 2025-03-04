@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.core.config import test_settings
 from app.core.db import get_async_engine, init_db
 from app.main import app
-from app.models.available_date import AvailableDate
+from app.models.available_date import AvailableMatch
 from app.models.business import Business
 from app.models.item import Item
 from app.models.padel_court import PadelCourt
@@ -29,7 +29,7 @@ async def db() -> AsyncGenerator[AsyncSession, None]:
         await session.exec(delete(Item))  # type: ignore[call-overload]
         await session.exec(delete(PadelCourt))  # type: ignore[call-overload]
         await session.exec(delete(Business))  # type: ignore[call-overload]
-        await session.exec(delete(AvailableDate))  # type: ignore[call-overload]
+        await session.exec(delete(AvailableMatch))  # type: ignore[call-overload]
 
         await session.commit()
 

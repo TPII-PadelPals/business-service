@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models.available_date import AvailableDateCreate
+from app.models.available_date import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
@@ -36,9 +36,9 @@ async def create_available_dates(session: AsyncSession) -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
-    available_date_create = AvailableDateCreate(**data_available_date)
+    available_date_create = AvailableMatchCreate(**data_available_date)
     # test
     available_dates = await service.create_available_date(
         session,
@@ -74,9 +74,9 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
-    available_date_create = AvailableDateCreate(**data_available_date)
+    available_date_create = AvailableMatchCreate(**data_available_date)
     await service.create_available_date(
         session,
         owner_id,
@@ -89,9 +89,9 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 7,
-        "number_of_games": 1,
+        "n_matches": 1,
     }
-    available_date_create_new = AvailableDateCreate(**data_available_date_new)
+    available_date_create_new = AvailableMatchCreate(**data_available_date_new)
     # test
     with pytest.raises(NotUniqueException) as e:
         await service.create_available_date(
@@ -192,9 +192,9 @@ async def test_delete(session: AsyncSession) -> None:
         "business_id": uuid.uuid4(),
         "date": create_date,
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
-    available_date_create = AvailableDateCreate(**data_available_date)
+    available_date_create = AvailableMatchCreate(**data_available_date)
     await service.create_available_date(
         session,
         owner_id,

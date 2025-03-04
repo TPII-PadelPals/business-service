@@ -5,8 +5,8 @@ from typing import Any
 from fastapi import APIRouter, status
 
 from app.models.available_date import (
-    AvailableDateCreate,
-    AvailableDatePublic,
+    AvailableMatchCreate,
+    AvailableMatchPublic,
     AvailableDatesPublic,
 )
 from app.services.available_date import AvailableDateService
@@ -30,7 +30,7 @@ async def add_available_date(
     user_id: uuid.UUID,
     court_name: str,
     business_id: uuid.UUID,
-    available_date_in: AvailableDateCreate,
+    available_date_in: AvailableMatchCreate,
 ) -> Any:
     """
     Create new available date, enabling games on the date.
@@ -86,7 +86,7 @@ async def get_available_dates(
 
 @router.patch(
     "/",
-    response_model=AvailableDatePublic,
+    response_model=AvailableMatchPublic,
     status_code=status.HTTP_200_OK,
     responses={**ITEM_RESPONSES},  # type: ignore[dict-item]
 )
@@ -104,4 +104,4 @@ async def reserve_available_date(
     available_date = await service.update_for_reserve_available_date(
         session, court_name, business_id, date, hour
     )
-    return AvailableDatePublic.from_private(available_date)
+    return AvailableMatchPublic.from_private(available_date)

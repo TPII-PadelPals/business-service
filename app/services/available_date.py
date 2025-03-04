@@ -3,7 +3,7 @@ import uuid
 
 from sqlalchemy.exc import IntegrityError
 
-from app.models.available_date import AvailableDate, AvailableDateCreate
+from app.models.available_date import AvailableMatch, AvailableMatchCreate
 from app.repository.available_date_repository import AvailableDateRepository
 from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
@@ -19,8 +19,8 @@ class AvailableDateService:
         user_id: uuid.UUID,
         court_name: str,
         business_id: uuid.UUID,
-        available_date_in: AvailableDateCreate,
-    ) -> list[AvailableDate]:
+        available_date_in: AvailableMatchCreate,
+    ) -> list[AvailableMatch]:
         service_aux = CourtOwnerVerificationService()
         await service_aux.verification_of_court_owner(
             session, user_id, court_name, business_id
@@ -43,7 +43,7 @@ class AvailableDateService:
         court_name: str,
         business_id: uuid.UUID,
         date: datetime.date,
-    ) -> list[AvailableDate]:
+    ) -> list[AvailableMatch]:
         repo = AvailableDateRepository(session)
         available_dates = await repo.get_available_dates(court_name, business_id, date)
         return available_dates
@@ -55,7 +55,7 @@ class AvailableDateService:
         business_id: uuid.UUID,
         date: datetime.date,
         hour: int,
-    ) -> AvailableDate:
+    ) -> AvailableMatch:
         repo = AvailableDateRepository(session)
         available_date = await repo.reserve_available_time(
             court_name, business_id, date, hour

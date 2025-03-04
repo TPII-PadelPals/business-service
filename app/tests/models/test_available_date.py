@@ -4,9 +4,9 @@ from datetime import date
 import pytest
 
 from app.models.available_date import (
-    AvailableDate,
-    AvailableDateCreate,
-    AvailableDatePublic,
+    AvailableMatch,
+    AvailableMatchCreate,
+    AvailableMatchPublic,
     AvailableDatesPublic,
 )
 from app.utilities.exceptions import NotAcceptableException
@@ -18,17 +18,17 @@ async def test_one_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games": 1,
+        "n_matches": 1,
     }
-    create = AvailableDateCreate(**data)
+    create = AvailableMatchCreate(**data)
     create.validate_create()
     # test
-    available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
+    available_date_list: list[AvailableMatch] = AvailableMatch.from_create(create)
     # assert
     assert len(available_date_list) == 1
     available_date = available_date_list[0]
     for key, value in data.items():
-        if key == "number_of_games":
+        if key == "n_matches":
             continue
         assert getattr(available_date, key) == value
     assert available_date.reserve is False
@@ -40,18 +40,18 @@ async def test_more_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 5,
-        "number_of_games": 5,
+        "n_matches": 5,
     }
     initial_hour_list = [5, 6, 7, 8, 9]
-    create = AvailableDateCreate(**data)
+    create = AvailableMatchCreate(**data)
     create.validate_create()
     # test
-    available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
+    available_date_list: list[AvailableMatch] = AvailableMatch.from_create(create)
     # assert
     assert len(available_date_list) == 5
     for available_date in available_date_list:
         for key, value in data.items():
-            if key == "number_of_games":
+            if key == "n_matches":
                 continue
             elif key == "initial_hour":
                 initial_hour = getattr(available_date, key)
@@ -68,18 +68,18 @@ async def test_limit_available_date_form_create() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 0,
-        "number_of_games": 24,
+        "n_matches": 24,
     }
     initial_hour_list = [False] * 24
-    create = AvailableDateCreate(**data)
+    create = AvailableMatchCreate(**data)
     create.validate_create()
     # test
-    available_date_list: list[AvailableDate] = AvailableDate.from_create(create)
+    available_date_list: list[AvailableMatch] = AvailableMatch.from_create(create)
     # assert
     assert len(available_date_list) == 24
     for available_date in available_date_list:
         for key, value in data.items():
-            if key == "number_of_games":
+            if key == "n_matches":
                 continue
             elif key == "initial_hour":
                 pos = getattr(available_date, key)
@@ -97,16 +97,16 @@ async def test_create_invalid_exceed_hour() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 23,
-        "number_of_games": 2,
+        "n_matches": 2,
     }
     # test
-    create = AvailableDateCreate(**data)
+    create = AvailableMatchCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
         create.validate_create()
     assert (
         e.value.detail
-        == "The information is not acceptable. Reason: number_of_games cannot exceed the time of one day."
+        == "The information is not acceptable. Reason: n_matches cannot exceed the time of one day."
     )
 
 
@@ -116,16 +116,16 @@ async def test_create_invalid_number_games() -> None:
         "business_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
         "initial_hour": 12,
-        "number_of_games": 0,
+        "n_matches": 0,
     }
     # test
-    create = AvailableDateCreate(**data)
+    create = AvailableMatchCreate(**data)
     # assert
     with pytest.raises(NotAcceptableException) as e:
         create.validate_create()
     assert (
         e.value.detail
-        == "The information is not acceptable. Reason: number_of_games cannot be less than 0."
+        == "The information is not acceptable. Reason: n_matches cannot be less than 0."
     )
 
 
@@ -138,7 +138,7 @@ async def test_available_date_set_reserve() -> None:
         "initial_hour": 23,
         "is_reserved": False,
     }
-    available_date = AvailableDate(**data)
+    available_date = AvailableMatch(**data)
     # test
     available_date.set_reserve()
     # assert
@@ -154,9 +154,9 @@ async def test_public_from_private() -> None:
         "initial_hour": 23,
         "reserve": False,
     }
-    available_date = AvailableDate(**data)
+    available_date = AvailableMatch(**data)
     # test
-    available_date_public = AvailableDatePublic.from_private(available_date)
+    available_date_public = AvailableMatchPublic.from_private(available_date)
     # assert
     for key, value in data.items():
         if key == "id":
@@ -173,7 +173,7 @@ async def test_publics_from_private() -> None:
         "initial_hour": 23,
         "reserve": False,
     }
-    available_date = AvailableDate(**data)
+    available_date = AvailableMatch(**data)
     # test
     available_dates_public = AvailableDatesPublic.from_private([available_date])
     # assert
