@@ -4,10 +4,10 @@ from datetime import date
 import pytest
 
 from app.models.available_date import (
+    AvailableDatesPublic,
     AvailableMatch,
     AvailableMatchCreate,
     AvailableMatchPublic,
-    AvailableDatesPublic,
 )
 from app.utilities.exceptions import NotAcceptableException
 

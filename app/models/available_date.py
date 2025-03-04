@@ -41,11 +41,9 @@ class AvailableMatchCreate(AvailableMatchBase):
         if self.n_matches <= 0:
             raise NotAcceptableException("n_matches cannot be less than 0")
         if (
-                self.n_matches * self.TIME_OF_MATCH
+            self.n_matches * self.TIME_OF_MATCH
         ) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
-            raise NotAcceptableException(
-                "n_matches cannot exceed the time of one day"
-            )
+            raise NotAcceptableException("n_matches cannot exceed the time of one day")
 
 
 # Database model, database table inferred from class name

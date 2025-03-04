@@ -68,7 +68,10 @@ async def test_create_available_dates(
     for data_available_date in data:
         assert data_available_date.get("date") == "2025-02-22"
         data_available_date_initial_hour = int(data_available_date.get("initial_hour"))
-        assert data_available_date_initial_hour >= 5 and data_available_date_initial_hour <= 9
+        assert (
+            data_available_date_initial_hour >= 5
+            and data_available_date_initial_hour <= 9
+        )
         sum_hours -= data_available_date_initial_hour
         assert data_available_date.get("business_id") == business_id
         assert data_available_date.get("court_name") == court_name
@@ -361,7 +364,10 @@ async def test_get_available_dates(
     for data_available_date in data:
         assert data_available_date.get("date") == "2025-02-22"
         data_available_date_initial_hour = int(data_available_date.get("initial_hour"))
-        assert data_available_date_initial_hour >= 5 and data_available_date_initial_hour <= 9
+        assert (
+            data_available_date_initial_hour >= 5
+            and data_available_date_initial_hour <= 9
+        )
         sum_hours -= data_available_date_initial_hour
         assert data_available_date.get("business_id") == business_id
         assert data_available_date.get("court_name") == court_name
