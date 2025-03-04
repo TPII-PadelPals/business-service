@@ -75,7 +75,7 @@ async def test_create_available_dates(
     assert sum_hours == 0
 
 
-async def test_create_available_dates_not_owner_401(
+async def test_create_available_dates_with_another_owner_id_returns_401(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -127,7 +127,7 @@ async def test_create_available_dates_not_owner_401(
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-async def test_invalid_create_available_dates_409_crate_over_time(
+async def test_create_available_dates_with_time_superposition_on_same_date_returns_409(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -197,6 +197,7 @@ async def test_invalid_create_available_dates_409_crate_over_time(
     # assert
     assert response is not None
     assert response.status_code == status.HTTP_409_CONFLICT
+    assert response.text == '{"detail":"Available date already exists."}'
 
 
 async def test_multiple_valid_create_available_dates(
