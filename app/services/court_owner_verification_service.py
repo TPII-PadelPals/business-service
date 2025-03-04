@@ -3,7 +3,6 @@ import uuid
 from app.services.business_service import BusinessService
 from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import UnauthorizedUserException
 
 
 class CourtOwnerVerificationService:
@@ -11,9 +10,7 @@ class CourtOwnerVerificationService:
         self, session: SessionDep, user_id: uuid.UUID, business_id: uuid.UUID
     ) -> None:
         business_service = BusinessService()
-        business = await business_service.get_business(session, business_id)
-        if not business.is_owned(user_id):
-            raise UnauthorizedUserException()
+        await business_service.validate_user_is_owned(session, business_id, user_id)
 
     async def _verification_of_court_business(
         self,
