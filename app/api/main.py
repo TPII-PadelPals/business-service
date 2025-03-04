@@ -19,6 +19,6 @@ api_router.include_router(
 )
 api_router.include_router(
     available_date.router,
-    prefix="/padel-courts-available-date",
-    tags=["padel-courts-available-date"],
+    prefix="/businesses/{business_id}/padel-courts/{court_name}/available-dates",
+    tags=["available-date"],
 )
