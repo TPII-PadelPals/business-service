@@ -13,7 +13,7 @@ async def test_is_a_owner() -> None:
     }
     business = Business(**data)
     # assert
-    assert business.is_a_owner(owner_id)
+    assert business.is_owned(owner_id)
 
 
 async def test_not_is_a_owner() -> None:
@@ -32,4 +32,4 @@ async def test_not_is_a_owner() -> None:
     }
     business = Business(**data)
     # assert
-    assert not business.is_a_owner(not_owner_id)
+    assert not business.is_owned(not_owner_id)

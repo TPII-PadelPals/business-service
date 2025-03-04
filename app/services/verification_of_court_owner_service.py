@@ -12,7 +12,7 @@ class VerificationOfCourtOwnerService:
     ) -> None:
         business_service = BusinessService()
         business = await business_service.get_business(session, business_id)
-        if not business.is_a_owner(user_id):
+        if not business.is_owned(user_id):
             raise UnauthorizedUserException()
 
     async def _verification_of_court_business(
