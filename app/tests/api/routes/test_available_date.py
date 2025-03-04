@@ -446,7 +446,7 @@ async def test_update_for_reserve_available_dates(
     assert reserve.json().get("is_reserved")
 
 
-async def test_update_for_reserve_available_dates_whit_invalid_hour(
+async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_404(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -506,6 +506,7 @@ async def test_update_for_reserve_available_dates_whit_invalid_hour(
     # assert
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
+    assert reserve.text == '{"detail":"Available date not found"}'
 
 
 async def test_delete_all_available_dates_in_a_date(
