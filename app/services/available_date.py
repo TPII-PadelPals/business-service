@@ -5,8 +5,8 @@ from sqlalchemy.exc import IntegrityError
 
 from app.models.available_date import AvailableDate, AvailableDateCreate
 from app.repository.available_date_repository import AvailableDateRepository
-from app.services.verification_of_court_owner_service import (
-    VerificationOfCourtOwnerService,
+from app.services.court_owner_verification_service import (
+    CourtOwnerVerificationService,
 )
 from app.utilities.dependencies import SessionDep
 from app.utilities.exceptions import NotUniqueException
@@ -21,7 +21,7 @@ class AvailableDateService:
         business_id: uuid.UUID,
         available_date_in: AvailableDateCreate,
     ) -> list[AvailableDate]:
-        service_aux = VerificationOfCourtOwnerService()
+        service_aux = CourtOwnerVerificationService()
         await service_aux.verification_of_court_owner(
             session, user_id, court_name, business_id
         )
@@ -70,7 +70,7 @@ class AvailableDateService:
         business_id: uuid.UUID,
         date: datetime.date,
     ) -> None:
-        service_aux = VerificationOfCourtOwnerService()
+        service_aux = CourtOwnerVerificationService()
         await service_aux.verification_of_court_owner(
             session, user_id, court_name, business_id
         )

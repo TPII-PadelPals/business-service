@@ -6,7 +6,7 @@ from app.utilities.dependencies import SessionDep
 from app.utilities.exceptions import UnauthorizedUserException
 
 
-class VerificationOfCourtOwnerService:
+class CourtOwnerVerificationService:
     async def _verification_of_business(
         self, session: SessionDep, user_id: uuid.UUID, business_id: uuid.UUID
     ) -> None:

@@ -7,8 +7,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
-from app.services.verification_of_court_owner_service import (
-    VerificationOfCourtOwnerService,
+from app.services.court_owner_verification_service import (
+    CourtOwnerVerificationService,
 )
 from app.utilities.exceptions import (
     BusinessNotFoundException,
@@ -32,7 +32,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     session.add(new_padel_court)
     await session.commit()
     await session.refresh(new_padel_court)
-    service = VerificationOfCourtOwnerService()
+    service = CourtOwnerVerificationService()
     # assert
     await service.verification_of_court_owner(
         session, owner_id, str(padel_court_data["name"]), business_id
@@ -42,7 +42,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
 async def test_verification_fail_not_business_of_court_owner_service(
     session: AsyncSession,
 ) -> None:
-    service = VerificationOfCourtOwnerService()
+    service = CourtOwnerVerificationService()
     # test
     with pytest.raises(BusinessNotFoundException) as e:
         await service.verification_of_court_owner(
@@ -70,7 +70,7 @@ async def test_verification_fail_not_owner_of_court_owner_service(
         limit -= 1
         assert limit != 0
 
-    service = VerificationOfCourtOwnerService()
+    service = CourtOwnerVerificationService()
     # test
     with pytest.raises(UnauthorizedUserException) as e:
         await service.verification_of_court_owner(
@@ -91,7 +91,7 @@ async def test_verification_fail_not_court_of_court_owner_service(
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
 
-    service = VerificationOfCourtOwnerService()
+    service = CourtOwnerVerificationService()
     # test
     with pytest.raises(NotFoundException) as e:
         await service.verification_of_court_owner(
