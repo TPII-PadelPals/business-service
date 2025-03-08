@@ -1,8 +1,10 @@
 import datetime
 import uuid
 from typing import ClassVar
+
 from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
 from sqlmodel import Field, SQLModel
+
 from app.utilities.exceptions import NotAcceptableException
 
 AVAILABILITY_TABLE_NAME = "padel_court_available_matches"

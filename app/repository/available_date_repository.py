@@ -58,11 +58,11 @@ class AvailableDateRepository:
             await self.session.refresh(available_match)
 
     async def get_available_match(
-            self,
-            court_name: str,
-            business_id: uuid.UUID,
-            date: date,
-            hour: int,
+        self,
+        court_name: str,
+        business_id: uuid.UUID,
+        date: date,
+        hour: int,
     ) -> AvailableMatch:
         query = select(AvailableMatch).where(
             and_(
@@ -70,7 +70,7 @@ class AvailableDateRepository:
                 AvailableMatch.court_name == court_name,
                 AvailableMatch.business_id == business_id,
                 AvailableMatch.initial_hour == hour,
-                )
+            )
         )
         available_date_result = await self.session.exec(query)
         available_date: AvailableMatch | None = available_date_result.first()
@@ -78,7 +78,9 @@ class AvailableDateRepository:
             raise NotFoundException("available match")
         return available_date
 
-    async def update_available_match(self, available_match: AvailableMatch) -> AvailableMatch:
+    async def update_available_match(
+        self, available_match: AvailableMatch
+    ) -> AvailableMatch:
         self.session.add(available_match)
         await self.session.commit()
         await self.session.refresh(available_match)

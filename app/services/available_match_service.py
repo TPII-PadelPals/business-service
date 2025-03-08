@@ -1,13 +1,15 @@
 import datetime
 import uuid
+
 from sqlalchemy.exc import IntegrityError
+
 from app.models.available_match import AvailableMatch, AvailableMatchCreate
 from app.repository.available_date_repository import AvailableDateRepository
 from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import NotUniqueException, CourtAlreadyReservedException
+from app.utilities.exceptions import CourtAlreadyReservedException, NotUniqueException
 
 
 class AvailableDateService:
@@ -43,7 +45,9 @@ class AvailableDateService:
         date: datetime.date,
     ) -> list[AvailableMatch]:
         repo = AvailableDateRepository(session)
-        available_matches = await repo.get_available_matches_in_date(court_name, business_id, date)
+        available_matches = await repo.get_available_matches_in_date(
+            court_name, business_id, date
+        )
         return available_matches
 
     async def reserve_available_match(

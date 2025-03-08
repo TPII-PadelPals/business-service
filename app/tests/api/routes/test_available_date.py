@@ -68,10 +68,7 @@ async def test_create_available_matches(
     for data_available_match in data:
         assert data_available_match.get("date") == "2025-02-22"
         available_match_initial_hour = int(data_available_match.get("initial_hour"))
-        assert (
-            available_match_initial_hour >= 5
-            and available_match_initial_hour <= 9
-        )
+        assert available_match_initial_hour >= 5 and available_match_initial_hour <= 9
         sum_hours -= available_match_initial_hour
         assert data_available_match.get("business_id") == business_id
         assert data_available_match.get("court_name") == court_name
@@ -129,7 +126,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
     assert response is not None
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     content = response.json()
-    assert content['detail'] == "User is not the owner"
+    assert content["detail"] == "User is not the owner"
 
 
 async def test_create_available_matches_with_time_superposition_on_same_date_returns_409(
@@ -203,7 +200,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
     assert response is not None
     assert response.status_code == status.HTTP_409_CONFLICT
     content = response.json()
-    assert content['detail'] == "Available date already exists."
+    assert content["detail"] == "Available date already exists."
 
 
 async def test_multiple_valid_create_available_matches(
@@ -367,10 +364,7 @@ async def test_get_available_matches(
     for data_available_match in data:
         assert data_available_match.get("date") == "2025-02-22"
         available_match_initial_hour = int(data_available_match.get("initial_hour"))
-        assert (
-            available_match_initial_hour >= 5
-            and available_match_initial_hour <= 9
-        )
+        assert available_match_initial_hour >= 5 and available_match_initial_hour <= 9
         sum_hours -= available_match_initial_hour
         assert data_available_match.get("business_id") == business_id
         assert data_available_match.get("court_name") == court_name
@@ -518,7 +512,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
     content = reserve.json()
-    assert content['detail'] == "Available match not found"
+    assert content["detail"] == "Available match not found"
 
 
 async def test_delete_all_available_matches_in_a_date(
@@ -678,4 +672,4 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_401_UNAUTHORIZED
     content = response_delete.json()
-    assert content['detail'] == "User is not the owner"
+    assert content["detail"] == "User is not the owner"

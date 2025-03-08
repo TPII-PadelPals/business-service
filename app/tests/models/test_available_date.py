@@ -4,9 +4,9 @@ from datetime import date
 import pytest
 
 from app.models.available_match import (
-    AvailableMatchesPublic,
     AvailableMatch,
     AvailableMatchCreate,
+    AvailableMatchesPublic,
     AvailableMatchPublic,
 )
 from app.utilities.exceptions import NotAcceptableException

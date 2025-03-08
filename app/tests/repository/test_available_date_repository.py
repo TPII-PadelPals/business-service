@@ -10,7 +10,7 @@ from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.available_date_repository import AvailableDateRepository
 from app.repository.business_repository import BusinessRepository
-from app.utilities.exceptions import CourtAlreadyReservedException, NotFoundException
+from app.utilities.exceptions import NotFoundException
 
 
 async def test_create_available_dates(session: AsyncSession) -> None:

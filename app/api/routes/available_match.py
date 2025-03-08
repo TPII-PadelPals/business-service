@@ -1,10 +1,12 @@
 import uuid
 from datetime import date
 from typing import Any
+
 from fastapi import APIRouter, status
+
 from app.models.available_match import (
-    AvailableMatchesPublic,
     AvailableMatchCreate,
+    AvailableMatchesPublic,
     AvailableMatchPublic,
 )
 from app.services.available_match_service import AvailableDateService
@@ -61,7 +63,9 @@ async def delete_available_matches_in_date(
     """
     Delete a item.
     """
-    await service.delete_available_matches_in_date(session, user_id, court_name, business_id, date)
+    await service.delete_available_matches_in_date(
+        session, user_id, court_name, business_id, date
+    )
     return
 
 
