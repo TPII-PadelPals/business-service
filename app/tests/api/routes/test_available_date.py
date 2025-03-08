@@ -128,6 +128,8 @@ async def test_create_available_dates_with_another_owner_id_returns_401(
     # assert
     assert response is not None
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    content = response.json()
+    assert content['detail'] == "User is not the owner"
 
 
 async def test_create_available_dates_with_time_superposition_on_same_date_returns_409(
@@ -200,7 +202,8 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
     # assert
     assert response is not None
     assert response.status_code == status.HTTP_409_CONFLICT
-    assert response.text == '{"detail":"Available date already exists."}'
+    content = response.json()
+    assert content['detail'] == "Available date already exists."
 
 
 async def test_multiple_valid_create_available_dates(
@@ -514,7 +517,8 @@ async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_4
     # assert
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
-    assert reserve.text == '{"detail":"Available date not found"}'
+    content = reserve.json()
+    assert content['detail'] == "Available date not found"
 
 
 async def test_delete_all_available_dates_in_a_date(
@@ -673,4 +677,5 @@ async def test_delete_available_dates_with_not_authorized_owner_user_id_returns_
     # assert
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response_delete.text == '{"detail":"User is not the owner"}'
+    content = response_delete.json()
+    assert content['detail'] == "User is not the owner"
