@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from app.models.available_match import AvailableMatch, AvailableMatchCreate
-from app.repository.available_matches_repository import AvailableDateRepository
+from app.repository.available_matches_repository import AvailablematchesRepository
 from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
@@ -27,7 +27,7 @@ class AvailableMatchService:
         )
 
         available_matches_in.validate_create()
-        repo = AvailableDateRepository(session)
+        repo = AvailablematchesRepository(session)
         try:
             result = await repo.create_available_matches_in_date(available_matches_in)
             return result
@@ -44,7 +44,7 @@ class AvailableMatchService:
         business_id: uuid.UUID,
         date: datetime.date,
     ) -> list[AvailableMatch]:
-        repo = AvailableDateRepository(session)
+        repo = AvailablematchesRepository(session)
         available_matches = await repo.get_available_matches_in_date(
             court_name, business_id, date
         )
@@ -58,7 +58,7 @@ class AvailableMatchService:
         date: datetime.date,
         hour: int,
     ) -> AvailableMatch:
-        repo = AvailableDateRepository(session)
+        repo = AvailablematchesRepository(session)
         available_match = await repo.get_available_match(
             court_name, business_id, date, hour
         )
@@ -80,6 +80,6 @@ class AvailableMatchService:
             session, user_id, court_name, business_id
         )
 
-        repo = AvailableDateRepository(session)
+        repo = AvailablematchesRepository(session)
         await repo.delete_available_matches_in_date(court_name, business_id, date)
         return
