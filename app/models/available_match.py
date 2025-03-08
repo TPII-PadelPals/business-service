@@ -1,13 +1,11 @@
 import datetime
 import uuid
 from typing import ClassVar
-
 from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
 from sqlmodel import Field, SQLModel
-
 from app.utilities.exceptions import NotAcceptableException
 
-AVAILABILITY_TABLE_NAME = "padel_court_available_dates"
+AVAILABILITY_TABLE_NAME = "padel_court_available_matches"
 
 
 # Shared properties
@@ -68,9 +66,9 @@ class AvailableMatch(AvailableMatchBase, table=True):
         data = create.model_dump()
         n_matches = data["n_matches"]
         for number in range(n_matches):
-            available_date = cls(**data)
-            available_date.initial_hour += number * cls.TIME_OF_MATCH
-            result.append(available_date)
+            available_match = cls(**data)
+            available_match.initial_hour += number * cls.TIME_OF_MATCH
+            result.append(available_match)
         return result
 
     def set_reserve(self) -> None:
@@ -85,21 +83,21 @@ class AvailableMatchPublic(AvailableMatchBase):
     reserve: bool = Field(default=False)
 
     @classmethod
-    def from_private(cls, available_day: AvailableMatch) -> "AvailableMatchPublic":
-        data = available_day.model_dump()
+    def from_private(cls, available_match: AvailableMatch) -> "AvailableMatchPublic":
+        data = available_match.model_dump()
         return cls(**data)
 
 
-class AvailableDatesPublic(SQLModel):
+class AvailableMatchesPublic(SQLModel):
     data: list[AvailableMatchPublic]
     count: int
 
     @classmethod
     def from_private(
-        cls, available_day_list: list[AvailableMatch]
-    ) -> "AvailableDatesPublic":
+        cls, available_matches_list: list[AvailableMatch]
+    ) -> "AvailableMatchesPublic":
         data = []
-        for available_day in available_day_list:
-            data.append(AvailableMatchPublic.from_private(available_day))
-        count = len(available_day_list)
+        for available_match in available_matches_list:
+            data.append(AvailableMatchPublic.from_private(available_match))
+        count = len(available_matches_list)
         return cls(data=data, count=count)

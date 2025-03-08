@@ -3,8 +3,8 @@ from datetime import date
 
 import pytest
 
-from app.models.available_date import (
-    AvailableDatesPublic,
+from app.models.available_match import (
+    AvailableMatchesPublic,
     AvailableMatch,
     AvailableMatchCreate,
     AvailableMatchPublic,
@@ -175,7 +175,7 @@ async def test_publics_from_private() -> None:
     }
     available_date = AvailableMatch(**data)
     # test
-    available_dates_public = AvailableDatesPublic.from_private([available_date])
+    available_dates_public = AvailableMatchesPublic.from_private([available_date])
     # assert
     assert available_dates_public.count == 1
     available_date_public = available_dates_public.data[0]

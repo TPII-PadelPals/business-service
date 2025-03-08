@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models.available_date import AvailableMatchCreate
+from app.models.available_match import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.available_date_repository import AvailableDateRepository
@@ -40,7 +40,7 @@ async def test_create_available_dates(session: AsyncSession) -> None:
     repository_available_date = AvailableDateRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     # test
-    dates = await repository_available_date.create_available_matchs_in_date(create)
+    dates = await repository_available_date.create_available_matches_in_date(create)
     # assert
     assert len(dates) == 5
 
@@ -73,9 +73,9 @@ async def test_get_available_dates(session: AsyncSession) -> None:
 
     repository_available_date = AvailableDateRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
-    await repository_available_date.create_available_matchs_in_date(create)
+    await repository_available_date.create_available_matches_in_date(create)
     # test
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         str(padel_court_data["name"]), business_id, available_date_create_date
     )
     # assert
@@ -110,11 +110,11 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
 
     repository_available_date = AvailableDateRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
-    await repository_available_date.create_available_matchs_in_date(create)
+    await repository_available_date.create_available_matches_in_date(create)
 
     date_whitout_available_dates = datetime.date(2025, 1, 2)
     # test
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         str(padel_court_data["name"]), business_id, date_whitout_available_dates
     )
     # assert
@@ -127,7 +127,7 @@ async def test_get_not_created_available_dates(session: AsyncSession) -> None:
     business_id = uuid.uuid4()
     padel_court_name = "Padel Si"
     # test
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         padel_court_name, business_id, date_whitout_available_dates
     )
     # assert
@@ -161,12 +161,12 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
 
     repository_available_date = AvailableDateRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
-    await repository_available_date.create_available_matchs_in_date(create)
+    await repository_available_date.create_available_matches_in_date(create)
     # test
-    await repository_available_date.delete_available_matchs_in_date(
+    await repository_available_date.delete_available_matches_in_date(
         str(padel_court_data["name"]), business_id, available_date_create_date
     )
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         str(padel_court_data["name"]), business_id, available_date_create_date
     )
     # assert
@@ -179,10 +179,10 @@ async def test_delete_not_created_available_dates(session: AsyncSession) -> None
     business_id = uuid.uuid4()
     padel_court_name = "Padel Si"
     # test
-    await repository_available_date.delete_available_matchs_in_date(
+    await repository_available_date.delete_available_matches_in_date(
         padel_court_name, business_id, date_whitout_available_dates
     )
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         padel_court_name, business_id, date_whitout_available_dates
     )
     # assert
@@ -203,7 +203,7 @@ async def test_get_specific_match_invalid_available_match_not_exist(
             padel_court_name, business_id, date_whitout_available_dates, 8
         )
     # assert
-    assert e.value.detail == "Available date not found"
+    assert e.value.detail == "Available match not found"
 
 
 async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
@@ -233,7 +233,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
 
     repository_available_date = AvailableDateRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
-    await repository_available_date.create_available_matchs_in_date(create)
+    await repository_available_date.create_available_matches_in_date(create)
     date = await repository_available_date.get_available_match(
         str(padel_court_data["name"]), business_id, available_date_create_date, 5
     )
@@ -241,7 +241,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     date.set_reserve()
     # test
     date = await repository_available_date.update_available_match(date)
-    dates = await repository_available_date.get_available_matchs_in_date(
+    dates = await repository_available_date.get_available_matches_in_date(
         str(padel_court_data["name"]), business_id, available_date_create_date
     )
     # assert

@@ -10,7 +10,7 @@ from app.tests.utils.utils import (
 )
 
 
-async def test_create_available_dates(
+async def test_create_available_matches(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -39,7 +39,7 @@ async def test_create_available_dates(
 
     business_id = new_business.get("id")
 
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
@@ -48,9 +48,9 @@ async def test_create_available_dates(
     }
     # test
     response = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
@@ -65,20 +65,20 @@ async def test_create_available_dates(
     data = result.get("data")
     assert len(data) == 5
     sum_hours = 35
-    for data_available_date in data:
-        assert data_available_date.get("date") == "2025-02-22"
-        data_available_date_initial_hour = int(data_available_date.get("initial_hour"))
+    for data_available_match in data:
+        assert data_available_match.get("date") == "2025-02-22"
+        available_match_initial_hour = int(data_available_match.get("initial_hour"))
         assert (
-            data_available_date_initial_hour >= 5
-            and data_available_date_initial_hour <= 9
+            available_match_initial_hour >= 5
+            and available_match_initial_hour <= 9
         )
-        sum_hours -= data_available_date_initial_hour
-        assert data_available_date.get("business_id") == business_id
-        assert data_available_date.get("court_name") == court_name
+        sum_hours -= available_match_initial_hour
+        assert data_available_match.get("business_id") == business_id
+        assert data_available_match.get("court_name") == court_name
     assert sum_hours == 0
 
 
-async def test_create_available_dates_with_another_owner_id_returns_401(
+async def test_create_available_matches_with_another_owner_id_returns_401(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -107,7 +107,7 @@ async def test_create_available_dates_with_another_owner_id_returns_401(
 
     business_id = new_business.get("id")
 
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
@@ -116,9 +116,9 @@ async def test_create_available_dates_with_another_owner_id_returns_401(
     }
     # test
     response = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(uuid.uuid4()),
@@ -132,7 +132,7 @@ async def test_create_available_dates_with_another_owner_id_returns_401(
     assert content['detail'] == "User is not the owner"
 
 
-async def test_create_available_dates_with_time_superposition_on_same_date_returns_409(
+async def test_create_available_matches_with_time_superposition_on_same_date_returns_409(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -161,17 +161,17 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
 
     business_id = new_business.get("id")
 
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
@@ -179,9 +179,9 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
         },
     )
 
-    assert created_available_days is not None
+    assert created_available_matches is not None
 
-    data_available_date_new = {
+    data_available_match_new = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
@@ -190,9 +190,9 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
     }
     # test
     response = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date_new,
+        json=data_available_match_new,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
@@ -206,7 +206,7 @@ async def test_create_available_dates_with_time_superposition_on_same_date_retur
     assert content['detail'] == "Available date already exists."
 
 
-async def test_multiple_valid_create_available_dates(
+async def test_multiple_valid_create_available_matches(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -234,53 +234,53 @@ async def test_multiple_valid_create_available_dates(
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     # test
-    data_available_date_new_after = {
+    data_available_match_new_after = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "10",
         "n_matches": "3",
     }
-    created_available_days_after = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches_after = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date_new_after,
+        json=data_available_match_new_after,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    data_available_date_new_before = {
+    data_available_match_new_before = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "4",
         "n_matches": "1",
     }
-    created_available_days_before = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches_before = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date_new_before,
+        json=data_available_match_new_before,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
@@ -288,17 +288,17 @@ async def test_multiple_valid_create_available_dates(
         },
     )
     # assert
-    assert created_available_days_after is not None
-    assert created_available_days_before is not None
-    assert created_available_days.status_code == status.HTTP_201_CREATED
-    assert created_available_days_after.status_code == status.HTTP_201_CREATED
-    assert created_available_days_before.status_code == status.HTTP_201_CREATED
-    assert created_available_days.json().get("count") == 5
-    assert created_available_days_after.json().get("count") == 3
-    assert created_available_days_before.json().get("count") == 1
+    assert created_available_matches_after is not None
+    assert created_available_matches_before is not None
+    assert created_available_matches.status_code == status.HTTP_201_CREATED
+    assert created_available_matches_after.status_code == status.HTTP_201_CREATED
+    assert created_available_matches_before.status_code == status.HTTP_201_CREATED
+    assert created_available_matches.json().get("count") == 5
+    assert created_available_matches_after.json().get("count") == 3
+    assert created_available_matches_before.json().get("count") == 1
 
 
-async def test_get_available_dates(
+async def test_get_available_matches(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -326,58 +326,58 @@ async def test_get_available_dates(
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     # test
     parameters = {
         "court_name": str(court_name),
         "business_id": str(business_id),
-        "date": str(data_available_date["date"]),
+        "date": str(data_available_match["date"]),
     }
-    get_available_days = await async_client.get(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    get_available_matches = await async_client.get(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params=parameters,
     )
     # assert
-    assert get_available_days is not None
-    assert get_available_days.status_code == status.HTTP_200_OK
-    get_result = get_available_days.json()
+    assert get_available_matches is not None
+    assert get_available_matches.status_code == status.HTTP_200_OK
+    get_result = get_available_matches.json()
     assert get_result.get("count") == 5
 
     data = get_result.get("data")
     assert len(data) == 5
     sum_hours = 35
-    for data_available_date in data:
-        assert data_available_date.get("date") == "2025-02-22"
-        data_available_date_initial_hour = int(data_available_date.get("initial_hour"))
+    for data_available_match in data:
+        assert data_available_match.get("date") == "2025-02-22"
+        available_match_initial_hour = int(data_available_match.get("initial_hour"))
         assert (
-            data_available_date_initial_hour >= 5
-            and data_available_date_initial_hour <= 9
+            available_match_initial_hour >= 5
+            and available_match_initial_hour <= 9
         )
-        sum_hours -= data_available_date_initial_hour
-        assert data_available_date.get("business_id") == business_id
-        assert data_available_date.get("court_name") == court_name
+        sum_hours -= available_match_initial_hour
+        assert data_available_match.get("business_id") == business_id
+        assert data_available_match.get("court_name") == court_name
     assert sum_hours == 0
 
 
-async def test_update_for_reserve_available_dates(
+async def test_update_for_reserve_available_matches(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -405,32 +405,32 @@ async def test_update_for_reserve_available_dates(
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     # test
     reserve = await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
             "hour": str(7),
         },
     )
@@ -438,26 +438,26 @@ async def test_update_for_reserve_available_dates(
     parameters = {
         "court_name": str(court_name),
         "business_id": str(business_id),
-        "date": str(data_available_date["date"]),
+        "date": str(data_available_match["date"]),
     }
-    get_available_days = await async_client.get(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    get_available_matches = await async_client.get(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params=parameters,
     )
     # assert
     assert reserve is not None
     assert reserve.status_code == status.HTTP_200_OK
-    assert get_available_days is not None
-    assert get_available_days.status_code == status.HTTP_200_OK
-    get_result = get_available_days.json()
+    assert get_available_matches is not None
+    assert get_available_matches.status_code == status.HTTP_200_OK
+    get_result = get_available_matches.json()
     assert get_result.get("count") == 5
     print(reserve.json().keys())
     # assert reserve.json().get("is_reserved")
     assert reserve.json().get("reserve")
 
 
-async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_404(
+async def test_update_for_reserve_available_matches_with_inexistent_hour_returns_404(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -485,32 +485,32 @@ async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_4
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     # test
     reserve = await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
             "hour": str(1),
         },
     )
@@ -518,10 +518,10 @@ async def test_update_for_reserve_available_dates_with_inexistent_hour_returns_4
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
     content = reserve.json()
-    assert content['detail'] == "Available date not found"
+    assert content['detail'] == "Available match not found"
 
 
-async def test_delete_all_available_dates_in_a_date(
+async def test_delete_all_available_matches_in_a_date(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -549,65 +549,65 @@ async def test_delete_all_available_dates_in_a_date(
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
             "hour": str(7),
         },
     )
     # test
     response_delete = await async_client.delete(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
             "user_id": str(owner_id),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
         },
     )
     parameters = {
         "court_name": str(court_name),
         "business_id": str(business_id),
-        "date": str(data_available_date["date"]),
+        "date": str(data_available_match["date"]),
     }
-    get_available_days = await async_client.get(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    get_available_matches = await async_client.get(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params=parameters,
     )
     # assert
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_204_NO_CONTENT
-    assert get_available_days is not None
-    assert get_available_days.status_code == status.HTTP_200_OK
-    get_result = get_available_days.json()
+    assert get_available_matches is not None
+    assert get_available_matches.status_code == status.HTTP_200_OK
+    get_result = get_available_matches.json()
     assert get_result.get("count") == 0
 
 
-async def test_delete_available_dates_with_not_authorized_owner_user_id_returns_401(
+async def test_delete_available_matches_with_not_authorized_owner_user_id_returns_401(
     async_client: AsyncClient, x_api_key_header: dict[str, str]
 ) -> None:
     owner_id = uuid.uuid4()
@@ -635,43 +635,43 @@ async def test_delete_available_dates_with_not_authorized_owner_user_id_returns_
     assert new_padel_court is not None
 
     business_id = new_business.get("id")
-    data_available_date = {
+    data_available_match = {
         "court_name": court_name,
         "business_id": business_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
     }
-    created_available_days = await async_client.post(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+    created_available_matches = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
-        json=data_available_date,
+        json=data_available_match,
         params={
             "business_id": str(business_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
-    assert created_available_days is not None
+    assert created_available_matches is not None
     await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
             "hour": str(7),
         },
     )
     # test
     response_delete = await async_client.delete(
-        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-dates/",
+        f"{settings.API_V1_STR}/businesses/{business_id}/padel-courts/{court_name}/available-matches/",
         headers=x_api_key_header,
         params={
             "court_name": str(court_name),
             "business_id": str(business_id),
             "user_id": str(uuid.uuid4()),
-            "date": str(data_available_date["date"]),
+            "date": str(data_available_match["date"]),
         },
     )
     # assert
