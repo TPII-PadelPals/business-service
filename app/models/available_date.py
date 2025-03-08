@@ -70,9 +70,9 @@ class AvailableMatch(AvailableMatchBase, table=True):
         result = []
         data = create.model_dump()
         n_matches = data["n_matches"]
-        for i_game in range(n_matches):
+        for number in range(n_matches):
             available_date = cls(**data)
-            increment = i_game * cls.TIME_OF_MATCH
+            increment = number * cls.TIME_OF_MATCH
             available_date._increment_initial_hour(increment)
             result.append(available_date)
         return result
