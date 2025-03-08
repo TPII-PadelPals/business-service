@@ -81,7 +81,8 @@ class AvailableDateRepository:
     async def update_available_match(
         self, available_match: AvailableMatch
     ) -> AvailableMatch:
-        available_match
+        update_dict = available_match.model_dump(exclude_unset=True)
+        available_match.sqlmodel_update(update_dict)
         self.session.add(available_match)
         await self.session.commit()
         await self.session.refresh(available_match)
