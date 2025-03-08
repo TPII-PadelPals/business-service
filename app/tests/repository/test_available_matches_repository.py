@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.available_match import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
-from app.repository.available_matches_repository import AvailablematchesRepository
+from app.repository.available_matches_repository import AvailableMatchesRepository
 from app.repository.business_repository import BusinessRepository
 from app.utilities.exceptions import NotFoundException
 
@@ -37,7 +37,7 @@ async def test_create_available_dates(session: AsyncSession) -> None:
         "n_matches": 5,
     }
 
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     # test
     dates = await repository_available_date.create_available_matches_in_date(create)
@@ -71,7 +71,7 @@ async def test_get_available_dates(session: AsyncSession) -> None:
         "n_matches": 5,
     }
 
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_matches_in_date(create)
     # test
@@ -108,7 +108,7 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
         "n_matches": 5,
     }
 
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_matches_in_date(create)
 
@@ -122,7 +122,7 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
 
 
 async def test_get_not_created_available_dates(session: AsyncSession) -> None:
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     date_whitout_available_dates = datetime.date(2025, 1, 2)
     business_id = uuid.uuid4()
     padel_court_name = "Padel Si"
@@ -159,7 +159,7 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
         "n_matches": 5,
     }
 
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_matches_in_date(create)
     # test
@@ -174,7 +174,7 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
 
 
 async def test_delete_not_created_available_dates(session: AsyncSession) -> None:
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     date_whitout_available_dates = datetime.date(2025, 1, 2)
     business_id = uuid.uuid4()
     padel_court_name = "Padel Si"
@@ -192,7 +192,7 @@ async def test_delete_not_created_available_dates(session: AsyncSession) -> None
 async def test_get_specific_match_invalid_available_match_not_exist(
     session: AsyncSession,
 ) -> None:
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     date_whitout_available_dates = datetime.date(2025, 1, 2)
     business_id = uuid.uuid4()
     padel_court_name = "Padel Si"
@@ -231,7 +231,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
         "n_matches": 1,
     }
 
-    repository_available_date = AvailablematchesRepository(session)
+    repository_available_date = AvailableMatchesRepository(session)
     create = AvailableMatchCreate(**available_date_create_data)
     await repository_available_date.create_available_matches_in_date(create)
     date = await repository_available_date.get_available_match(

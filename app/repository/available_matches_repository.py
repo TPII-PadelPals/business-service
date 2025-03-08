@@ -8,7 +8,7 @@ from app.models.available_match import AvailableMatch, AvailableMatchCreate
 from app.utilities.exceptions import NotFoundException
 
 
-class AvailablematchesRepository:
+class AvailableMatchesRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
