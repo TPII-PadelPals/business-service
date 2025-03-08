@@ -106,7 +106,7 @@ async def reserve_available_date(
     """
     Update an item.
     """
-    available_date = await service.update_for_reserve_available_date(
+    available_date = await service.reserve_available_match(
         session, court_name, business_id, date, hour
     )
     return AvailableMatchPublic.from_private(available_date)

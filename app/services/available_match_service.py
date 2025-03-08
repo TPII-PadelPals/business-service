@@ -9,7 +9,7 @@ from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import NotUniqueException
+from app.utilities.exceptions import NotUniqueException, CourtAlreadyReservedException
 
 
 class AvailableDateService:
@@ -29,7 +29,7 @@ class AvailableDateService:
         available_date_in.validate_create()
         repo = AvailableDateRepository(session)
         try:
-            result = await repo.create_available_dates(available_date_in)
+            result = await repo.create_available_matchs_in_date(available_date_in)
             return result
         except IntegrityError:
             await session.rollback()
@@ -45,10 +45,10 @@ class AvailableDateService:
         date: datetime.date,
     ) -> list[AvailableMatch]:
         repo = AvailableDateRepository(session)
-        available_dates = await repo.get_available_dates(court_name, business_id, date)
+        available_dates = await repo.get_available_matchs_in_date(court_name, business_id, date)
         return available_dates
 
-    async def update_for_reserve_available_date(
+    async def reserve_available_match(
         self,
         session: SessionDep,
         court_name: str,
@@ -57,10 +57,13 @@ class AvailableDateService:
         hour: int,
     ) -> AvailableMatch:
         repo = AvailableDateRepository(session)
-        available_date = await repo.reserve_available_time(
+        available_date = await repo.get_available_match(
             court_name, business_id, date, hour
         )
-        return available_date
+        if available_date.is_reserved():
+            raise CourtAlreadyReservedException(court_name)
+        available_date.set_reserve()
+        return await repo.update_available_match(available_date)
 
     async def delete_available_date(
         self,
@@ -76,5 +79,5 @@ class AvailableDateService:
         )
 
         repo = AvailableDateRepository(session)
-        await repo.delete_available_date(court_name, business_id, date)
+        await repo.delete_available_matchs_in_date(court_name, business_id, date)
         return

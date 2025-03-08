@@ -10,7 +10,8 @@ from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
 from app.services.available_match_service import AvailableDateService
-from app.utilities.exceptions import NotUniqueException, UnauthorizedUserException
+from app.utilities.exceptions import NotUniqueException, UnauthorizedUserException, NotFoundException, \
+    CourtAlreadyReservedException
 
 
 async def create_available_dates(session: AsyncSession) -> None:
@@ -211,3 +212,99 @@ async def test_delete(session: AsyncSession) -> None:
     )
     # assert
     assert len(response_get) == 0
+
+async def test_reserve_match(session: AsyncSession) -> None:
+    business_data = {"name": "Padel Ya", "location": "Av La plata 210"}
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+
+    create_date = date(2025, 1, 1)
+
+    service = AvailableDateService()
+    data_available_date = {
+        "court_name": str(padel_court_data["name"]),
+        "business_id": business_id,
+        "date": create_date,
+        "initial_hour": 5,
+        "n_matches": 1,
+    }
+    available_date_create = AvailableMatchCreate(**data_available_date)
+    list = await service.create_available_date(
+        session,
+        owner_id,
+        str(padel_court_data["name"]),
+        business_id,
+        available_date_create,
+    )
+    assert len(list) == 1
+    # test
+    match = await service.reserve_available_match(session, str(padel_court_data["name"]), business_id, create_date, 5)
+    # assert
+    assert match is not None
+    assert match.is_reserved()
+
+async def test_reserve_match_not_found(session: AsyncSession) -> None:
+    # test
+    business_id = uuid.uuid4()
+    create_date = date(2025, 1, 1)
+    service = AvailableDateService()
+    with pytest.raises(NotFoundException) as e:
+        await service.reserve_available_match(session, str("name"), business_id, create_date, 5)
+    assert e.value.detail == "Available date not found"
+
+async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedException(session: AsyncSession) -> None:
+    business_data = {"name": "Padel Ya", "location": "Av La plata 210"}
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+
+    business_repository = BusinessRepository(session)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+
+    create_date = date(2025, 1, 1)
+
+    service = AvailableDateService()
+    data_available_date = {
+        "court_name": str(padel_court_data["name"]),
+        "business_id": business_id,
+        "date": create_date,
+        "initial_hour": 5,
+        "n_matches": 1,
+    }
+    available_date_create = AvailableMatchCreate(**data_available_date)
+    list = await service.create_available_date(
+        session,
+        owner_id,
+        str(padel_court_data["name"]),
+        business_id,
+        available_date_create,
+    )
+    assert len(list) == 1
+    match = await service.reserve_available_match(session, str(padel_court_data["name"]), business_id, create_date, 5)
+    assert match is not None
+    assert match.is_reserved()
+    # test
+    with pytest.raises(CourtAlreadyReservedException) as e:
+        await service.reserve_available_match(session, str(padel_court_data["name"]), business_id, create_date, 5)
+    # assert
+    assert e.value.detail == f"The court {str(padel_court_data["name"])} is already reserved."
