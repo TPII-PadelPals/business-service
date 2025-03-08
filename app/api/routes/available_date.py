@@ -9,7 +9,7 @@ from app.models.available_date import (
     AvailableMatchCreate,
     AvailableMatchPublic,
 )
-from app.services.available_date import AvailableDateService
+from app.services.available_match_service import AvailableDateService
 from app.utilities.dependencies import SessionDep
 from app.utilities.messages import (
     AVAILABLE_DATE_DELETE_RESPONSES,

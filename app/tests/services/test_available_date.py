@@ -9,7 +9,7 @@ from app.models.available_date import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
-from app.services.available_date import AvailableDateService
+from app.services.available_match_service import AvailableDateService
 from app.utilities.exceptions import NotUniqueException, UnauthorizedUserException
 
 
