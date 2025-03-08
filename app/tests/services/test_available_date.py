@@ -9,7 +9,7 @@ from app.models.available_match import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
-from app.services.available_match_service import AvailableDateService
+from app.services.available_match_service import AvailableMatchService
 from app.utilities.exceptions import (
     CourtAlreadyReservedException,
     NotFoundException,
@@ -35,7 +35,7 @@ async def create_available_dates(session: AsyncSession) -> None:
     await session.commit()
     await session.refresh(new_padel_court)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     data_available_date = {
         "court_name": "35",
         "business_id": uuid.uuid4(),
@@ -73,7 +73,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
     await session.commit()
     await session.refresh(new_padel_court)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     data_available_date = {
         "court_name": "35",
         "business_id": uuid.uuid4(),
@@ -127,7 +127,7 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     await session.commit()
     await session.refresh(new_padel_court)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     # test
     await service.delete_available_matches_in_date(
         session, owner_id, str(padel_court_data["name"]), business_id, date(2025, 1, 1)
@@ -158,7 +158,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
         limit -= 1
         assert limit != 0
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     # test
     with pytest.raises(UnauthorizedUserException) as e:
         await service.delete_available_matches_in_date(
@@ -191,7 +191,7 @@ async def test_delete(session: AsyncSession) -> None:
 
     create_date = date(2025, 1, 1)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     data_available_date = {
         "court_name": "35",
         "business_id": uuid.uuid4(),
@@ -237,7 +237,7 @@ async def test_reserve_match(session: AsyncSession) -> None:
 
     create_date = date(2025, 1, 1)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     data_available_date = {
         "court_name": str(padel_court_data["name"]),
         "business_id": business_id,
@@ -267,7 +267,7 @@ async def test_reserve_match_not_found(session: AsyncSession) -> None:
     # test
     business_id = uuid.uuid4()
     create_date = date(2025, 1, 1)
-    service = AvailableDateService()
+    service = AvailableMatchService()
     with pytest.raises(NotFoundException) as e:
         await service.reserve_available_match(
             session, "name", business_id, create_date, 5
@@ -296,7 +296,7 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
 
     create_date = date(2025, 1, 1)
 
-    service = AvailableDateService()
+    service = AvailableMatchService()
     data_available_date = {
         "court_name": str(padel_court_data["name"]),
         "business_id": business_id,

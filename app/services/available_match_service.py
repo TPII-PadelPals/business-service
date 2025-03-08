@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from app.models.available_match import AvailableMatch, AvailableMatchCreate
-from app.repository.available_date_repository import AvailableDateRepository
+from app.repository.available_matches_repository import AvailableDateRepository
 from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
@@ -12,7 +12,7 @@ from app.utilities.dependencies import SessionDep
 from app.utilities.exceptions import CourtAlreadyReservedException, NotUniqueException
 
 
-class AvailableDateService:
+class AvailableMatchService:
     async def create_available_matches_in_date(
         self,
         session: SessionDep,

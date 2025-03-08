@@ -81,6 +81,7 @@ class AvailableDateRepository:
     async def update_available_match(
         self, available_match: AvailableMatch
     ) -> AvailableMatch:
+        available_match
         self.session.add(available_match)
         await self.session.commit()
         await self.session.refresh(available_match)

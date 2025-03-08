@@ -9,7 +9,7 @@ from app.models.available_match import (
     AvailableMatchesPublic,
     AvailableMatchPublic,
 )
-from app.services.available_match_service import AvailableDateService
+from app.services.available_match_service import AvailableMatchService
 from app.utilities.dependencies import SessionDep
 from app.utilities.messages import (
     AVAILABLE_DATE_DELETE_RESPONSES,
@@ -20,7 +20,7 @@ from app.utilities.messages import (
 
 router = APIRouter()
 
-service = AvailableDateService()
+service = AvailableMatchService()
 
 
 @router.post(

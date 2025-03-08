@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
-    available_match,
+    available_matches,
     businesses,
     items,
     items_service,
@@ -18,7 +18,7 @@ api_router.include_router(
     items_service.router, prefix="/items-service", tags=["items-service"]
 )
 api_router.include_router(
-    available_match.router,
+    available_matches.router,
     prefix="/businesses/{business_id}/padel-courts/{court_name}/available-matches",
     tags=["available-matches"],
 )

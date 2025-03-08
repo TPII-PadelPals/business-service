@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.available_match import AvailableMatchCreate
 from app.models.business import BusinessCreate
 from app.models.padel_court import PadelCourt, PadelCourtCreate
-from app.repository.available_date_repository import AvailableDateRepository
+from app.repository.available_matches_repository import AvailableDateRepository
 from app.repository.business_repository import BusinessRepository
 from app.utilities.exceptions import NotFoundException
 
