@@ -1,15 +1,19 @@
 import uuid
 
+from sqlmodel import and_, select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from app.models.business import Business
 from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.utilities.exceptions import (
     BusinessNotFoundException,
+    NotFoundException,
     UnauthorizedPadelCourtOperationException,
 )
 
 
 class PadelCourtRepository:
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create_padel_court(
@@ -30,3 +34,15 @@ class PadelCourtRepository:
         await self.session.commit()
         await self.session.refresh(new_padel_court)
         return new_padel_court
+
+    async def get_padel_court(
+        self, court_name: str, business_id: uuid.UUID
+    ) -> PadelCourt:
+        query = select(PadelCourt).where(
+            and_(PadelCourt.name == court_name, PadelCourt.business_id == business_id)
+        )
+        result = await self.session.exec(query)
+        padel_court = result.first()
+        if not padel_court:
+            raise NotFoundException("padel court")
+        return padel_court

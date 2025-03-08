@@ -1,10 +1,13 @@
 import uuid
 
+from sqlmodel import select
+
 from app.models.business import Business, BusinessCreate
+from app.utilities.exceptions import BusinessNotFoundException
 
 
 class BusinessRepository:
-    def __init__(self, session):
+    def __init__(self, session) -> None:
         self.session = session
 
     async def create_business(
@@ -17,3 +20,11 @@ class BusinessRepository:
         await self.session.commit()
         await self.session.refresh(new_business)
         return new_business
+
+    async def get_business(self, id: uuid.UUID) -> Business:
+        query = select(Business).where(Business.id == id)
+        result = await self.session.exec(query)
+        business = result.first()
+        if not business:
+            raise BusinessNotFoundException()
+        return business

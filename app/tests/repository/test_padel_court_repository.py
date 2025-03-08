@@ -5,7 +5,7 @@ import pytest
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.business import BusinessCreate
-from app.models.padel_court import PadelCourtCreate
+from app.models.padel_court import PadelCourt, PadelCourtCreate
 from app.repository.business_repository import BusinessRepository
 from app.repository.padel_court_repository import PadelCourtRepository
 from app.utilities.exceptions import (
@@ -56,18 +56,46 @@ async def test_create_padel_court_with_nonexistent_business_id_return_exception(
 async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
     session: AsyncSession,
 ):
-    repository = BusinessRepository(session)
+    business_repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
-    created_business = await repository.create_business(owner_id, business_data)
+    created_business = await business_repository.create_business(
+        owner_id, business_data
+    )
 
     unauthorized_owner_id = uuid.uuid4()
 
-    repository = PadelCourtRepository(session)
+    padel_court_repository = PadelCourtRepository(session)
     padel_court = PadelCourtCreate(name="Cancha 5", price_per_hour=Decimal("12000"))
 
     with pytest.raises(UnauthorizedPadelCourtOperationException):
-        await repository.create_padel_court(
+        await padel_court_repository.create_padel_court(
             unauthorized_owner_id, created_business.id, padel_court
         )
+
+
+async def test_get_padel_court(session: AsyncSession) -> None:
+    business_repository = BusinessRepository(session)
+    business_data = {"name": "Padel Ya", "location": "Av La plata 210"}
+    business = BusinessCreate(**business_data)
+    owner_id = uuid.uuid4()
+    padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
+    padel_court_repository = PadelCourtRepository(session)
+    padel_court_in = PadelCourtCreate(**padel_court_data)
+    created_business = await business_repository.create_business(owner_id, business)
+    business_id = created_business.id
+    new_padel_court = PadelCourt.model_validate(
+        padel_court_in, update={"business_id": business_id}
+    )
+    session.add(new_padel_court)
+    await session.commit()
+    await session.refresh(new_padel_court)
+    # test
+    padel_court = await padel_court_repository.get_padel_court(
+        str(padel_court_data["name"]), business_id
+    )
+    # assert
+
+    assert padel_court.name == padel_court_data["name"]
+    assert padel_court.price_per_hour == padel_court_data["price_per_hour"]

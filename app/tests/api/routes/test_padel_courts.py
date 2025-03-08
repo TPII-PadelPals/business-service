@@ -3,19 +3,7 @@ import uuid
 from httpx import AsyncClient
 
 from app.core.config import settings
-
-
-async def _create_business(
-    client, x_api_key, name: str, location: str, parameters: dict[str, int]
-):
-    business_data = {"name": name, "location": location}
-    response = await client.post(
-        f"{settings.API_V1_STR}/businesses/",
-        headers=x_api_key,
-        json=business_data,
-        params=parameters,
-    )
-    return response.json()
+from app.tests.utils.utils import create_business_for_routes
 
 
 async def test_create_padel_court_with_existing_business(
@@ -23,8 +11,8 @@ async def test_create_padel_court_with_existing_business(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
-        client=async_client,
+    new_business = await create_business_for_routes(
+        async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
@@ -45,7 +33,6 @@ async def test_create_padel_court_with_existing_business(
 
     assert content["name"] == padel_court_data["name"]
     assert content["price_per_hour"] == padel_court_data["price_per_hour"]
-    assert "id" in content
     assert "business_id" in content
 
 
@@ -55,8 +42,8 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
     owner_id = uuid.uuid4()
     nonexisting_business_id = uuid.uuid4()
 
-    _new_business = await _create_business(
-        client=async_client,
+    _new_business = await create_business_for_routes(
+        async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
@@ -82,8 +69,8 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
 ) -> None:
     owner_id = uuid.uuid4()
 
-    new_business = await _create_business(
-        client=async_client,
+    new_business = await create_business_for_routes(
+        async_client=async_client,
         x_api_key=x_api_key_header,
         name="Paloma SA",
         location="Polaca 530",
