@@ -62,9 +62,6 @@ class AvailableMatch(AvailableMatchBase, table=True):
         ),
     )
 
-    def _increment_initial_hour(self, increment: int) -> None:
-        self.initial_hour += increment
-
     @classmethod
     def from_create(cls, create: AvailableMatchCreate) -> list["AvailableMatch"]:
         result = []
@@ -72,8 +69,7 @@ class AvailableMatch(AvailableMatchBase, table=True):
         n_matches = data["n_matches"]
         for number in range(n_matches):
             available_date = cls(**data)
-            increment = number * cls.TIME_OF_MATCH
-            available_date._increment_initial_hour(increment)
+            available_date.initial_hour += number * cls.TIME_OF_MATCH
             result.append(available_date)
         return result
 
