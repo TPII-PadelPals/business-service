@@ -38,7 +38,7 @@ async def create_padel_court(
         padel_court = await repo.create_padel_court(
             owner_id, business_id, padel_court_in
         )
-        return padel_court
+        return PadelCourtPublic.from_private(padel_court)
     except BusinessNotFoundException as e:
         raise BusinessNotFoundHTTPException(error_message=str(e))
     except UnauthorizedPadelCourtOperationException:

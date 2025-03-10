@@ -22,20 +22,28 @@ class PadelCourtCreate(PadelCourtBase):
     pass
 
 
-class PadelCourt(PadelCourtBase, table=True):
+class PadelCourtPublicID(SQLModel):
+    court_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
+
+
+class PadelCourt(PadelCourtBase, PadelCourtPublicID, table=True):
     __tablename__ = PADEL_COURT_TABLE_NAME
     id: int = Field(default=None, primary_key=True)
-    business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
 
     __table_args__ = (
         UniqueConstraint(
             "name",
             "business_id",
+            "court_id",
             name="uq_padel_court",
         ),
     )
 
 
 # Properties to return via API, id is always required
-class PadelCourtPublic(PadelCourtBase):
-    business_id: uuid.UUID
+class PadelCourtPublic(PadelCourtBase, PadelCourtPublicID):
+    @classmethod
+    def from_private(cls, court: PadelCourt) -> "PadelCourtPublic":
+        data = court.model_dump()
+        return cls(**data)
