@@ -34,6 +34,7 @@ async def test_create_padel_court_with_existing_business(
     assert content["name"] == padel_court_data["name"]
     assert content["price_per_hour"] == padel_court_data["price_per_hour"]
     assert "business_id" in content
+    assert "court_public_id" in content
 
 
 async def test_create_padel_court_with_nonexisting_business_id_returns_error(

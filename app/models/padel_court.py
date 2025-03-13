@@ -22,12 +22,12 @@ class PadelCourtCreate(PadelCourtBase):
     pass
 
 
-class PadelCourtPublicID(SQLModel):
-    court_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+class PadelCourtImmutable(SQLModel):
+    court_public_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
 
 
-class PadelCourt(PadelCourtBase, PadelCourtPublicID, table=True):
+class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
     __tablename__ = PADEL_COURT_TABLE_NAME
     id: int = Field(default=None, primary_key=True)
 
@@ -35,14 +35,14 @@ class PadelCourt(PadelCourtBase, PadelCourtPublicID, table=True):
         UniqueConstraint(
             "name",
             "business_id",
-            "court_id",
+            "court_public_id",
             name="uq_padel_court",
         ),
     )
 
 
 # Properties to return via API, id is always required
-class PadelCourtPublic(PadelCourtBase, PadelCourtPublicID):
+class PadelCourtPublic(PadelCourtBase, PadelCourtImmutable):
     @classmethod
     def from_private(cls, court: PadelCourt) -> "PadelCourtPublic":
         data = court.model_dump()
