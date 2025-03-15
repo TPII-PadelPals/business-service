@@ -28,7 +28,7 @@ class PadelCourtRepository:
         if owner_id != business.owner_id:
             raise UnauthorizedPadelCourtOperationException()
         new_padel_court = PadelCourt.model_validate(
-            padel_court_in, update={"business_id": business_id}
+            padel_court_in, update={"business_public_id": business_id}
         )
         self.session.add(new_padel_court)
         await self.session.commit()
@@ -39,7 +39,10 @@ class PadelCourtRepository:
         self, court_name: str, business_id: uuid.UUID
     ) -> PadelCourt:
         query = select(PadelCourt).where(
-            and_(PadelCourt.name == court_name, PadelCourt.business_id == business_id)
+            and_(
+                PadelCourt.name == court_name,
+                PadelCourt.business_public_id == business_id,
+            )
         )
         result = await self.session.exec(query)
         padel_court = result.first()

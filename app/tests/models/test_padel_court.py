@@ -18,7 +18,7 @@ async def test_public_padel_court_contains_public_id_and_not_contain_private_id(
         "court_public_id": court_id,
         "name": name,
         "price_per_hour": price,
-        "business_id": business_id,
+        "business_public_id": business_id,
     }
 
     padel_court = PadelCourt(**data)

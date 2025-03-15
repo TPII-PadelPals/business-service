@@ -24,7 +24,7 @@ class PadelCourtCreate(PadelCourtBase):
 
 class PadelCourtImmutable(SQLModel):
     court_public_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    business_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
+    business_public_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
 
 
 class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
@@ -34,7 +34,7 @@ class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
     __table_args__ = (
         UniqueConstraint(
             "name",
-            "business_id",
+            "business_public_id",
             "court_public_id",
             name="uq_padel_court",
         ),
