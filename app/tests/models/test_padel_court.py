@@ -23,10 +23,8 @@ async def test_public_padel_court_contains_public_id_and_not_contain_private_id(
 
     padel_court = PadelCourt(**data)
 
-    # test
     public_court = PadelCourtPublic.from_private(padel_court)
 
-    # assert
     assert public_court is not None
     data_to_test = public_court.model_dump()
 
