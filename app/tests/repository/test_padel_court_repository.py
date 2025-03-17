@@ -86,7 +86,7 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()

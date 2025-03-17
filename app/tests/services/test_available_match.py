@@ -29,7 +29,7 @@ async def create_available_dates(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -67,7 +67,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -121,7 +121,7 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -145,7 +145,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -183,7 +183,7 @@ async def test_delete(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -229,7 +229,7 @@ async def test_reserve_match(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -288,7 +288,7 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
     created_business = await business_repository.create_business(owner_id, business)
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_id": business_id}
+        padel_court_in, update={"business_public_id": business_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -326,5 +326,5 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
     # assert
     assert (
         e.value.detail
-        == f"The court {str(padel_court_data["name"])} is already reserved."
+        == f"The court {str(padel_court_data['name'])} is already reserved."
     )
