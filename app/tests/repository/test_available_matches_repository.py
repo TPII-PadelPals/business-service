@@ -20,7 +20,9 @@ async def test_create_available_dates(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}
@@ -52,7 +54,9 @@ async def test_get_available_dates(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}
@@ -89,7 +93,9 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}
@@ -141,7 +147,9 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}
@@ -213,7 +221,9 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}

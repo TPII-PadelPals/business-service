@@ -26,9 +26,13 @@ class BusinessService:
         if not business.is_owned(user_id):
             raise UnauthorizedUserException()
 
-    async def create_business(self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate):
+    async def create_business(
+        self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
+    ):
         location = business_in.get_location()
         longitude, latitude = await self._get_coordinates(location)
         repo = BusinessRepository(session)
-        business = await repo.create_business(owner_id, business_in, longitude, latitude)
+        business = await repo.create_business(
+            owner_id, business_in, longitude, latitude
+        )
         return business

@@ -19,7 +19,9 @@ async def test_create_padel_court(session: AsyncSession):
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
-    created_business = await repository.create_business(owner_id, business_data, 0.1, 0.4)
+    created_business = await repository.create_business(
+        owner_id, business_data, 0.1, 0.4
+    )
 
     repository = PadelCourtRepository(session)
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("15000.00"))
@@ -40,7 +42,9 @@ async def test_create_padel_court_with_nonexistent_business_id_return_exception(
     owner_id = uuid.uuid4()
     nonexistent_business_id = uuid.uuid4()
 
-    created_business = await repository.create_business(owner_id, business_data, 0.1, 0.4)
+    created_business = await repository.create_business(
+        owner_id, business_data, 0.1, 0.4
+    )
 
     repository = PadelCourtRepository(session)
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("1500000"))
@@ -83,7 +87,9 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_repository = PadelCourtRepository(session)
     padel_court_in = PadelCourtCreate(**padel_court_data)
-    created_business = await business_repository.create_business(owner_id, business, 0.1, 0.4)
+    created_business = await business_repository.create_business(
+        owner_id, business, 0.1, 0.4
+    )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}

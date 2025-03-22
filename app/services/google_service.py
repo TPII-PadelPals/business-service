@@ -1,7 +1,10 @@
 from typing import Any
 
 from app.core.config import settings
-from app.utilities.exceptions import ExternalServiceException, ExternalServiceInvalidLocalizationException
+from app.utilities.exceptions import (
+    ExternalServiceException,
+    ExternalServiceInvalidLocalizationException,
+)
 
 from .base_service import BaseService
 

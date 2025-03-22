@@ -2,12 +2,14 @@ import uuid
 from http import HTTPStatus
 from typing import Any
 
-import pytest
 from httpx import AsyncClient
 
 from app.core.config import settings
 from app.services.google_service import GoogleService
-from app.utilities.exceptions import ExternalServiceException, ExternalServiceInvalidLocalizationException
+from app.utilities.exceptions import (
+    ExternalServiceException,
+    ExternalServiceInvalidLocalizationException,
+)
 
 
 async def test_create_business(
@@ -59,7 +61,7 @@ async def test_create_business_without_owner_id(
 
 
 async def test_create_business_raise_invalid_conection_whit_google(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):
     async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
         raise ExternalServiceException(
@@ -81,12 +83,10 @@ async def test_create_business_raise_invalid_conection_whit_google(
 
 
 async def test_create_business_raise_invalid_location(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):
     async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
-        raise ExternalServiceInvalidLocalizationException(
-            service_name="google-address"
-        )
+        raise ExternalServiceInvalidLocalizationException(service_name="google-address")
 
     monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
 

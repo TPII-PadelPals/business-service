@@ -11,7 +11,13 @@ router = APIRouter()
 
 service = BusinessService()
 
-@router.post("/", response_model=BusinessPublic, status_code=status.HTTP_201_CREATED, responses=BUSINESS_CREATE)
+
+@router.post(
+    "/",
+    response_model=BusinessPublic,
+    status_code=status.HTTP_201_CREATED,
+    responses=BUSINESS_CREATE,
+)
 async def create_business(
     *, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
 ) -> BusinessPublic:

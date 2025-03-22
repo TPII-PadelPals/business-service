@@ -23,6 +23,7 @@ class BusinessImmutable(SQLModel):
     latitude: float | None = Field(default=None)
     longitude: float | None = Field(default=None)
 
+
 # Database model, database table inferred from class name
 class Business(BusinessBase, BusinessImmutable, table=True):
     __tablename__ = BUSINESS_TABLE_NAME

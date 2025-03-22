@@ -35,10 +35,10 @@ class BaseService:
         return f"{self.base_url}{endpoint}"
 
     async def get(
-            self,
-            endpoint: str,
-            params: QueryParamTypes | None = None,
-            headers: dict[str, str] | None = None,
+        self,
+        endpoint: str,
+        params: QueryParamTypes | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Any:
         """Send a GET request."""
         url = self.generate_url(endpoint)
@@ -49,12 +49,12 @@ class BaseService:
         return await self._handle_response(response)
 
     async def post(
-            self,
-            endpoint: str,
-            data: RequestData | None = None,
-            json: Any | None = None,
-            headers: dict[str, str] | None = None,
-            params: QueryParamTypes | None = None,
+        self,
+        endpoint: str,
+        data: RequestData | None = None,
+        json: Any | None = None,
+        headers: dict[str, str] | None = None,
+        params: QueryParamTypes | None = None,
     ) -> Any:
         """Send a POST request."""
         url = self.generate_url(endpoint)
@@ -69,11 +69,11 @@ class BaseService:
         return await self._handle_response(response)
 
     async def patch(
-            self,
-            endpoint: str,
-            data: RequestData | None = None,
-            json: Any | None = None,
-            headers: dict[str, str] | None = None,
+        self,
+        endpoint: str,
+        data: RequestData | None = None,
+        json: Any | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Any:
         """Send a PATCH request."""
         url = self.generate_url(endpoint)
@@ -88,11 +88,11 @@ class BaseService:
         return await self._handle_response(response)
 
     async def put(
-            self,
-            endpoint: str,
-            data: RequestData | None = None,
-            json: Any | None = None,
-            headers: dict[str, str] | None = None,
+        self,
+        endpoint: str,
+        data: RequestData | None = None,
+        json: Any | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Any:
         """Send a PUT request."""
         url = self.generate_url(endpoint)
