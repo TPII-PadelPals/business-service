@@ -1,14 +1,23 @@
 import uuid
 from http import HTTPStatus
+from typing import Any
 
 from httpx import AsyncClient
 
 from app.core.config import settings
+from app.services.google_service import GoogleService
 
 
 async def test_create_business(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
     owner_id = uuid.uuid4()
     business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
     response = await async_client.post(

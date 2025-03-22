@@ -1,10 +1,12 @@
 import random
 import string
 import uuid
+from typing import Any
 
 from httpx import AsyncClient
 
 from app.core.config import settings
+from app.services.google_service import GoogleService
 
 
 def random_lower_string() -> str:
@@ -21,8 +23,16 @@ async def create_business_for_routes(
     x_api_key,
     name: str,
     location: str,
-    parameters: dict[str, str | int],
+    parameters: dict[str, str | int | uuid.UUID],
+    monkeypatch: Any,
 ) -> dict[str, str]:
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
     business_data = {"name": name, "location": location}
     response = await async_client.post(
         f"{settings.API_V1_STR}/businesses/",

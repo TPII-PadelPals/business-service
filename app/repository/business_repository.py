@@ -11,7 +11,7 @@ class BusinessRepository:
         self.session = session
 
     async def create_business(
-        self, owner_id: uuid.UUID, business_in: BusinessCreate, longitude: float | None = None, latitude: float | None = None
+        self, owner_id: uuid.UUID, business_in: BusinessCreate, longitude: float, latitude: float
     ) -> Business:
         new_business = Business.model_validate(
             business_in, update={"owner_id": owner_id, "longitude": longitude, "latitude": latitude}

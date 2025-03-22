@@ -4,24 +4,14 @@ from app.models.business import Business, BusinessCreate
 from app.repository.business_repository import BusinessRepository
 from app.services.google_service import GoogleService
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import UnauthorizedUserException, ExternalServiceException, \
-    ExternalServiceInvalidLocalizationException
+from app.utilities.exceptions import UnauthorizedUserException
 
 
 class BusinessService:
-    async def _get_coordinates(self, location: str) -> tuple[float | None, float | None]:
-        try:
-            if len(location) < 1:
-                return None, None
-            google_service = GoogleService()
-            longitude, latitude = await google_service.get_coordinates(location)
-            return float(longitude), float(latitude)
-        except ExternalServiceInvalidLocalizationException:
-            return None, None
-        except ExternalServiceException:
-            return None, None
-        except Exception as e:
-            raise e
+    async def _get_coordinates(self, location: str) -> tuple[float, float]:
+        google_service = GoogleService()
+        longitude, latitude = await google_service.get_coordinates(location)
+        return float(longitude), float(latitude)
 
     async def get_business(
         self, session: SessionDep, business_id: uuid.UUID
