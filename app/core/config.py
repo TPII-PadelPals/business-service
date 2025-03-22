@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     ITEMS_SERVICE_PORT: int | None = None
     ITEMS_SERVICE_API_KEY: str | None = None
 
+    # Google
+    GOOGLE_API_KEY: str
+
     @computed_field  # type: ignore[prop-decorator]
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> MultiHostUrl:

@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.core.config import settings
-from app.utilities.exceptions import ExternalServiceException
+from app.utilities.exceptions import ExternalServiceException, ExternalServiceInvalidLocalizationException
 
 from .base_service import BaseService
 
@@ -17,8 +17,8 @@ class GoogleService(BaseService):
         ADDRESS_VALIDATION_PATH = "/v1:validateAddress"
 
         if not address:
-            raise ExternalServiceException(
-                service_name="google-address", detail="Invalid location"
+            raise ExternalServiceInvalidLocalizationException(
+                service_name="google-address"
             )
 
         self._set_base_url(ADDRESS_VALIDATION_HOST)
@@ -38,8 +38,8 @@ class GoogleService(BaseService):
             )
 
         if "result" not in response or "geocode" not in response["result"]:
-            raise ExternalServiceException(
-                service_name="google-address", detail="Invalid location"
+            raise ExternalServiceInvalidLocalizationException(
+                service_name="google-address"
             )
 
         coordinates = response["result"]["geocode"]["location"]

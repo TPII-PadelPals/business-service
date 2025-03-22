@@ -11,10 +11,10 @@ class BusinessRepository:
         self.session = session
 
     async def create_business(
-        self, owner_id: uuid.UUID, business_in: BusinessCreate
+        self, owner_id: uuid.UUID, business_in: BusinessCreate, longitude: float | None = None, latitude: float | None = None
     ) -> Business:
         new_business = Business.model_validate(
-            business_in, update={"owner_id": owner_id}
+            business_in, update={"owner_id": owner_id, "longitude": longitude, "latitude": latitude}
         )
         self.session.add(new_business)
         await self.session.commit()

@@ -20,7 +20,8 @@ class BusinessCreate(BusinessBase):
 # Shared private properties
 class BusinessImmutable(SQLModel):
     owner_id: uuid.UUID = Field(nullable=False)
-    # business_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    latitude: float | None = Field(default=None)
+    longitude: float | None = Field(default=None)
 
 # Database model, database table inferred from class name
 class Business(BusinessBase, BusinessImmutable, table=True):
@@ -34,4 +35,3 @@ class Business(BusinessBase, BusinessImmutable, table=True):
 # Properties to return via API, id is always required
 class BusinessPublic(BusinessBase, BusinessImmutable):
     id: uuid.UUID
-    owner_id: uuid.UUID
