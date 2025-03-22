@@ -36,6 +36,8 @@ async def test_create_business(
     assert content["location"] == business_data["location"]
     assert "id" in content
     assert "owner_id" in content
+    assert content["latitude"] == GET_COORDS_RESULT[1]
+    assert content["longitude"] == GET_COORDS_RESULT[0]
 
 
 async def test_create_business_without_owner_id(

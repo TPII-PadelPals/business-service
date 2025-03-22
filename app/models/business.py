@@ -20,8 +20,8 @@ class BusinessCreate(BusinessBase):
 # Shared private properties
 class BusinessImmutable(SQLModel):
     owner_id: uuid.UUID = Field(nullable=False)
-    latitude: float | None = Field(default=None)
-    longitude: float | None = Field(default=None)
+    latitude: float = Field(nullable=False)
+    longitude: float = Field(nullable=False)
 
 
 # Database model, database table inferred from class name
