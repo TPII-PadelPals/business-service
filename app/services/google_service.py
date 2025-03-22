@@ -17,8 +17,9 @@ class GoogleService(BaseService):
         ADDRESS_VALIDATION_PATH = "/v1:validateAddress"
 
         if not address:
-            raise ExternalServiceInvalidLocalizationException(
-                service_name="google-address"
+            raise ExternalServiceException(
+                service_name="google-address",
+                detail="Failed to fetch coordinates from Google",
             )
 
         self._set_base_url(ADDRESS_VALIDATION_HOST)

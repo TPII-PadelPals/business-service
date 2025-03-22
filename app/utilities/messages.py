@@ -12,6 +12,12 @@ ITEM_RESPONSES = {**ITEM_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
 # Business responses
 BUSINESS_NOT_FOUND = {status.HTTP_404_NOT_FOUND: {"description": "Business not found"}}
 BUSINESS_RESPONSES = {**BUSINESS_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
+BUSINESS_CREATE = {
+    status.HTTP_404_NOT_FOUND: {"description": "Business not found"},
+    status.HTTP_201_CREATED: {},
+    status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "The necessary data (owner public ID) has not been provided"},
+    status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Error with Google location service communication"}
+}
 
 # available_date
 AVAILABLE_DATE_UNAUTHORIZED_OWNED = {
