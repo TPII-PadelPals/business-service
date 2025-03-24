@@ -49,3 +49,8 @@ AVAILABLE_DATE_PATCH_RESPONSES = {
     **AVAILABLE_DATE_NOT_FOUND,
     **AVAILABLE_DATE_ALREADY_RESERVED,
 }
+
+CREATE_OWNER = {
+    status.HTTP_201_CREATED: {"description": "Owner create"},
+    status.HTTP_409_CONFLICT: {"description": "Owner already created"},
+}

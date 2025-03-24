@@ -5,6 +5,7 @@ from app.api.routes import (
     businesses,
     items,
     items_service,
+    owners,
     padel_courts,
 )
 
@@ -22,3 +23,4 @@ api_router.include_router(
     prefix="/businesses/{business_id}/padel-courts/{court_name}/available-matches",
     tags=["available-matches"],
 )
+api_router.include_router(owners.router, prefix="/owner", tags=["owner"])
