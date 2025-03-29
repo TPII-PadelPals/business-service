@@ -42,8 +42,10 @@ async def test_create_padel_court_with_nonexistent_business_id_return_exception(
     owner_id = uuid.uuid4()
     nonexistent_business_id = uuid.uuid4()
 
+    longitude = 0.1
+    latitude = 0.4
     created_business = await repository.create_business(
-        owner_id, business_data, 0.1, 0.4
+        owner_id, business_data, longitude, latitude
     )
 
     repository = PadelCourtRepository(session)
@@ -64,8 +66,10 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business_data, 0.1, 0.4
+        owner_id, business_data, longitude, latitude
     )
 
     unauthorized_owner_id = uuid.uuid4()
@@ -87,8 +91,10 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_repository = PadelCourtRepository(session)
     padel_court_in = PadelCourtCreate(**padel_court_data)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(

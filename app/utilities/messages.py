@@ -14,7 +14,7 @@ BUSINESS_NOT_FOUND = {status.HTTP_404_NOT_FOUND: {"description": "Business not f
 BUSINESS_RESPONSES = {**BUSINESS_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
 BUSINESS_CREATE = {
     status.HTTP_404_NOT_FOUND: {"description": "Business not found"},
-    status.HTTP_201_CREATED: {},
+    status.HTTP_201_CREATED: {"description": "Business created"},
     status.HTTP_422_UNPROCESSABLE_ENTITY: {
         "description": "The necessary data (owner public ID) has not been provided"
     },

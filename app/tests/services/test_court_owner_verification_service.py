@@ -24,8 +24,10 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     owner_id = uuid.uuid4()
     padel_court_data = {"name": "Padel Si", "price_per_hour": Decimal("15000.00")}
     padel_court_in = PadelCourtCreate(**padel_court_data)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -62,8 +64,10 @@ async def test_verification_fail_not_owner_of_court_owner_service(
     owner_id = uuid.uuid4()
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
 
@@ -92,8 +96,10 @@ async def test_verification_fail_not_court_of_court_owner_service(
     owner_id = uuid.uuid4()
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
 

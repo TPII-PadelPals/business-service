@@ -11,8 +11,10 @@ async def test_create_business(session: AsyncSession):
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
+    longitude = 0.1
+    latitude = 0.4
     created_business = await repository.create_business(
-        owner_id, business_data, 0.1, 0.4
+        owner_id, business_data, longitude, latitude
     )
 
     assert created_business.name == business_data.name

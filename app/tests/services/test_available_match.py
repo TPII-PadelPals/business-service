@@ -26,8 +26,10 @@ async def create_available_dates(session: AsyncSession) -> None:
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -66,8 +68,10 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -122,8 +126,10 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -148,8 +154,10 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -188,8 +196,10 @@ async def test_delete(session: AsyncSession) -> None:
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -236,8 +246,10 @@ async def test_reserve_match(session: AsyncSession) -> None:
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
@@ -297,8 +309,10 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
     padel_court_in = PadelCourtCreate(**padel_court_data)
 
     business_repository = BusinessRepository(session)
+    longitude = 0.1
+    latitude = 0.4
     created_business = await business_repository.create_business(
-        owner_id, business, 0.1, 0.4
+        owner_id, business, longitude, latitude
     )
     business_id = created_business.id
     new_padel_court = PadelCourt.model_validate(
