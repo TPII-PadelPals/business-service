@@ -47,3 +47,7 @@ class PadelCourtPublic(PadelCourtBase, PadelCourtImmutable):
     def from_private(cls, court: PadelCourt) -> "PadelCourtPublic":
         data = court.model_dump()
         return cls(**data)
+
+class PadelCourtsPublic(SQLModel):
+    data: list[PadelCourtPublic]
+    count: int

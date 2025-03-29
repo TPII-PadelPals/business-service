@@ -2,9 +2,10 @@ import uuid
 
 from sqlmodel import and_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy import func
 
 from app.models.business import Business
-from app.models.padel_court import PadelCourt, PadelCourtCreate
+from app.models.padel_court import PadelCourt, PadelCourtCreate, PadelCourtsPublic
 from app.utilities.exceptions import (
     BusinessNotFoundException,
     NotFoundException,
@@ -49,3 +50,20 @@ class PadelCourtRepository:
         if not padel_court:
             raise NotFoundException("padel court")
         return padel_court
+
+    async def get_padel_courts(
+        self, business_id: uuid.UUID = None, skip: int = 0, limit: int = 100
+    ) -> PadelCourtsPublic:
+        query = select(PadelCourt)
+        if business_id is not None:
+            query = query.where(PadelCourt.business_public_id == business_id)
+        
+        count_query = select(func.count()).select_from(query.subquery())
+        count_result = await self.session.exec(count_query)
+        total_count = count_result.one()
+        
+        query = query.offset(skip).limit(limit)
+        result = await self.session.exec(query)
+        padel_courts = result.all()
+        
+        return PadelCourtsPublic(data=padel_courts, count=total_count)
