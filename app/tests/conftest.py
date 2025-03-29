@@ -21,6 +21,7 @@ from app.utilities.dependencies import get_db
 
 db_url = str(test_settings.SQLALCHEMY_DATABASE_URI)
 
+
 @pytest_asyncio.fixture(name="session")
 async def db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSession(
@@ -38,7 +39,6 @@ async def db() -> AsyncGenerator[AsyncSession, None]:
             await _session.commit()
         finally:
             await _session.close()
-
 
 
 @pytest_asyncio.fixture(autouse=True)
