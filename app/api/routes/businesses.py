@@ -4,10 +4,12 @@ from fastapi import APIRouter, status
 
 from app.models.business import BusinessCreate, BusinessPublic, BusinessesPublic
 from app.repository.business_repository import BusinessRepository
+from app.services.business_service import BusinessService
 from app.utilities.dependencies import SessionDep
 
 router = APIRouter()
 
+service = BusinessService()
 
 @router.post("/", response_model=BusinessPublic, status_code=status.HTTP_201_CREATED)
 async def create_business(
@@ -29,5 +31,4 @@ async def read_businesses(
     Get all businesses, optionally filtered by owner_id.
     With pagination using skip and limit parameters.
     """
-    repo = BusinessRepository(session)
-    return await repo.get_businesses(owner_id, skip, limit)
+    return await service.get_businesses(session, owner_id, skip, limit)
