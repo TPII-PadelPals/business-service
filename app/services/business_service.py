@@ -1,9 +1,7 @@
 import uuid
 
 from app.models.business import Business, BusinessesPublic
-from app.models.padel_court import PadelCourtsPublic
 from app.repository.business_repository import BusinessRepository
-from app.repository.padel_court_repository import PadelCourtRepository
 from app.utilities.dependencies import SessionDep
 from app.utilities.exceptions import UnauthorizedUserException
 
@@ -23,7 +21,11 @@ class BusinessService:
             raise UnauthorizedUserException()
 
     async def get_businesses(
-        self, session: SessionDep, owner_id: uuid.UUID = None, skip: int = 0, limit: int = 100
+        self,
+        session: SessionDep,
+        owner_id: uuid.UUID = None,
+        skip: int = 0,
+        limit: int = 100,
     ) -> BusinessesPublic:
         repo = BusinessRepository(session)
         return await repo.get_businesses(owner_id, skip, limit)

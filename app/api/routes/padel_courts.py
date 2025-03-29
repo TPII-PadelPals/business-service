@@ -48,7 +48,11 @@ async def create_padel_court(
 
 @router.get("/", response_model=PadelCourtsPublic)
 async def read_padel_courts(
-    *, session: SessionDep, business_id: uuid.UUID = None, skip: int = 0, limit: int = 100
+    *,
+    session: SessionDep,
+    business_id: uuid.UUID = None,
+    skip: int = 0,
+    limit: int = 100,
 ) -> PadelCourtsPublic:
     """
     Get all padel courts, optionally filtered by business_id.

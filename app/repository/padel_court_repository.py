@@ -1,8 +1,8 @@
 import uuid
 
+from sqlalchemy import func
 from sqlmodel import and_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy import func
 
 from app.models.business import Business
 from app.models.padel_court import PadelCourt, PadelCourtCreate, PadelCourtsPublic
@@ -57,13 +57,13 @@ class PadelCourtRepository:
         query = select(PadelCourt)
         if business_id is not None:
             query = query.where(PadelCourt.business_public_id == business_id)
-        
+
         count_query = select(func.count()).select_from(query.subquery())
         count_result = await self.session.exec(count_query)
         total_count = count_result.one()
-        
+
         query = query.offset(skip).limit(limit)
         result = await self.session.exec(query)
         padel_courts = result.all()
-        
+
         return PadelCourtsPublic(data=padel_courts, count=total_count)

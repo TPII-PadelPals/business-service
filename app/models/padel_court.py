@@ -48,6 +48,7 @@ class PadelCourtPublic(PadelCourtBase, PadelCourtImmutable):
         data = court.model_dump()
         return cls(**data)
 
+
 class PadelCourtsPublic(SQLModel):
     data: list[PadelCourtPublic]
     count: int

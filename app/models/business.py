@@ -31,6 +31,7 @@ class BusinessPublic(BusinessBase):
     id: uuid.UUID
     owner_id: uuid.UUID
 
+
 class BusinessesPublic(SQLModel):
     data: list[BusinessPublic]
     count: int
