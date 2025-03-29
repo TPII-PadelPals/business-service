@@ -20,16 +20,22 @@ async def test_create_business(session: AsyncSession):
     assert created_business.name == business_data.name
     assert created_business.location == business_data.location
     assert created_business.owner_id == owner_id
+    assert created_business.longitude == longitude
+    assert created_business.latitude == latitude
 
 
 async def test_get_business(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
-    new_business = await repository.create_business(owner_id, business_data, 0.1, 0.4)
+    longitude = 0.1
+    latitude = 0.4
+    new_business = await repository.create_business(owner_id, business_data, longitude, latitude)
     # test
     business = await repository.get_business(new_business.id)
 
     assert business.name == business_data.name
     assert business.location == business_data.location
     assert business.owner_id == owner_id
+    assert business.longitude == longitude
+    assert business.latitude == latitude
