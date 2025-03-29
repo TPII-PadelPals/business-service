@@ -3,7 +3,10 @@ import uuid
 from httpx import AsyncClient
 
 from app.core.config import settings
-from app.tests.utils.utils import create_business_for_routes
+from app.tests.utils.utils import (
+    create_business_for_routes,
+    create_padel_court_for_routes,
+)
 
 
 async def test_create_padel_court_with_existing_business(
@@ -92,3 +95,161 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
     assert response.status_code == 403
     content = response.json()
     assert content["detail"] == "Not enough permissions"
+
+
+async def test_get_all_padel_courts(
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
+) -> None:
+    owner_id = uuid.uuid4()
+
+    business1 = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="API Court Business 1",
+        location="API Court Location 1",
+        parameters={"owner_id": str(owner_id)},
+    )
+
+    business2 = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="API Court Business 2",
+        location="API Court Location 2",
+        parameters={"owner_id": str(owner_id)},
+    )
+
+    await create_padel_court_for_routes(
+        async_client=async_client,
+        x_api_key_header=x_api_key_header,
+        name="API Court A",
+        price_per_hour="100.00",
+        business_data=business1,
+        owner_id=owner_id,
+    )
+
+    await create_padel_court_for_routes(
+        async_client=async_client,
+        x_api_key_header=x_api_key_header,
+        name="API Court B",
+        price_per_hour="150.00",
+        business_data=business2,
+        owner_id=owner_id,
+    )
+
+    response = await async_client.get(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+    )
+
+    assert response.status_code == 200
+    content = response.json()
+    assert "data" in content
+    assert "count" in content
+    assert content["count"] >= 2
+
+    court_names = [c["name"] for c in content["data"]]
+    assert "API Court A" in court_names
+    assert "API Court B" in court_names
+
+
+async def test_get_padel_courts_filtered_by_business(
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
+) -> None:
+    owner_id = uuid.uuid4()
+
+    business1 = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Filter Court Business 1",
+        location="Filter Court Location 1",
+        parameters={"owner_id": str(owner_id)},
+    )
+
+    business2 = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Filter Court Business 2",
+        location="Filter Court Location 2",
+        parameters={"owner_id": str(owner_id)},
+    )
+
+    await create_padel_court_for_routes(
+        async_client=async_client,
+        x_api_key_header=x_api_key_header,
+        name="Filter Court X",
+        price_per_hour="100.00",
+        business_data=business1,
+        owner_id=owner_id,
+    )
+
+    await create_padel_court_for_routes(
+        async_client=async_client,
+        x_api_key_header=x_api_key_header,
+        name="Filter Court Y",
+        price_per_hour="150.00",
+        business_data=business2,
+        owner_id=owner_id,
+    )
+
+    response = await async_client.get(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        params={"business_id": business1["id"]},
+    )
+
+    assert response.status_code == 200
+    content = response.json()
+
+    for court in content["data"]:
+        assert court["business_public_id"] == business1["id"]
+
+    court_names = [c["name"] for c in content["data"]]
+    assert "Filter Court X" in court_names
+    assert "Filter Court Y" not in court_names
+
+
+async def test_get_padel_courts_with_pagination(
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
+) -> None:
+    owner_id = uuid.uuid4()
+    business = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Pagination Court Business",
+        location="Pagination Court Location",
+        parameters={"owner_id": str(owner_id)},
+    )
+
+    for i in range(1, 6):
+        await create_padel_court_for_routes(
+            async_client=async_client,
+            x_api_key_header=x_api_key_header,
+            name=f"Pagination Court {i}",
+            price_per_hour=str(100.00 + i * 10),
+            business_data=business,
+            owner_id=owner_id,
+        )
+
+    response_page1 = await async_client.get(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        params={"business_id": business["id"], "skip": "0", "limit": "2"},
+    )
+
+    response_page2 = await async_client.get(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        params={"business_id": business["id"], "skip": "2", "limit": "2"},
+    )
+
+    assert response_page1.status_code == 200
+    content_page1 = response_page1.json()
+    assert len(content_page1["data"]) == 2
+
+    assert response_page2.status_code == 200
+    content_page2 = response_page2.json()
+    assert len(content_page2["data"]) == 2
+
+    page1_ids = [c["court_public_id"] for c in content_page1["data"]]
+    page2_ids = [c["court_public_id"] for c in content_page2["data"]]
+    assert not any(id in page1_ids for id in page2_ids)

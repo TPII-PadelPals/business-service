@@ -99,3 +99,97 @@ async def test_get_padel_court(session: AsyncSession) -> None:
 
     assert padel_court.name == padel_court_data["name"]
     assert padel_court.price_per_hour == padel_court_data["price_per_hour"]
+
+
+async def test_get_all_padel_courts(session: AsyncSession) -> None:
+    business_repo = BusinessRepository(session)
+    padel_court_repo = PadelCourtRepository(session)
+    owner_id = uuid.uuid4()
+
+    business1 = await business_repo.create_business(
+        owner_id, BusinessCreate(name="Business Alpha", location="Location Alpha")
+    )
+    business2 = await business_repo.create_business(
+        owner_id, BusinessCreate(name="Business Beta", location="Location Beta")
+    )
+
+    court1 = PadelCourtCreate(name="Court A", price_per_hour=Decimal("100.00"))
+    court2 = PadelCourtCreate(name="Court B", price_per_hour=Decimal("150.00"))
+    court3 = PadelCourtCreate(name="Court C", price_per_hour=Decimal("200.00"))
+
+    await padel_court_repo.create_padel_court(owner_id, business1.id, court1)
+    await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
+    await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
+
+    result = await padel_court_repo.get_padel_courts()
+
+    assert result.count >= 3
+    assert len(result.data) >= 3
+    court_names = [c.name for c in result.data]
+    assert "Court A" in court_names
+    assert "Court B" in court_names
+    assert "Court C" in court_names
+
+
+async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> None:
+    business_repo = BusinessRepository(session)
+    padel_court_repo = PadelCourtRepository(session)
+    owner_id = uuid.uuid4()
+
+    business1 = await business_repo.create_business(
+        owner_id, BusinessCreate(name="Filter Business A", location="Location A")
+    )
+    business2 = await business_repo.create_business(
+        owner_id, BusinessCreate(name="Filter Business B", location="Location B")
+    )
+
+    court1 = PadelCourtCreate(name="Filter Court X", price_per_hour=Decimal("100.00"))
+    court2 = PadelCourtCreate(name="Filter Court Y", price_per_hour=Decimal("150.00"))
+    court3 = PadelCourtCreate(name="Filter Court Z", price_per_hour=Decimal("200.00"))
+
+    await padel_court_repo.create_padel_court(owner_id, business1.id, court1)
+    await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
+    await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
+
+    result = await padel_court_repo.get_padel_courts(business_id=business1.id)
+
+    assert result.count == 2
+    assert len(result.data) == 2
+    court_names = [c.name for c in result.data]
+    assert "Filter Court X" in court_names
+    assert "Filter Court Y" in court_names
+    assert "Filter Court Z" not in court_names
+
+
+async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
+    business_repo = BusinessRepository(session)
+    padel_court_repo = PadelCourtRepository(session)
+    owner_id = uuid.uuid4()
+
+    business = await business_repo.create_business(
+        owner_id, BusinessCreate(name="Pagination Business", location="Location")
+    )
+
+    for i in range(1, 6):
+        court = PadelCourtCreate(
+            name=f"Paginated Court {i}", price_per_hour=Decimal(f"{100.0 + i}")
+        )
+        await padel_court_repo.create_padel_court(owner_id, business.id, court)
+
+    page1 = await padel_court_repo.get_padel_courts(
+        business_id=business.id, skip=0, limit=2
+    )
+
+    page2 = await padel_court_repo.get_padel_courts(
+        business_id=business.id, skip=2, limit=2
+    )
+
+    assert page1.count >= 5
+    assert len(page1.data) == 2
+
+    assert page2.count >= 5
+    assert len(page2.data) == 2
+
+    page1_names = [c.name for c in page1.data]
+    page2_names = [c.name for c in page2.data]
+    assert not any(name in page1_names for name in page2_names)
