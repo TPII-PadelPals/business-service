@@ -14,7 +14,21 @@ BUSINESS_NOT_FOUND = {status.HTTP_404_NOT_FOUND: {"description": "Business not f
 BUSINESS_RESPONSES = {**BUSINESS_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
 BUSINESS_CREATE = {
     status.HTTP_404_NOT_FOUND: {"description": "Business not found"},
-    status.HTTP_201_CREATED: {"description": "Business created"},
+    status.HTTP_201_CREATED: {
+        "description": "Business created",
+        "content": {
+            "application/json": {
+                "examples": {
+                    "owner_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "latitude": 0.1,
+                    "longitude": 0.4,
+                    "name": "Padel SI",
+                    "location": "S.I.",
+                    "id": "3fa85f64-5747-4562-b3fc-2c963f66afa8"
+                }
+            }
+        }
+    },
     status.HTTP_422_UNPROCESSABLE_ENTITY: {
         "description": "The necessary data (owner public ID) has not been provided"
     },
