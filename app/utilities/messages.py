@@ -23,7 +23,7 @@ BUSINESS_CREATE = {
                     "latitude": 0.1,
                     "longitude": 0.4,
                     "name": "Padel SI",
-                    "location": "S.I.",
+                    "location": "Av Paseo Colon 850",
                     "id": "3fa85f64-5747-4562-b3fc-2c963f66afa8"
                 }
             }
