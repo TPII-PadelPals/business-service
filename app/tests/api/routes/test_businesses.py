@@ -100,5 +100,4 @@ async def test_create_business_raise_invalid_location(
         json=business_data,
         params={"owner_id": str(owner_id)},
     )
-    print(response)
     assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
