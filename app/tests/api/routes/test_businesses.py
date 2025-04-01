@@ -1,15 +1,28 @@
 import uuid
 from http import HTTPStatus
+from typing import Any
 
 from httpx import AsyncClient
 
 from app.core.config import settings
 from app.tests.utils.utils import create_business_for_routes
+from app.services.google_service import GoogleService
+from app.utilities.exceptions import (
+    ExternalServiceException,
+    ExternalServiceInvalidLocalizationException,
+)
 
 
 async def test_create_business(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
     owner_id = uuid.uuid4()
     business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
     response = await async_client.post(
@@ -24,6 +37,8 @@ async def test_create_business(
     assert content["location"] == business_data["location"]
     assert "id" in content
     assert "owner_id" in content
+    assert content["latitude"] == GET_COORDS_RESULT[1]
+    assert content["longitude"] == GET_COORDS_RESULT[0]
 
 
 async def test_create_business_without_owner_id(
@@ -159,3 +174,42 @@ async def test_get_businesses_with_pagination(
     page1_ids = [b["id"] for b in content_page1["data"]]
     page2_ids = [b["id"] for b in content_page2["data"]]
     assert not any(id in page1_ids for id in page2_ids)
+async def test_create_business_raise_invalid_conection_whit_google(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        raise ExternalServiceException(
+            service_name="google-address",
+            detail="Failed to fetch coordinates from Google",
+        )
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+async def test_create_business_raise_invalid_location(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        raise ExternalServiceInvalidLocalizationException(service_name="google-address")
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR

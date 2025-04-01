@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from httpx import AsyncClient
 
@@ -10,7 +11,7 @@ from app.tests.utils.utils import (
 
 
 async def test_create_padel_court_with_existing_business(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -20,6 +21,7 @@ async def test_create_padel_court_with_existing_business(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
     )
 
     padel_court_data = {"name": "Cancha 1", "price_per_hour": "15000.00"}
@@ -41,7 +43,7 @@ async def test_create_padel_court_with_existing_business(
 
 
 async def test_create_padel_court_with_nonexisting_business_id_returns_error(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     nonexisting_business_id = uuid.uuid4()
@@ -52,6 +54,7 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
     )
 
     padel_court_data = {"name": "Cancha 1", "price_per_hour": "1500000"}
@@ -69,7 +72,7 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
 
 
 async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -79,6 +82,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
     )
 
     unauthorized_owner_id = uuid.uuid4()

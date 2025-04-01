@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from httpx import AsyncClient
 from starlette import status
@@ -11,7 +12,7 @@ from app.tests.utils.utils import (
 
 
 async def test_create_available_matches(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -21,6 +22,7 @@ async def test_create_available_matches(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -76,7 +78,7 @@ async def test_create_available_matches(
 
 
 async def test_create_available_matches_with_another_owner_id_returns_401(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -86,6 +88,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -130,7 +133,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
 
 
 async def test_create_available_matches_with_time_superposition_on_same_date_returns_409(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -140,6 +143,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -204,7 +208,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
 
 
 async def test_multiple_valid_create_available_matches(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -214,6 +218,7 @@ async def test_multiple_valid_create_available_matches(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -296,7 +301,7 @@ async def test_multiple_valid_create_available_matches(
 
 
 async def test_get_available_matches(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -306,6 +311,7 @@ async def test_get_available_matches(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -372,7 +378,7 @@ async def test_get_available_matches(
 
 
 async def test_update_for_reserve_available_matches(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -382,6 +388,7 @@ async def test_update_for_reserve_available_matches(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -452,7 +459,7 @@ async def test_update_for_reserve_available_matches(
 
 
 async def test_update_for_reserve_available_matches_with_inexistent_hour_returns_404(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -462,6 +469,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -516,7 +524,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
 
 
 async def test_delete_all_available_matches_in_a_date(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -526,6 +534,7 @@ async def test_delete_all_available_matches_in_a_date(
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 
@@ -602,7 +611,7 @@ async def test_delete_all_available_matches_in_a_date(
 
 
 async def test_delete_available_matches_with_not_authorized_owner_user_id_returns_401(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -612,6 +621,7 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
         name="Paloma SA",
         location="Polaca 530",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
     assert new_business is not None
 

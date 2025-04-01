@@ -11,18 +11,26 @@ async def test_create_business(session: AsyncSession):
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
 
-    created_business = await repository.create_business(owner_id, business_data)
+    longitude = 0.1
+    latitude = 0.4
+    created_business = await repository.create_business(
+        owner_id, business_data, longitude, latitude
+    )
 
     assert created_business.name == business_data.name
     assert created_business.location == business_data.location
     assert created_business.owner_id == owner_id
+    assert created_business.longitude == longitude
+    assert created_business.latitude == latitude
 
 
 async def test_get_business(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Si", location="Av La plata 210")
     owner_id = uuid.uuid4()
-    new_business = await repository.create_business(owner_id, business_data)
+    longitude = 0.1
+    latitude = 0.4
+    new_business = await repository.create_business(owner_id, business_data, longitude, latitude)
     # test
     business = await repository.get_business(new_business.id)
 
@@ -100,3 +108,5 @@ async def test_get_businesses_with_pagination(session: AsyncSession) -> None:
     page1_names = [b.name for b in page1.data]
     page2_names = [b.name for b in page2.data]
     assert not any(name in page1_names for name in page2_names)
+    assert business.longitude == longitude
+    assert business.latitude == latitude
