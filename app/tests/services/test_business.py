@@ -8,18 +8,24 @@ from app.services.business_service import BusinessService
 
 
 async def test_get_businesses_all(session: AsyncSession) -> None:
+    coords = (0.1, 0.4)
+
     businesses = [
         Business(
             id=uuid.uuid4(),
             name="Service Test 1",
             location="Location 1",
             owner_id=uuid.uuid4(),
+            latitude=coords[0],
+            longitude=coords[1],
         ),
         Business(
             id=uuid.uuid4(),
             name="Service Test 2",
             location="Location 2",
             owner_id=uuid.uuid4(),
+            latitude=coords[0],
+            longitude=coords[1],
         ),
     ]
 
@@ -42,6 +48,7 @@ async def test_get_businesses_all(session: AsyncSession) -> None:
 
 async def test_get_businesses_with_owner_filter(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     businesses = [
         Business(
@@ -49,12 +56,16 @@ async def test_get_businesses_with_owner_filter(session: AsyncSession) -> None:
             name="Owner Business 1",
             location="Owner Location 1",
             owner_id=owner_id,
+            latitude=coords[0],
+            longitude=coords[1],
         ),
         Business(
             id=uuid.uuid4(),
             name="Owner Business 2",
             location="Owner Location 2",
             owner_id=owner_id,
+            latitude=coords[0],
+            longitude=coords[1],
         ),
     ]
 
@@ -74,18 +85,24 @@ async def test_get_businesses_with_owner_filter(session: AsyncSession) -> None:
 
 
 async def test_get_businesses_with_pagination(session: AsyncSession) -> None:
+    coords = (0.1, 0.4)
+
     businesses_page1 = [
         Business(
             id=uuid.uuid4(),
             name="Page1 Business 1",
             location="Location 1",
             owner_id=uuid.uuid4(),
+            latitude=coords[0],
+            longitude=coords[1],
         ),
         Business(
             id=uuid.uuid4(),
             name="Page1 Business 2",
             location="Location 2",
             owner_id=uuid.uuid4(),
+            latitude=coords[0],
+            longitude=coords[1],
         ),
     ]
 

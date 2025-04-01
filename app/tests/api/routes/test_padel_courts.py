@@ -102,7 +102,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
 
 
 async def test_get_all_padel_courts(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -112,6 +112,7 @@ async def test_get_all_padel_courts(
         name="API Court Business 1",
         location="API Court Location 1",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     business2 = await create_business_for_routes(
@@ -120,6 +121,7 @@ async def test_get_all_padel_courts(
         name="API Court Business 2",
         location="API Court Location 2",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     await create_padel_court_for_routes(
@@ -157,7 +159,7 @@ async def test_get_all_padel_courts(
 
 
 async def test_get_padel_courts_filtered_by_business(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -167,6 +169,7 @@ async def test_get_padel_courts_filtered_by_business(
         name="Filter Court Business 1",
         location="Filter Court Location 1",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     business2 = await create_business_for_routes(
@@ -175,6 +178,7 @@ async def test_get_padel_courts_filtered_by_business(
         name="Filter Court Business 2",
         location="Filter Court Location 2",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     await create_padel_court_for_routes(
@@ -213,7 +217,7 @@ async def test_get_padel_courts_filtered_by_business(
 
 
 async def test_get_padel_courts_with_pagination(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     business = await create_business_for_routes(
@@ -222,6 +226,7 @@ async def test_get_padel_courts_with_pagination(
         name="Pagination Court Business",
         location="Pagination Court Location",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     for i in range(1, 6):

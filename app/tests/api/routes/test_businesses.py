@@ -64,7 +64,7 @@ async def test_create_business_without_owner_id(
 
 
 async def test_get_all_businesses(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
 
@@ -74,6 +74,7 @@ async def test_get_all_businesses(
         name="API Test Business 1",
         location="API Location 1",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     await create_business_for_routes(
@@ -82,6 +83,7 @@ async def test_get_all_businesses(
         name="API Test Business 2",
         location="API Location 2",
         parameters={"owner_id": str(owner_id)},
+        monkeypatch=monkeypatch,
     )
 
     response = await async_client.get(
@@ -101,7 +103,7 @@ async def test_get_all_businesses(
 
 
 async def test_get_businesses_filtered_by_owner(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner1_id = uuid.uuid4()
     owner2_id = uuid.uuid4()
@@ -112,6 +114,7 @@ async def test_get_businesses_filtered_by_owner(
         name="Owner1 API Business",
         location="Owner1 Location",
         parameters={"owner_id": str(owner1_id)},
+        monkeypatch=monkeypatch,
     )
 
     await create_business_for_routes(
@@ -120,6 +123,7 @@ async def test_get_businesses_filtered_by_owner(
         name="Owner2 API Business",
         location="Owner2 Location",
         parameters={"owner_id": str(owner2_id)},
+        monkeypatch=monkeypatch,
     )
 
     response = await async_client.get(
@@ -139,7 +143,7 @@ async def test_get_businesses_filtered_by_owner(
 
 
 async def test_get_businesses_with_pagination(
-    async_client: AsyncClient, x_api_key_header: dict[str, str]
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     for i in range(1, 6):
@@ -149,6 +153,7 @@ async def test_get_businesses_with_pagination(
             name=f"Pagination API Business {i}",
             location=f"Pagination Location {i}",
             parameters={"owner_id": str(owner_id)},
+            monkeypatch=monkeypatch,
         )
 
     response_page1 = await async_client.get(
@@ -174,6 +179,7 @@ async def test_get_businesses_with_pagination(
     page1_ids = [b["id"] for b in content_page1["data"]]
     page2_ids = [b["id"] for b in content_page2["data"]]
     assert not any(id in page1_ids for id in page2_ids)
+    
 async def test_create_business_raise_invalid_conection_whit_google(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):

@@ -119,12 +119,13 @@ async def test_get_all_padel_courts(session: AsyncSession) -> None:
     business_repo = BusinessRepository(session)
     padel_court_repo = PadelCourtRepository(session)
     owner_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     business1 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Business Alpha", location="Location Alpha")
+        owner_id, BusinessCreate(name="Business Alpha", location="Location Alpha"), *coords
     )
     business2 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Business Beta", location="Location Beta")
+        owner_id, BusinessCreate(name="Business Beta", location="Location Beta"), *coords
     )
 
     court1 = PadelCourtCreate(name="Court A", price_per_hour=Decimal("100.00"))
@@ -149,12 +150,13 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     business_repo = BusinessRepository(session)
     padel_court_repo = PadelCourtRepository(session)
     owner_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     business1 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Filter Business A", location="Location A")
+        owner_id, BusinessCreate(name="Filter Business A", location="Location A"), *coords
     )
     business2 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Filter Business B", location="Location B")
+        owner_id, BusinessCreate(name="Filter Business B", location="Location B"), *coords
     )
 
     court1 = PadelCourtCreate(name="Filter Court X", price_per_hour=Decimal("100.00"))
@@ -179,9 +181,10 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
     business_repo = BusinessRepository(session)
     padel_court_repo = PadelCourtRepository(session)
     owner_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     business = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Pagination Business", location="Location")
+        owner_id, BusinessCreate(name="Pagination Business", location="Location"), *coords
     )
 
     for i in range(1, 6):

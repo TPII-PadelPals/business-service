@@ -43,14 +43,15 @@ async def test_get_all_businesses(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     owner1_id = uuid.uuid4()
     owner2_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     business1 = BusinessCreate(name="Business One", location="Location One")
     business2 = BusinessCreate(name="Business Two", location="Location Two")
     business3 = BusinessCreate(name="Business Three", location="Location Three")
 
-    await repository.create_business(owner1_id, business1)
-    await repository.create_business(owner2_id, business2)
-    await repository.create_business(owner1_id, business3)
+    await repository.create_business(owner1_id, business1, *coords)
+    await repository.create_business(owner2_id, business2, *coords)
+    await repository.create_business(owner1_id, business3, *coords)
 
     result = await repository.get_businesses()
 
@@ -66,14 +67,15 @@ async def test_get_businesses_filtered_by_owner(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     owner1_id = uuid.uuid4()
     owner2_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     business1 = BusinessCreate(name="Owner1 Business A", location="Location A")
     business2 = BusinessCreate(name="Owner2 Business", location="Location B")
     business3 = BusinessCreate(name="Owner1 Business B", location="Location C")
 
-    await repository.create_business(owner1_id, business1)
-    await repository.create_business(owner2_id, business2)
-    await repository.create_business(owner1_id, business3)
+    await repository.create_business(owner1_id, business1, *coords)
+    await repository.create_business(owner2_id, business2, *coords)
+    await repository.create_business(owner1_id, business3, *coords)
 
     result = await repository.get_businesses(owner_id=owner1_id)
 
@@ -88,12 +90,13 @@ async def test_get_businesses_filtered_by_owner(session: AsyncSession) -> None:
 async def test_get_businesses_with_pagination(session: AsyncSession) -> None:
     repository = BusinessRepository(session)
     owner_id = uuid.uuid4()
+    coords = (0.1, 0.4)
 
     for i in range(1, 6):
         business = BusinessCreate(
             name=f"Paginated Business {i}", location=f"Location {i}"
         )
-        await repository.create_business(owner_id, business)
+        await repository.create_business(owner_id, business, *coords)
 
     page1 = await repository.get_businesses(skip=0, limit=2)
 
@@ -108,5 +111,3 @@ async def test_get_businesses_with_pagination(session: AsyncSession) -> None:
     page1_names = [b.name for b in page1.data]
     page2_names = [b.name for b in page2.data]
     assert not any(name in page1_names for name in page2_names)
-    assert business.longitude == longitude
-    assert business.latitude == latitude
