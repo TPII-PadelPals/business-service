@@ -62,8 +62,8 @@ async def read_padel_courts(
     if (business_id is None) != (user_id is None):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Both business_id and user_id must be provided together or both omitted."
+            detail="Both business_id and user_id must be provided together or both omitted.",
         )
-    
+
     service = PadelCourtService()
     return await service.get_padel_courts(session, business_id, user_id, skip, limit)

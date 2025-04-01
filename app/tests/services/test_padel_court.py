@@ -109,7 +109,9 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
         assert len(result.data) == 2
 
 
-async def test_get_padel_courts_with_business_and_user_filter(session: AsyncSession) -> None:
+async def test_get_padel_courts_with_business_and_user_filter(
+    session: AsyncSession,
+) -> None:
     business_id = uuid.uuid4()
     user_id = uuid.uuid4()
 
@@ -138,7 +140,9 @@ async def test_get_padel_courts_with_business_and_user_filter(session: AsyncSess
         mock_get.return_value = mock_result
 
         service = PadelCourtService()
-        result = await service.get_padel_courts(session, business_id=business_id, user_id=user_id)
+        result = await service.get_padel_courts(
+            session, business_id=business_id, user_id=user_id
+        )
 
         mock_get.assert_called_once_with(business_id, user_id, 0, 100)
         assert result.count == 2

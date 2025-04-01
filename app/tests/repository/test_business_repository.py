@@ -30,7 +30,9 @@ async def test_get_business(session: AsyncSession) -> None:
     owner_id = uuid.uuid4()
     longitude = 0.1
     latitude = 0.4
-    new_business = await repository.create_business(owner_id, business_data, longitude, latitude)
+    new_business = await repository.create_business(
+        owner_id, business_data, longitude, latitude
+    )
     # test
     business = await repository.get_business(new_business.id)
 

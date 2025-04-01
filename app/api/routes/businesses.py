@@ -3,7 +3,6 @@ import uuid
 from fastapi import APIRouter, status
 
 from app.models.business import BusinessCreate, BusinessesPublic, BusinessPublic
-from app.repository.business_repository import BusinessRepository
 from app.services.business_service import BusinessService
 from app.utilities.dependencies import SessionDep
 from app.utilities.messages import BUSINESS_CREATE
@@ -11,6 +10,7 @@ from app.utilities.messages import BUSINESS_CREATE
 router = APIRouter()
 
 service = BusinessService()
+
 
 @router.post(
     "/",

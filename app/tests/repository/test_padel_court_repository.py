@@ -122,10 +122,14 @@ async def test_get_all_padel_courts(session: AsyncSession) -> None:
     coords = (0.1, 0.4)
 
     business1 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Business Alpha", location="Location Alpha"), *coords
+        owner_id,
+        BusinessCreate(name="Business Alpha", location="Location Alpha"),
+        *coords,
     )
     business2 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Business Beta", location="Location Beta"), *coords
+        owner_id,
+        BusinessCreate(name="Business Beta", location="Location Beta"),
+        *coords,
     )
 
     court1 = PadelCourtCreate(name="Court A", price_per_hour=Decimal("100.00"))
@@ -153,10 +157,14 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     coords = (0.1, 0.4)
 
     business1 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Filter Business A", location="Location A"), *coords
+        owner_id,
+        BusinessCreate(name="Filter Business A", location="Location A"),
+        *coords,
     )
     business2 = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Filter Business B", location="Location B"), *coords
+        owner_id,
+        BusinessCreate(name="Filter Business B", location="Location B"),
+        *coords,
     )
 
     court1 = PadelCourtCreate(name="Filter Court X", price_per_hour=Decimal("100.00"))
@@ -167,7 +175,9 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
     await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
 
-    result = await padel_court_repo.get_padel_courts(business_id=business1.id, user_id=owner_id)
+    result = await padel_court_repo.get_padel_courts(
+        business_id=business1.id, user_id=owner_id
+    )
 
     assert result.count == 2
     assert len(result.data) == 2
@@ -184,7 +194,9 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
     coords = (0.1, 0.4)
 
     business = await business_repo.create_business(
-        owner_id, BusinessCreate(name="Pagination Business", location="Location"), *coords
+        owner_id,
+        BusinessCreate(name="Pagination Business", location="Location"),
+        *coords,
     )
 
     for i in range(1, 6):

@@ -1,7 +1,6 @@
 import uuid
 
-from app.models.business import Business, BusinessesPublic
-from app.models.business import Business, BusinessCreate
+from app.models.business import Business, BusinessCreate, BusinessesPublic
 from app.repository.business_repository import BusinessRepository
 from app.services.google_service import GoogleService
 from app.utilities.dependencies import SessionDep
@@ -36,7 +35,7 @@ class BusinessService:
     ) -> BusinessesPublic:
         repo = BusinessRepository(session)
         return await repo.get_businesses(owner_id, skip, limit)
-    
+
     async def create_business(
         self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
     ):

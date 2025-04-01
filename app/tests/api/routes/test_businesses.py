@@ -5,8 +5,8 @@ from typing import Any
 from httpx import AsyncClient
 
 from app.core.config import settings
-from app.tests.utils.utils import create_business_for_routes
 from app.services.google_service import GoogleService
+from app.tests.utils.utils import create_business_for_routes
 from app.utilities.exceptions import (
     ExternalServiceException,
     ExternalServiceInvalidLocalizationException,
@@ -179,7 +179,8 @@ async def test_get_businesses_with_pagination(
     page1_ids = [b["id"] for b in content_page1["data"]]
     page2_ids = [b["id"] for b in content_page2["data"]]
     assert not any(id in page1_ids for id in page2_ids)
-    
+
+
 async def test_create_business_raise_invalid_conection_whit_google(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ):
