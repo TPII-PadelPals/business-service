@@ -16,8 +16,9 @@ class PadelCourtService:
         self,
         session: SessionDep,
         business_id: uuid.UUID = None,
+        user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
     ) -> PadelCourtsPublic:
         repo = PadelCourtRepository(session)
-        return await repo.get_padel_courts(business_id, skip, limit)
+        return await repo.get_padel_courts(business_id, user_id, skip, limit)

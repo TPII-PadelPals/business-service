@@ -151,7 +151,7 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
     await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
 
-    result = await padel_court_repo.get_padel_courts(business_id=business1.id)
+    result = await padel_court_repo.get_padel_courts(business_id=business1.id, user_id=owner_id)
 
     assert result.count == 2
     assert len(result.data) == 2

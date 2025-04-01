@@ -194,7 +194,7 @@ async def test_get_padel_courts_filtered_by_business(
     response = await async_client.get(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
-        params={"business_id": business1["id"]},
+        params={"business_id": business1["id"], "user_id": str(owner_id)},
     )
 
     assert response.status_code == 200
@@ -233,13 +233,13 @@ async def test_get_padel_courts_with_pagination(
     response_page1 = await async_client.get(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
-        params={"business_id": business["id"], "skip": "0", "limit": "2"},
+        params={"business_id": business["id"], "user_id": str(owner_id), "skip": "0", "limit": "2"},
     )
 
     response_page2 = await async_client.get(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
-        params={"business_id": business["id"], "skip": "2", "limit": "2"},
+        params={"business_id": business["id"], "user_id": str(owner_id), "skip": "2", "limit": "2"},
     )
 
     assert response_page1.status_code == 200
