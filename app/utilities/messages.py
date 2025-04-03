@@ -24,10 +24,10 @@ BUSINESS_CREATE = {
                     "longitude": 0.4,
                     "name": "Padel SI",
                     "location": "Av Paseo Colon 850",
-                    "id": "3fa85f64-5747-4562-b3fc-2c963f66afa8"
+                    "id": "3fa85f64-5747-4562-b3fc-2c963f66afa8",
                 }
             }
-        }
+        },
     },
     status.HTTP_422_UNPROCESSABLE_ENTITY: {
         "description": "The necessary data (owner public ID) has not been provided"

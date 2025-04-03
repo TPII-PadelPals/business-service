@@ -36,3 +36,9 @@ class Business(BusinessBase, BusinessImmutable, table=True):
 # Properties to return via API, id is always required
 class BusinessPublic(BusinessBase, BusinessImmutable):
     id: uuid.UUID
+    owner_id: uuid.UUID
+
+
+class BusinessesPublic(SQLModel):
+    data: list[BusinessPublic]
+    count: int

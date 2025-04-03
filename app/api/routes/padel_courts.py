@@ -1,9 +1,10 @@
 import uuid
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.models.padel_court import PadelCourtCreate, PadelCourtPublic
+from app.models.padel_court import PadelCourtCreate, PadelCourtPublic, PadelCourtsPublic
 from app.repository.padel_court_repository import PadelCourtRepository
+from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep, get_business_id_param
 from app.utilities.exceptions import (
     BusinessNotFoundException,
@@ -43,3 +44,26 @@ async def create_padel_court(
         raise BusinessNotFoundHTTPException(error_message=str(e))
     except UnauthorizedPadelCourtOperationException:
         raise NotEnoughPermissionsException()
+
+
+@router.get("/", response_model=PadelCourtsPublic)
+async def read_padel_courts(
+    *,
+    session: SessionDep,
+    business_id: uuid.UUID = None,
+    user_id: uuid.UUID = None,
+    skip: int = 0,
+    limit: int = 100,
+) -> PadelCourtsPublic:
+    """
+    Get all padel courts, optionally filtered by business_id.
+    With pagination using skip and limit parameters.
+    """
+    if (business_id is None) != (user_id is None):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Both business_id and user_id must be provided together or both omitted.",
+        )
+
+    service = PadelCourtService()
+    return await service.get_padel_courts(session, business_id, user_id, skip, limit)
