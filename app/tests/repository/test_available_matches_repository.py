@@ -35,7 +35,7 @@ async def test_create_available_dates(session: AsyncSession) -> None:
 
     available_date_create_data = {
         "court_name": padel_court_data["name"],
-        "business_id": business_id,
+        "business_public_id": business_id,
         "date": datetime.date(2025, 1, 1),
         "initial_hour": 5,
         "n_matches": 5,
@@ -73,7 +73,7 @@ async def test_get_available_dates(session: AsyncSession) -> None:
 
     available_date_create_data = {
         "court_name": padel_court_data["name"],
-        "business_id": business_id,
+        "business_public_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
         "n_matches": 5,
@@ -114,7 +114,7 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
 
     available_date_create_data = {
         "court_name": padel_court_data["name"],
-        "business_id": business_id,
+        "business_public_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
         "n_matches": 5,
@@ -169,7 +169,7 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
     available_date_create_date = datetime.date(2025, 1, 1)
     available_date_create_data = {
         "court_name": padel_court_data["name"],
-        "business_id": business_id,
+        "business_public_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
         "n_matches": 5,
@@ -245,7 +245,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
     available_date_create_date = datetime.date(2025, 1, 1)
     available_date_create_data = {
         "court_name": padel_court_data["name"],
-        "business_id": business_id,
+        "business_public_id": business_id,
         "date": available_date_create_date,
         "initial_hour": 5,
         "n_matches": 1,

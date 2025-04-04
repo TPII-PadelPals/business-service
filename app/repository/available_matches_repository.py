@@ -30,7 +30,7 @@ class AvailableMatchesRepository:
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_id == business_id,
+                AvailableMatch.business_public_id == business_id,
             )
         )
         available_matches = await self.session.exec(query)
@@ -45,7 +45,7 @@ class AvailableMatchesRepository:
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_id == business_id,
+                AvailableMatch.business_public_id == business_id,
             )
         )
         available_matches = await self.session.exec(query)
@@ -68,7 +68,7 @@ class AvailableMatchesRepository:
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_id == business_id,
+                AvailableMatch.business_public_id == business_id,
                 AvailableMatch.initial_hour == hour,
             )
         )
