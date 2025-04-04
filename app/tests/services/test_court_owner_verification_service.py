@@ -29,7 +29,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
         padel_court_in, update={"business_public_id": business_id}
     )
@@ -69,11 +69,11 @@ async def test_verification_fail_not_owner_of_court_owner_service(
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_id = created_business.business_public_id
 
     not_owner = uuid.uuid4()
     limit = 100
-    while not_owner == created_business.id:
+    while not_owner == created_business.business_public_id:
         not_owner = uuid.uuid4()
         limit -= 1
         assert limit != 0
@@ -101,7 +101,7 @@ async def test_verification_fail_not_court_of_court_owner_service(
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_id = created_business.business_public_id
 
     service = CourtOwnerVerificationService()
     # test

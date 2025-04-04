@@ -24,7 +24,9 @@ class PadelCourtCreate(PadelCourtBase):
 
 class PadelCourtImmutable(SQLModel):
     court_public_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    business_public_id: uuid.UUID = Field(foreign_key=f"{BUSINESS_TABLE_NAME}.id")
+    business_public_id: uuid.UUID = Field(
+        foreign_key=f"{BUSINESS_TABLE_NAME}.business_public_id"
+    )
 
 
 class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):

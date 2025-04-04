@@ -34,7 +34,7 @@ async def test_get_business(session: AsyncSession) -> None:
         owner_id, business_data, longitude, latitude
     )
     # test
-    business = await repository.get_business(new_business.id)
+    business = await repository.get_business(new_business.business_public_id)
 
     assert business.name == business_data.name
     assert business.location == business_data.location

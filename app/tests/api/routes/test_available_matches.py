@@ -39,7 +39,7 @@ async def test_create_available_matches(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
@@ -105,7 +105,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
@@ -160,7 +160,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
@@ -235,7 +235,7 @@ async def test_multiple_valid_create_available_matches(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,
@@ -328,7 +328,7 @@ async def test_get_available_matches(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,
@@ -405,7 +405,7 @@ async def test_update_for_reserve_available_matches(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,
@@ -486,7 +486,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,
@@ -551,7 +551,7 @@ async def test_delete_all_available_matches_in_a_date(
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,
@@ -638,7 +638,7 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
 
     assert new_padel_court is not None
 
-    business_id = new_business.get("id")
+    business_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_id,

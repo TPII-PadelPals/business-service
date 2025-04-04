@@ -62,7 +62,7 @@ class PadelCourtRepository:
 
         if business_id and user_id:
             query = query.join(
-                Business, PadelCourt.business_public_id == Business.id
+                Business, PadelCourt.business_public_id == Business.business_public_id
             ).where(
                 and_(
                     PadelCourt.business_public_id == business_id,

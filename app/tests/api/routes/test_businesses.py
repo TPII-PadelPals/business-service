@@ -35,7 +35,7 @@ async def test_create_business(
     content = response.json()
     assert content["name"] == business_data["name"]
     assert content["location"] == business_data["location"]
-    assert "id" in content
+    assert "business_public_id" in content
     assert "owner_id" in content
     assert content["latitude"] == GET_COORDS_RESULT[1]
     assert content["longitude"] == GET_COORDS_RESULT[0]
@@ -176,8 +176,8 @@ async def test_get_businesses_with_pagination(
     content_page2 = response_page2.json()
     assert len(content_page2["data"]) == 2
 
-    page1_ids = [b["id"] for b in content_page1["data"]]
-    page2_ids = [b["id"] for b in content_page2["data"]]
+    page1_ids = [b["business_public_id"] for b in content_page1["data"]]
+    page2_ids = [b["business_public_id"] for b in content_page2["data"]]
     assert not any(id in page1_ids for id in page2_ids)
 
 

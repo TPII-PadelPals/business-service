@@ -6,7 +6,7 @@ from app.models.business import Business
 async def test_is_a_owner() -> None:
     owner_id = uuid.uuid4()
     data = {
-        "id": uuid.uuid4(),
+        "business_public_id": uuid.uuid4(),
         "owner_id": owner_id,
         "name": "NAME",
         "location": "LOCATION",
@@ -25,7 +25,7 @@ async def test_not_is_a_owner() -> None:
         limit -= 1
         assert limit != 0
     data = {
-        "id": uuid.uuid4(),
+        "business_public_id": uuid.uuid4(),
         "owner_id": owner_id,
         "name": "NAME",
         "location": "LOCATION",
