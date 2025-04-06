@@ -20,10 +20,10 @@ class PadelCourtRepository:
     async def create_padel_court(
         self,
         owner_id: uuid.UUID,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         padel_court_in: PadelCourtCreate,
     ) -> PadelCourt:
-        query = select(Business).where(Business.business_public_id == business_id)
+        query = select(Business).where(Business.business_public_id == business_public_id)
         result = await self.session.exec(query)
         business = result.first()
         if not business:
@@ -31,7 +31,7 @@ class PadelCourtRepository:
         if owner_id != business.owner_id:
             raise UnauthorizedPadelCourtOperationException()
         new_padel_court = PadelCourt.model_validate(
-            padel_court_in, update={"business_public_id": business_id}
+            padel_court_in, update={"business_public_id": business_public_id}
         )
         self.session.add(new_padel_court)
         await self.session.commit()
@@ -39,12 +39,12 @@ class PadelCourtRepository:
         return new_padel_court
 
     async def get_padel_court(
-        self, court_name: str, business_id: uuid.UUID
+        self, court_name: str, business_public_id: uuid.UUID
     ) -> PadelCourt:
         query = select(PadelCourt).where(
             and_(
                 PadelCourt.name == court_name,
-                PadelCourt.business_public_id == business_id,
+                PadelCourt.business_public_id == business_public_id,
             )
         )
         result = await self.session.exec(query)
@@ -55,19 +55,19 @@ class PadelCourtRepository:
 
     async def get_padel_courts(
         self,
-        business_id: uuid.UUID = None,
+        business_public_id: uuid.UUID = None,
         user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
     ) -> PadelCourtsPublic:
         query = select(PadelCourt)
 
-        if business_id and user_id:
+        if business_public_id and user_id:
             query = query.join(
                 Business, PadelCourt.business_public_id == Business.business_public_id
             ).where(
                 and_(
-                    PadelCourt.business_public_id == business_id,
+                    PadelCourt.business_public_id == business_public_id,
                     Business.owner_id == user_id,
                 )
             )

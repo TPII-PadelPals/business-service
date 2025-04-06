@@ -7,18 +7,18 @@ from app.utilities.dependencies import SessionDep
 
 class PadelCourtService:
     async def get_padel_court(
-        self, session: SessionDep, court_name: str, business_id: uuid.UUID
+        self, session: SessionDep, court_name: str, business_public_id: uuid.UUID
     ) -> PadelCourt:
         repo = PadelCourtRepository(session)
-        return await repo.get_padel_court(court_name, business_id)
+        return await repo.get_padel_court(court_name, business_public_id)
 
     async def get_padel_courts(
         self,
         session: SessionDep,
-        business_id: uuid.UUID = None,
+        business_public_id: uuid.UUID = None,
         user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
     ) -> PadelCourtsPublic:
         repo = PadelCourtRepository(session)
-        return await repo.get_padel_courts(business_id, user_id, skip, limit)
+        return await repo.get_padel_courts(business_public_id, user_id, skip, limit)

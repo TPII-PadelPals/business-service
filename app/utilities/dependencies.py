@@ -25,7 +25,7 @@ async def get_user_id_param(user_id: Annotated[UUID, Query()]) -> None:
 
 
 # TODO: retirar código repetido
-async def get_business_id_param(business_id: Annotated[UUID, Query()]) -> None:
+async def get_business_public_id_param(business_id: Annotated[UUID, Query()]) -> None:
     if not business_id:
         raise NotEnoughPermissionsException()
 

@@ -188,7 +188,7 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     )
 
     result = await padel_court_repo.get_padel_courts(
-        business_id=business1.business_public_id, user_id=owner_id
+        business_public_id=business1.business_public_id, user_id=owner_id
     )
 
     assert result.count == 2
@@ -220,11 +220,11 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
         )
 
     page1 = await padel_court_repo.get_padel_courts(
-        business_id=business.business_public_id, skip=0, limit=2
+        business_public_id=business.business_public_id, skip=0, limit=2
     )
 
     page2 = await padel_court_repo.get_padel_courts(
-        business_id=business.business_public_id, skip=2, limit=2
+        business_public_id=business.business_public_id, skip=2, limit=2
     )
 
     assert page1.count >= 5

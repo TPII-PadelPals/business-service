@@ -24,13 +24,13 @@ class AvailableMatchesRepository:
         return available_matches_list
 
     async def get_available_matches_in_date(
-        self, court_name: str, business_id: uuid.UUID, date: date
+        self, court_name: str, business_public_id: uuid.UUID, date: date
     ) -> list[AvailableMatch]:
         query = select(AvailableMatch).where(
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_public_id == business_id,
+                AvailableMatch.business_public_id == business_public_id,
             )
         )
         available_matches = await self.session.exec(query)
@@ -39,13 +39,13 @@ class AvailableMatchesRepository:
         return list(available_matches.all())
 
     async def delete_available_matches_in_date(
-        self, court_name: str, business_id: uuid.UUID, date: date
+        self, court_name: str, business_public_id: uuid.UUID, date: date
     ) -> None:
         query = select(AvailableMatch).where(
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_public_id == business_id,
+                AvailableMatch.business_public_id == business_public_id,
             )
         )
         available_matches = await self.session.exec(query)
@@ -60,7 +60,7 @@ class AvailableMatchesRepository:
     async def get_available_match(
         self,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         date: date,
         hour: int,
     ) -> AvailableMatch:
@@ -68,7 +68,7 @@ class AvailableMatchesRepository:
             and_(
                 AvailableMatch.date == date,
                 AvailableMatch.court_name == court_name,
-                AvailableMatch.business_public_id == business_id,
+                AvailableMatch.business_public_id == business_public_id,
                 AvailableMatch.initial_hour == hour,
             )
         )
