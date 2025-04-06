@@ -31,7 +31,7 @@ async def test_create_padel_court_with_existing_business(
         headers=x_api_key_header,
         json=padel_court_data,
         params={
-            "business_id": new_business["business_public_id"],
+            "business_public_id": new_business["business_public_id"],
             "owner_id": owner_id,
         },
     )
@@ -66,7 +66,7 @@ async def test_create_padel_court_with_nonexisting_business_public_id_returns_er
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         json=padel_court_data,
-        params={"business_id": nonexisting_business_public_id, "owner_id": owner_id},
+        params={"business_public_id": nonexisting_business_public_id, "owner_id": owner_id},
     )
 
     assert response.status_code == 404
@@ -97,7 +97,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
         headers=x_api_key_header,
         json=padel_court_data,
         params={
-            "business_id": new_business["business_public_id"],
+            "business_public_id": new_business["business_public_id"],
             "owner_id": unauthorized_owner_id,
         },
     )

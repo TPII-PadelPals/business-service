@@ -28,7 +28,7 @@ async def create_padel_court(
     *,
     session: SessionDep,
     owner_id: uuid.UUID,
-    business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
     padel_court_in: PadelCourtCreate,
 ) -> PadelCourtPublic:
     """
@@ -37,7 +37,7 @@ async def create_padel_court(
     try:
         repo = PadelCourtRepository(session)
         padel_court = await repo.create_padel_court(
-            owner_id, business_id, padel_court_in
+            owner_id, business_public_id, padel_court_in
         )
         return PadelCourtPublic.from_private(padel_court)
     except BusinessNotFoundException as e:
