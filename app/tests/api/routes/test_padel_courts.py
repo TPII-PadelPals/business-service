@@ -209,7 +209,7 @@ async def test_get_padel_courts_filtered_by_business(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         params={
-            "business_id": business1["business_public_id"],
+            "business_public_id": business1["business_public_id"],
             "user_id": str(owner_id),
         },
     )
@@ -252,7 +252,7 @@ async def test_get_padel_courts_with_pagination(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         params={
-            "business_id": business["business_public_id"],
+            "business_public_id": business["business_public_id"],
             "user_id": str(owner_id),
             "skip": "0",
             "limit": "2",
@@ -263,7 +263,7 @@ async def test_get_padel_courts_with_pagination(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         params={
-            "business_id": business["business_public_id"],
+            "business_public_id": business["business_public_id"],
             "user_id": str(owner_id),
             "skip": "2",
             "limit": "2",
