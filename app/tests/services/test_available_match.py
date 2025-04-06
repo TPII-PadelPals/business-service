@@ -31,9 +31,9 @@ async def create_available_dates(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -53,7 +53,7 @@ async def create_available_dates(session: AsyncSession) -> None:
         session,
         owner_id,
         str(padel_court_data["name"]),
-        business_id,
+        business_public_id,
         available_date_create,
     )
     # assert
@@ -73,9 +73,9 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -94,7 +94,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         session,
         owner_id,
         str(padel_court_data["name"]),
-        business_id,
+        business_public_id,
         available_date_create,
     )
     data_available_date_new = {
@@ -111,7 +111,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
             session,
             owner_id,
             str(padel_court_data["name"]),
-            business_id,
+            business_public_id,
             available_date_create_new,
         )
     # assert
@@ -131,9 +131,9 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -142,7 +142,7 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     service = AvailableMatchService()
     # test
     await service.delete_available_matches_in_date(
-        session, owner_id, str(padel_court_data["name"]), business_id, date(2025, 1, 1)
+        session, owner_id, str(padel_court_data["name"]), business_public_id, date(2025, 1, 1)
     )
 
 
@@ -159,9 +159,9 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -181,7 +181,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
             session,
             not_owner,
             str(padel_court_data["name"]),
-            business_id,
+            business_public_id,
             date(2025, 1, 1),
         )
     # assert
@@ -201,9 +201,9 @@ async def test_delete(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -224,15 +224,15 @@ async def test_delete(session: AsyncSession) -> None:
         session,
         owner_id,
         str(padel_court_data["name"]),
-        business_id,
+        business_public_id,
         available_date_create,
     )
     # test
     await service.delete_available_matches_in_date(
-        session, owner_id, str(padel_court_data["name"]), business_id, create_date
+        session, owner_id, str(padel_court_data["name"]), business_public_id, create_date
     )
     response_get = await service.get_available_matches_in_date(
-        session, str(padel_court_data["name"]), business_id, create_date
+        session, str(padel_court_data["name"]), business_public_id, create_date
     )
     # assert
     assert len(response_get) == 0
@@ -251,9 +251,9 @@ async def test_reserve_match(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -264,7 +264,7 @@ async def test_reserve_match(session: AsyncSession) -> None:
     service = AvailableMatchService()
     data_available_date = {
         "court_name": str(padel_court_data["name"]),
-        "business_public_id": business_id,
+        "business_public_id": business_public_id,
         "date": create_date,
         "initial_hour": 5,
         "n_matches": 1,
@@ -274,13 +274,13 @@ async def test_reserve_match(session: AsyncSession) -> None:
         session,
         owner_id,
         str(padel_court_data["name"]),
-        business_id,
+        business_public_id,
         available_date_create,
     )
     assert len(list) == 1
     # test
     match = await service.reserve_available_match(
-        session, str(padel_court_data["name"]), business_id, create_date, 5
+        session, str(padel_court_data["name"]), business_public_id, create_date, 5
     )
     # assert
     assert match is not None
@@ -289,12 +289,12 @@ async def test_reserve_match(session: AsyncSession) -> None:
 
 async def test_reserve_match_not_found(session: AsyncSession) -> None:
     # test
-    business_id = uuid.uuid4()
+    business_public_id = uuid.uuid4()
     create_date = date(2025, 1, 1)
     service = AvailableMatchService()
     with pytest.raises(NotFoundException) as e:
         await service.reserve_available_match(
-            session, "name", business_id, create_date, 5
+            session, "name", business_public_id, create_date, 5
         )
     assert e.value.detail == "Available match not found"
 
@@ -314,9 +314,9 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.business_public_id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -327,7 +327,7 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
     service = AvailableMatchService()
     data_available_date = {
         "court_name": str(padel_court_data["name"]),
-        "business_public_id": business_id,
+        "business_public_id": business_public_id,
         "date": create_date,
         "initial_hour": 5,
         "n_matches": 1,
@@ -337,19 +337,19 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
         session,
         owner_id,
         str(padel_court_data["name"]),
-        business_id,
+        business_public_id,
         available_date_create,
     )
     assert len(list) == 1
     match = await service.reserve_available_match(
-        session, str(padel_court_data["name"]), business_id, create_date, 5
+        session, str(padel_court_data["name"]), business_public_id, create_date, 5
     )
     assert match is not None
     assert match.is_reserved()
     # test
     with pytest.raises(CourtAlreadyReservedException) as e:
         await service.reserve_available_match(
-            session, str(padel_court_data["name"]), business_id, create_date, 5
+            session, str(padel_court_data["name"]), business_public_id, create_date, 5
         )
     # assert
     assert (

@@ -45,11 +45,11 @@ async def test_create_padel_court_with_existing_business(
     assert "court_public_id" in content
 
 
-async def test_create_padel_court_with_nonexisting_business_id_returns_error(
+async def test_create_padel_court_with_nonexisting_business_public_id_returns_error(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
-    nonexisting_business_id = uuid.uuid4()
+    nonexisting_business_public_id = uuid.uuid4()
 
     _new_business = await create_business_for_routes(
         async_client=async_client,
@@ -66,7 +66,7 @@ async def test_create_padel_court_with_nonexisting_business_id_returns_error(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         json=padel_court_data,
-        params={"business_id": nonexisting_business_id, "owner_id": owner_id},
+        params={"business_id": nonexisting_business_public_id, "owner_id": owner_id},
     )
 
     assert response.status_code == 404
