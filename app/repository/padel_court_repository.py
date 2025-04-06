@@ -23,7 +23,9 @@ class PadelCourtRepository:
         business_public_id: uuid.UUID,
         padel_court_in: PadelCourtCreate,
     ) -> PadelCourt:
-        query = select(Business).where(Business.business_public_id == business_public_id)
+        query = select(Business).where(
+            Business.business_public_id == business_public_id
+        )
         result = await self.session.exec(query)
         business = result.first()
         if not business:

@@ -81,5 +81,7 @@ class AvailableMatchService:
         )
 
         repo = AvailableMatchesRepository(session)
-        await repo.delete_available_matches_in_date(court_name, business_public_id, date)
+        await repo.delete_available_matches_in_date(
+            court_name, business_public_id, date
+        )
         return

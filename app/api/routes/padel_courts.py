@@ -28,7 +28,7 @@ async def create_padel_court(
     *,
     session: SessionDep,
     owner_id: uuid.UUID,
-        business_public_id: uuid.UUID,
+    business_public_id: uuid.UUID,
     padel_court_in: PadelCourtCreate,
 ) -> PadelCourtPublic:
     """
@@ -66,4 +66,6 @@ async def read_padel_courts(
         )
 
     service = PadelCourtService()
-    return await service.get_padel_courts(session, business_public_id, user_id, skip, limit)
+    return await service.get_padel_courts(
+        session, business_public_id, user_id, skip, limit
+    )

@@ -142,7 +142,11 @@ async def test_delete_empty_date(session: AsyncSession) -> None:
     service = AvailableMatchService()
     # test
     await service.delete_available_matches_in_date(
-        session, owner_id, str(padel_court_data["name"]), business_public_id, date(2025, 1, 1)
+        session,
+        owner_id,
+        str(padel_court_data["name"]),
+        business_public_id,
+        date(2025, 1, 1),
     )
 
 
@@ -229,7 +233,11 @@ async def test_delete(session: AsyncSession) -> None:
     )
     # test
     await service.delete_available_matches_in_date(
-        session, owner_id, str(padel_court_data["name"]), business_public_id, create_date
+        session,
+        owner_id,
+        str(padel_court_data["name"]),
+        business_public_id,
+        create_date,
     )
     response_get = await service.get_available_matches_in_date(
         session, str(padel_court_data["name"]), business_public_id, create_date
