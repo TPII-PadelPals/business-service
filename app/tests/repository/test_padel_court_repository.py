@@ -29,20 +29,20 @@ async def test_create_padel_court(session: AsyncSession):
     padel_court = PadelCourtCreate(name="Padel Si", price_per_hour=Decimal("15000.00"))
 
     created_padel_court = await repository.create_padel_court(
-        owner_id, created_business.id, padel_court
+        owner_id, created_business.business_public_id, padel_court
     )
 
     assert created_padel_court.name == padel_court.name
     assert created_padel_court.price_per_hour == padel_court.price_per_hour
 
 
-async def test_create_padel_court_with_nonexistent_business_id_return_exception(
+async def test_create_padel_court_with_nonexistent_business_public_id_return_exception(
     session: AsyncSession,
 ):
     repository = BusinessRepository(session)
     business_data = BusinessCreate(name="Padel Ya", location="Av La plata 3010")
     owner_id = uuid.uuid4()
-    nonexistent_business_id = uuid.uuid4()
+    nonexistent_business_public_id = uuid.uuid4()
 
     longitude = 0.1
     latitude = 0.4
@@ -55,7 +55,7 @@ async def test_create_padel_court_with_nonexistent_business_id_return_exception(
 
     with pytest.raises(BusinessNotFoundException) as e:
         await repository.create_padel_court(
-            created_business.owner_id, nonexistent_business_id, padel_court
+            created_business.owner_id, nonexistent_business_public_id, padel_court
         )
 
     assert str(e.value) == "Business not found"
@@ -81,7 +81,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(
 
     with pytest.raises(UnauthorizedPadelCourtOperationException):
         await padel_court_repository.create_padel_court(
-            unauthorized_owner_id, created_business.id, padel_court
+            unauthorized_owner_id, created_business.business_public_id, padel_court
         )
 
 
@@ -98,16 +98,16 @@ async def test_get_padel_court(session: AsyncSession) -> None:
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
     await session.refresh(new_padel_court)
     # test
     padel_court = await padel_court_repository.get_padel_court(
-        str(padel_court_data["name"]), business_id
+        str(padel_court_data["name"]), business_public_id
     )
     # assert
 
@@ -136,9 +136,15 @@ async def test_get_all_padel_courts(session: AsyncSession) -> None:
     court2 = PadelCourtCreate(name="Court B", price_per_hour=Decimal("150.00"))
     court3 = PadelCourtCreate(name="Court C", price_per_hour=Decimal("200.00"))
 
-    await padel_court_repo.create_padel_court(owner_id, business1.id, court1)
-    await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
-    await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
+    await padel_court_repo.create_padel_court(
+        owner_id, business1.business_public_id, court1
+    )
+    await padel_court_repo.create_padel_court(
+        owner_id, business1.business_public_id, court2
+    )
+    await padel_court_repo.create_padel_court(
+        owner_id, business2.business_public_id, court3
+    )
 
     result = await padel_court_repo.get_padel_courts()
 
@@ -171,12 +177,18 @@ async def test_get_padel_courts_filtered_by_business(session: AsyncSession) -> N
     court2 = PadelCourtCreate(name="Filter Court Y", price_per_hour=Decimal("150.00"))
     court3 = PadelCourtCreate(name="Filter Court Z", price_per_hour=Decimal("200.00"))
 
-    await padel_court_repo.create_padel_court(owner_id, business1.id, court1)
-    await padel_court_repo.create_padel_court(owner_id, business1.id, court2)
-    await padel_court_repo.create_padel_court(owner_id, business2.id, court3)
+    await padel_court_repo.create_padel_court(
+        owner_id, business1.business_public_id, court1
+    )
+    await padel_court_repo.create_padel_court(
+        owner_id, business1.business_public_id, court2
+    )
+    await padel_court_repo.create_padel_court(
+        owner_id, business2.business_public_id, court3
+    )
 
     result = await padel_court_repo.get_padel_courts(
-        business_id=business1.id, user_id=owner_id
+        business_public_id=business1.business_public_id, user_id=owner_id
     )
 
     assert result.count == 2
@@ -203,14 +215,16 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
         court = PadelCourtCreate(
             name=f"Paginated Court {i}", price_per_hour=Decimal(f"{100.0 + i}")
         )
-        await padel_court_repo.create_padel_court(owner_id, business.id, court)
+        await padel_court_repo.create_padel_court(
+            owner_id, business.business_public_id, court
+        )
 
     page1 = await padel_court_repo.get_padel_courts(
-        business_id=business.id, skip=0, limit=2
+        business_public_id=business.business_public_id, skip=0, limit=2
     )
 
     page2 = await padel_court_repo.get_padel_courts(
-        business_id=business.id, skip=2, limit=2
+        business_public_id=business.business_public_id, skip=2, limit=2
     )
 
     assert page1.count >= 5

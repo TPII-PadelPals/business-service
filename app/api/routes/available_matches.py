@@ -34,14 +34,14 @@ async def add_available_matches_in_date(
     session: SessionDep,
     user_id: uuid.UUID,
     court_name: str,
-    business_id: uuid.UUID,
+    business_public_id: uuid.UUID,
     available_match_in: AvailableMatchCreate,
 ) -> Any:
     """
     Create new available date, enabling games on the date.
     """
     available_matches = await service.create_available_matches_in_date(
-        session, user_id, court_name, business_id, available_match_in
+        session, user_id, court_name, business_public_id, available_match_in
     )
     return AvailableMatchesPublic.from_private(available_matches)
 
@@ -57,14 +57,14 @@ async def delete_available_matches_in_date(
     session: SessionDep,
     user_id: uuid.UUID,
     court_name: str,
-    business_id: uuid.UUID,
+    business_public_id: uuid.UUID,
     date: date,
 ) -> Any:
     """
     Delete a item.
     """
     await service.delete_available_matches_in_date(
-        session, user_id, court_name, business_id, date
+        session, user_id, court_name, business_public_id, date
     )
     return
 
@@ -79,14 +79,14 @@ async def get_available_matches_in_date(
     *,
     session: SessionDep,
     court_name: str,
-    business_id: uuid.UUID,
+    business_public_id: uuid.UUID,
     date: date,
 ) -> Any:
     """
     Get all item.
     """
     available_matches = await service.get_available_matches_in_date(
-        session, court_name, business_id, date
+        session, court_name, business_public_id, date
     )
     return AvailableMatchesPublic.from_private(available_matches)
 
@@ -101,7 +101,7 @@ async def reserve_available_match(
     *,
     session: SessionDep,
     court_name: str,
-    business_id: uuid.UUID,
+    business_public_id: uuid.UUID,
     date: date,
     hour: int,
 ) -> Any:
@@ -109,6 +109,6 @@ async def reserve_available_match(
     Update an item.
     """
     available_match = await service.reserve_available_match(
-        session, court_name, business_id, date, hour
+        session, court_name, business_public_id, date, hour
     )
     return AvailableMatchPublic.from_private(available_match)

@@ -18,12 +18,12 @@ class AvailableMatchService:
         session: SessionDep,
         user_id: uuid.UUID,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         available_matches_in: AvailableMatchCreate,
     ) -> list[AvailableMatch]:
         service_aux = CourtOwnerVerificationService()
         await service_aux.verification_of_court_owner(
-            session, user_id, court_name, business_id
+            session, user_id, court_name, business_public_id
         )
 
         available_matches_in.validate_create()
@@ -41,12 +41,12 @@ class AvailableMatchService:
         self,
         session: SessionDep,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         date: datetime.date,
     ) -> list[AvailableMatch]:
         repo = AvailableMatchesRepository(session)
         available_matches = await repo.get_available_matches_in_date(
-            court_name, business_id, date
+            court_name, business_public_id, date
         )
         return available_matches
 
@@ -54,13 +54,13 @@ class AvailableMatchService:
         self,
         session: SessionDep,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         date: datetime.date,
         hour: int,
     ) -> AvailableMatch:
         repo = AvailableMatchesRepository(session)
         available_match = await repo.get_available_match(
-            court_name, business_id, date, hour
+            court_name, business_public_id, date, hour
         )
         if available_match.is_reserved():
             raise CourtAlreadyReservedException(court_name)
@@ -72,14 +72,16 @@ class AvailableMatchService:
         session: SessionDep,
         user_id: uuid.UUID,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
         date: datetime.date,
     ) -> None:
         service_aux = CourtOwnerVerificationService()
         await service_aux.verification_of_court_owner(
-            session, user_id, court_name, business_id
+            session, user_id, court_name, business_public_id
         )
 
         repo = AvailableMatchesRepository(session)
-        await repo.delete_available_matches_in_date(court_name, business_id, date)
+        await repo.delete_available_matches_in_date(
+            court_name, business_public_id, date
+        )
         return

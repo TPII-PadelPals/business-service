@@ -57,6 +57,9 @@ async def create_padel_court_for_routes(
         f"{settings.API_V1_STR}/padel-courts/",
         headers=x_api_key_header,
         json=padel_court_data,
-        params={"business_id": str(business_data["id"]), "owner_id": str(owner_id)},
+        params={
+            "business_public_id": str(business_data["business_public_id"]),
+            "owner_id": str(owner_id),
+        },
     )
     return dict(response.json())

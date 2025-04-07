@@ -14,15 +14,15 @@ class BusinessService:
         return float(longitude), float(latitude)
 
     async def get_business(
-        self, session: SessionDep, business_id: uuid.UUID
+        self, session: SessionDep, business_public_id: uuid.UUID
     ) -> Business:
         repo = BusinessRepository(session)
-        return await repo.get_business(business_id)
+        return await repo.get_business(business_public_id)
 
     async def validate_user_is_owner(
-        self, session: SessionDep, business_id: uuid.UUID, user_id: uuid.UUID
+        self, session: SessionDep, business_public_id: uuid.UUID, user_id: uuid.UUID
     ):
-        business = await self.get_business(session, business_id)
+        business = await self.get_business(session, business_public_id)
         if not business.is_owned(user_id):
             raise UnauthorizedUserException()
 

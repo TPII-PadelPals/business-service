@@ -44,20 +44,20 @@ async def test_get_padel_courts_all(session: AsyncSession) -> None:
 
 
 async def test_get_padel_courts_with_business_filter(session: AsyncSession) -> None:
-    business_id = uuid.uuid4()
+    business_public_id = uuid.uuid4()
 
     courts = [
         PadelCourt(
             id=1,
             court_public_id=uuid.uuid4(),
-            business_public_id=business_id,
+            business_public_id=business_public_id,
             name="Business Court A",
             price_per_hour=Decimal("100.00"),
         ),
         PadelCourt(
             id=2,
             court_public_id=uuid.uuid4(),
-            business_public_id=business_id,
+            business_public_id=business_public_id,
             name="Business Court B",
             price_per_hour=Decimal("150.00"),
         ),
@@ -71,11 +71,13 @@ async def test_get_padel_courts_with_business_filter(session: AsyncSession) -> N
         mock_get.return_value = mock_result
 
         service = PadelCourtService()
-        result = await service.get_padel_courts(session, business_id=business_id)
+        result = await service.get_padel_courts(
+            session, business_public_id=business_public_id
+        )
 
-        mock_get.assert_called_once_with(business_id, None, 0, 100)
+        mock_get.assert_called_once_with(business_public_id, None, 0, 100)
         assert result.count == 2
-        assert all(c.business_public_id == business_id for c in result.data)
+        assert all(c.business_public_id == business_public_id for c in result.data)
 
 
 async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
@@ -112,21 +114,21 @@ async def test_get_padel_courts_with_pagination(session: AsyncSession) -> None:
 async def test_get_padel_courts_with_business_and_user_filter(
     session: AsyncSession,
 ) -> None:
-    business_id = uuid.uuid4()
+    business_public_id = uuid.uuid4()
     user_id = uuid.uuid4()
 
     courts = [
         PadelCourt(
             id=1,
             court_public_id=uuid.uuid4(),
-            business_public_id=business_id,
+            business_public_id=business_public_id,
             name="Owner Court A",
             price_per_hour=Decimal("100.00"),
         ),
         PadelCourt(
             id=2,
             court_public_id=uuid.uuid4(),
-            business_public_id=business_id,
+            business_public_id=business_public_id,
             name="Owner Court B",
             price_per_hour=Decimal("150.00"),
         ),
@@ -141,9 +143,9 @@ async def test_get_padel_courts_with_business_and_user_filter(
 
         service = PadelCourtService()
         result = await service.get_padel_courts(
-            session, business_id=business_id, user_id=user_id
+            session, business_public_id=business_public_id, user_id=user_id
         )
 
-        mock_get.assert_called_once_with(business_id, user_id, 0, 100)
+        mock_get.assert_called_once_with(business_public_id, user_id, 0, 100)
         assert result.count == 2
-        assert all(c.business_public_id == business_id for c in result.data)
+        assert all(c.business_public_id == business_public_id for c in result.data)

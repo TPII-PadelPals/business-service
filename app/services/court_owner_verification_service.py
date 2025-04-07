@@ -11,7 +11,11 @@ class CourtOwnerVerificationService:
         session: SessionDep,
         user_id: uuid.UUID,
         court_name: str,
-        business_id: uuid.UUID,
+        business_public_id: uuid.UUID,
     ) -> None:
-        await BusinessService().validate_user_is_owner(session, business_id, user_id)
-        await PadelCourtService().get_padel_court(session, court_name, business_id)
+        await BusinessService().validate_user_is_owner(
+            session, business_public_id, user_id
+        )
+        await PadelCourtService().get_padel_court(
+            session, court_name, business_public_id
+        )

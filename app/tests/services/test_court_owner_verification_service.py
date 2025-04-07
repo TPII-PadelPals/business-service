@@ -29,9 +29,9 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_public_id = created_business.business_public_id
     new_padel_court = PadelCourt.model_validate(
-        padel_court_in, update={"business_public_id": business_id}
+        padel_court_in, update={"business_public_id": business_public_id}
     )
     session.add(new_padel_court)
     await session.commit()
@@ -39,7 +39,7 @@ async def test_verification_of_court_owner_service(session: AsyncSession) -> Non
     service = CourtOwnerVerificationService()
     # assert
     await service.verification_of_court_owner(
-        session, owner_id, str(padel_court_data["name"]), business_id
+        session, owner_id, str(padel_court_data["name"]), business_public_id
     )
 
 
@@ -69,11 +69,11 @@ async def test_verification_fail_not_owner_of_court_owner_service(
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_public_id = created_business.business_public_id
 
     not_owner = uuid.uuid4()
     limit = 100
-    while not_owner == created_business.id:
+    while not_owner == created_business.business_public_id:
         not_owner = uuid.uuid4()
         limit -= 1
         assert limit != 0
@@ -82,7 +82,7 @@ async def test_verification_fail_not_owner_of_court_owner_service(
     # test
     with pytest.raises(UnauthorizedUserException) as e:
         await service.verification_of_court_owner(
-            session, not_owner, "NAME", business_id
+            session, not_owner, "NAME", business_public_id
         )
     # assert
     assert e.value.detail == "User is not the owner"
@@ -101,13 +101,13 @@ async def test_verification_fail_not_court_of_court_owner_service(
     created_business = await business_repository.create_business(
         owner_id, business, longitude, latitude
     )
-    business_id = created_business.id
+    business_public_id = created_business.business_public_id
 
     service = CourtOwnerVerificationService()
     # test
     with pytest.raises(NotFoundException) as e:
         await service.verification_of_court_owner(
-            session, owner_id, "NAME", business_id
+            session, owner_id, "NAME", business_public_id
         )
     # assert
     assert e.value.detail == "Padel court not found"
