@@ -38,7 +38,7 @@ class BusinessService:
 
     async def create_business(
         self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
-    ):
+    ) -> Business:
         location = business_in.get_location()
         longitude, latitude = await self._get_coordinates(location)
         repo = BusinessRepository(session)
