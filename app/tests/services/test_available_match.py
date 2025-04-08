@@ -44,6 +44,7 @@ async def create_available_dates(session: AsyncSession) -> None:
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -86,6 +87,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -101,6 +103,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 7,
         "n_matches": 1,
     }
@@ -219,6 +222,7 @@ async def test_delete(session: AsyncSession) -> None:
     data_available_date = {
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
+        "court_public_id": new_padel_court.court_public_id,
         "date": create_date,
         "initial_hour": 5,
         "n_matches": 5,
@@ -274,6 +278,7 @@ async def test_reserve_match(session: AsyncSession) -> None:
         "court_name": str(padel_court_data["name"]),
         "business_public_id": business_public_id,
         "date": create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 1,
     }
@@ -337,6 +342,7 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
         "court_name": str(padel_court_data["name"]),
         "business_public_id": business_public_id,
         "date": create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 1,
     }

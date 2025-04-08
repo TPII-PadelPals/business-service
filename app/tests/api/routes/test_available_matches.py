@@ -38,12 +38,14 @@ async def test_create_available_matches(
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -57,6 +59,7 @@ async def test_create_available_matches(
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
     # assert
@@ -74,6 +77,7 @@ async def test_create_available_matches(
         sum_hours -= available_match_initial_hour
         assert data_available_match.get("business_public_id") == business_public_id
         assert data_available_match.get("court_name") == court_name
+        assert data_available_match.get("court_public_id") == str(court_public_id)
     assert sum_hours == 0
 
 
@@ -104,12 +108,14 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -123,6 +129,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
             "business_public_id": str(business_public_id),
             "user_id": str(uuid.uuid4()),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
     # assert
@@ -159,12 +166,14 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
 
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -177,6 +186,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
 
@@ -185,6 +195,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
     data_available_match_new = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "7",
         "n_matches": "1",
@@ -198,6 +209,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
     # assert
@@ -234,11 +246,13 @@ async def test_multiple_valid_create_available_matches(
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -251,6 +265,7 @@ async def test_multiple_valid_create_available_matches(
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
     assert created_available_matches is not None
@@ -258,6 +273,7 @@ async def test_multiple_valid_create_available_matches(
     data_available_match_new_after = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "10",
         "n_matches": "3",
@@ -270,11 +286,13 @@ async def test_multiple_valid_create_available_matches(
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": court_public_id,
         },
     )
     data_available_match_new_before = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "4",
         "n_matches": "1",
@@ -285,6 +303,7 @@ async def test_multiple_valid_create_available_matches(
         json=data_available_match_new_before,
         params={
             "business_public_id": str(business_public_id),
+            "court_public_id": str(court_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
         },
@@ -327,11 +346,13 @@ async def test_get_available_matches(
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -344,6 +365,7 @@ async def test_get_available_matches(
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": str(court_public_id),
         },
     )
     assert created_available_matches is not None
@@ -352,6 +374,7 @@ async def test_get_available_matches(
         "court_name": str(court_name),
         "business_public_id": str(business_public_id),
         "date": str(data_available_match["date"]),
+        "court_public_id": str(court_public_id),
     }
     get_available_matches = await async_client.get(
         f"{settings.API_V1_STR}/businesses/{business_public_id}/padel-courts/{court_name}/available-matches/",
@@ -374,6 +397,7 @@ async def test_get_available_matches(
         sum_hours -= available_match_initial_hour
         assert data_available_match.get("business_public_id") == business_public_id
         assert data_available_match.get("court_name") == court_name
+        assert data_available_match.get("court_public_id") == str(court_public_id)
     assert sum_hours == 0
 
 
@@ -404,11 +428,13 @@ async def test_update_for_reserve_available_matches(
     )
 
     assert new_padel_court is not None
+    court_public_id = new_padel_court.get("court_public_id")
 
     business_public_id = new_business.get("business_public_id")
     data_available_match = {
         "court_name": court_name,
         "business_public_id": business_public_id,
+        "court_public_id": court_public_id,
         "date": "2025-02-22",
         "initial_hour": "5",
         "n_matches": "5",
@@ -421,6 +447,7 @@ async def test_update_for_reserve_available_matches(
             "business_public_id": str(business_public_id),
             "user_id": str(owner_id),
             "court_name": str(court_name),
+            "court_public_id": str(court_public_id),
         },
     )
     assert created_available_matches is not None
@@ -454,7 +481,6 @@ async def test_update_for_reserve_available_matches(
     get_result = get_available_matches.json()
     assert get_result.get("count") == 5
     print(reserve.json().keys())
-    # assert reserve.json().get("is_reserved")
     assert reserve.json().get("reserve")
 
 

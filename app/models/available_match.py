@@ -17,16 +17,18 @@ class AvailableMatchBase(SQLModel):
     TIME_OF_MATCH: ClassVar[int] = 1
 
     court_name: str = Field(min_length=1, max_length=255, nullable=False)
+    court_public_id: uuid.UUID = Field(nullable=False)
     business_public_id: uuid.UUID = Field(nullable=False)
     date: datetime.date = Field()
     initial_hour: int = Field(default=0, ge=TIME_LIMIT_MIN, le=TIME_LIMIT_MAX)
 
     __table_args__ = (
         ForeignKeyConstraint(
-            ["business_public_id", "court_name"],  # Claves en la tabla actual
+            ["business_public_id", "court_name", "court_public_id"],  # Claves en la tabla actual
             [
                 "padel_courts.business_public_id",
                 "padel_courts.name",
+                "padel_courts.court_public_id",
             ],  # Claves en la tabla padre
             name="fk_padel_court_unique_ref",
         ),
