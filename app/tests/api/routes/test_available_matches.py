@@ -73,7 +73,7 @@ async def test_create_available_matches(
     for data_available_match in data:
         assert data_available_match.get("date") == "2025-02-22"
         available_match_initial_hour = int(data_available_match.get("initial_hour"))
-        assert available_match_initial_hour >= 5 and available_match_initial_hour <= 9
+        assert 5 <= available_match_initial_hour <= 9
         sum_hours -= available_match_initial_hour
         assert data_available_match.get("business_public_id") == business_public_id
         assert data_available_match.get("court_name") == court_name
