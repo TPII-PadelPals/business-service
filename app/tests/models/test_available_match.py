@@ -162,8 +162,13 @@ async def test_public_from_private() -> None:
         "reserve": False,
     }
     available_date = AvailableMatch(**data)
+    coordinates = (0.1, 0.5)
+    data["latitude"] = coordinates[0]
+    data["longitude"] = coordinates[1]
     # test
-    available_date_public = AvailableMatchPublic.from_private(available_date)
+    available_date_public = AvailableMatchPublic.from_private(
+        available_date, coordinates
+    )
     # assert
     for key, value in data.items():
         if key == "id":
@@ -182,8 +187,13 @@ async def test_publics_from_private() -> None:
         "reserve": False,
     }
     available_date = AvailableMatch(**data)
+    coordinates = (0.1, 0.5)
+    data["latitude"] = coordinates[0]
+    data["longitude"] = coordinates[1]
     # test
-    available_dates_public = AvailableMatchesPublic.from_private([available_date])
+    available_dates_public = AvailableMatchesPublic.from_private(
+        [available_date], coordinates
+    )
     # assert
     assert available_dates_public.count == 1
     available_date_public = available_dates_public.data[0]
