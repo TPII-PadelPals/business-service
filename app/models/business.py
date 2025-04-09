@@ -33,6 +33,9 @@ class Business(BusinessBase, BusinessImmutable, table=True):
     def is_owned(self, user_id: uuid.UUID) -> bool:
         return self.owner_id == user_id
 
+    def get_coordinates(self) -> tuple[float, float]:
+        return self.latitude, self.longitude
+
 
 # Properties to return via API, id is always required
 class BusinessPublic(BusinessBase, BusinessImmutable):

@@ -17,16 +17,22 @@ class AvailableMatchBase(SQLModel):
     TIME_OF_MATCH: ClassVar[int] = 1
 
     court_name: str = Field(min_length=1, max_length=255, nullable=False)
+    court_public_id: uuid.UUID = Field(nullable=False)
     business_public_id: uuid.UUID = Field(nullable=False)
     date: datetime.date = Field()
     initial_hour: int = Field(default=0, ge=TIME_LIMIT_MIN, le=TIME_LIMIT_MAX)
 
     __table_args__ = (
         ForeignKeyConstraint(
-            ["business_public_id", "court_name"],  # Claves en la tabla actual
+            [
+                "business_public_id",
+                "court_name",
+                "court_public_id",
+            ],  # Claves en la tabla actual
             [
                 "padel_courts.business_public_id",
                 "padel_courts.name",
+                "padel_courts.court_public_id",
             ],  # Claves en la tabla padre
             name="fk_padel_court_unique_ref",
         ),
@@ -83,10 +89,16 @@ class AvailableMatch(AvailableMatchBase, table=True):
 # Properties to return via API, id is always required
 class AvailableMatchPublic(AvailableMatchBase):
     reserve: bool = Field(default=False)
+    latitude: float = Field(nullable=False)
+    longitude: float = Field(nullable=False)
 
     @classmethod
-    def from_private(cls, available_match: AvailableMatch) -> "AvailableMatchPublic":
+    def from_private(
+        cls, available_match: AvailableMatch, coordinates: tuple[float, float]
+    ) -> "AvailableMatchPublic":
         data = available_match.model_dump()
+        data["latitude"] = coordinates[0]
+        data["longitude"] = coordinates[1]
         return cls(**data)
 
 
@@ -96,10 +108,12 @@ class AvailableMatchesPublic(SQLModel):
 
     @classmethod
     def from_private(
-        cls, available_matches_list: list[AvailableMatch]
+        cls,
+        available_matches_list: list[AvailableMatch],
+        coordinates: tuple[float, float],
     ) -> "AvailableMatchesPublic":
         data = []
         for available_match in available_matches_list:
-            data.append(AvailableMatchPublic.from_private(available_match))
+            data.append(AvailableMatchPublic.from_private(available_match, coordinates))
         count = len(available_matches_list)
         return cls(data=data, count=count)

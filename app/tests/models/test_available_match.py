@@ -17,6 +17,7 @@ async def test_one_available_date_form_create() -> None:
         "court_name": "25",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 23,
         "n_matches": 1,
     }
@@ -39,6 +40,7 @@ async def test_more_available_date_form_create() -> None:
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -67,6 +69,7 @@ async def test_limit_available_date_form_create() -> None:
         "court_name": "4",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 0,
         "n_matches": 24,
     }
@@ -96,6 +99,7 @@ async def test_create_invalid_exceed_hour() -> None:
         "court_name": "7",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 23,
         "n_matches": 2,
     }
@@ -115,6 +119,7 @@ async def test_create_invalid_number_games() -> None:
         "court_name": "8",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 12,
         "n_matches": 0,
     }
@@ -135,6 +140,7 @@ async def test_available_date_set_reserve() -> None:
         "court_name": "8",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 23,
         "is_reserved": False,
     }
@@ -151,12 +157,18 @@ async def test_public_from_private() -> None:
         "court_name": "35",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 23,
         "reserve": False,
     }
     available_date = AvailableMatch(**data)
+    coordinates = (0.1, 0.5)
+    data["latitude"] = coordinates[0]
+    data["longitude"] = coordinates[1]
     # test
-    available_date_public = AvailableMatchPublic.from_private(available_date)
+    available_date_public = AvailableMatchPublic.from_private(
+        available_date, coordinates
+    )
     # assert
     for key, value in data.items():
         if key == "id":
@@ -170,12 +182,18 @@ async def test_publics_from_private() -> None:
         "court_name": "7",
         "business_public_id": uuid.uuid4(),
         "date": date(2025, 1, 1),
+        "court_public_id": uuid.uuid4(),
         "initial_hour": 23,
         "reserve": False,
     }
     available_date = AvailableMatch(**data)
+    coordinates = (0.1, 0.5)
+    data["latitude"] = coordinates[0]
+    data["longitude"] = coordinates[1]
     # test
-    available_dates_public = AvailableMatchesPublic.from_private([available_date])
+    available_dates_public = AvailableMatchesPublic.from_private(
+        [available_date], coordinates
+    )
     # assert
     assert available_dates_public.count == 1
     available_date_public = available_dates_public.data[0]

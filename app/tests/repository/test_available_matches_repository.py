@@ -37,6 +37,7 @@ async def test_create_available_dates(session: AsyncSession) -> None:
         "court_name": padel_court_data["name"],
         "business_public_id": business_public_id,
         "date": datetime.date(2025, 1, 1),
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -75,6 +76,7 @@ async def test_get_available_dates(session: AsyncSession) -> None:
         "court_name": padel_court_data["name"],
         "business_public_id": business_public_id,
         "date": available_date_create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -116,6 +118,7 @@ async def test_get_not_available_dates(session: AsyncSession) -> None:
         "court_name": padel_court_data["name"],
         "business_public_id": business_public_id,
         "date": available_date_create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -171,6 +174,7 @@ async def test_delete_available_dates(session: AsyncSession) -> None:
         "court_name": padel_court_data["name"],
         "business_public_id": business_public_id,
         "date": available_date_create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 5,
     }
@@ -247,6 +251,7 @@ async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
         "court_name": padel_court_data["name"],
         "business_public_id": business_public_id,
         "date": available_date_create_date,
+        "court_public_id": new_padel_court.court_public_id,
         "initial_hour": 5,
         "n_matches": 1,
     }

@@ -9,6 +9,7 @@ from app.models.available_match import (
     AvailableMatchesPublic,
     AvailableMatchPublic,
 )
+from app.services.available_match_public_service import AvailableMatchServicePublic
 from app.services.available_match_service import AvailableMatchService
 from app.utilities.dependencies import SessionDep
 from app.utilities.messages import (
@@ -20,7 +21,8 @@ from app.utilities.messages import (
 
 router = APIRouter()
 
-service = AvailableMatchService()
+service_available_match = AvailableMatchService()
+service_available_match_public = AvailableMatchServicePublic()
 
 
 @router.post(
@@ -40,10 +42,12 @@ async def add_available_matches_in_date(
     """
     Create new available date, enabling games on the date.
     """
-    available_matches = await service.create_available_matches_in_date(
-        session, user_id, court_name, business_public_id, available_match_in
+    available_matches = (
+        await service_available_match_public.create_available_matches_in_date(
+            session, user_id, court_name, business_public_id, available_match_in
+        )
     )
-    return AvailableMatchesPublic.from_private(available_matches)
+    return available_matches
 
 
 @router.delete(
@@ -63,7 +67,7 @@ async def delete_available_matches_in_date(
     """
     Delete a item.
     """
-    await service.delete_available_matches_in_date(
+    await service_available_match.delete_available_matches_in_date(
         session, user_id, court_name, business_public_id, date
     )
     return
@@ -85,10 +89,12 @@ async def get_available_matches_in_date(
     """
     Get all item.
     """
-    available_matches = await service.get_available_matches_in_date(
-        session, court_name, business_public_id, date
+    available_matches = (
+        await service_available_match_public.get_available_matches_in_date(
+            session, court_name, business_public_id, date
+        )
     )
-    return AvailableMatchesPublic.from_private(available_matches)
+    return available_matches
 
 
 @router.patch(
@@ -108,7 +114,7 @@ async def reserve_available_match(
     """
     Update an item.
     """
-    available_match = await service.reserve_available_match(
+    available_match = await service_available_match_public.reserve_available_match(
         session, court_name, business_public_id, date, hour
     )
-    return AvailableMatchPublic.from_private(available_match)
+    return available_match
