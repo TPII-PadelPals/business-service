@@ -1,10 +1,12 @@
 services:
-  db:
+  business-db:
     restart: "no"
     ports:
       - "${POSTGRES_PORT_EXT?Variable not set}:${POSTGRES_PORT?Variable not set}"
+    networks:
+      - tpii-network
 
-  service-template:
+  business-service:
     restart: "no"
     ports:
       - "${SERVICE_PORT_EXT?Variable not set}:8000"
@@ -25,3 +27,12 @@ services:
           action: rebuild
     volumes:
       - ./htmlcov:/app/htmlcov
+    labels:
+      - "traefik.http.routers.businesses.rule=PathPrefix(`/api/v1/businesses`)"
+      - "traefik.http.routers.courts.rule=PathPrefix(`/api/v1/padel-courts`)"
+    networks:
+      - tpii-network
+
+networks:
+  tpii-network:
+    external: true
