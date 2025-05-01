@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlmodel import SQLModel
 
 from app.core.config import settings
+from app.models import AvailableMatch, Business, Item, PadelCourt  # noqa: F401
 
 
 def get_async_engine(
