@@ -38,7 +38,7 @@ BUSINESS_CREATE = {
 }
 BUSINESS_UPDATE = {
     status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"},
-    **BUSINESS_RESPONSES
+    **BUSINESS_RESPONSES,
 }
 
 # available_date

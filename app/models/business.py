@@ -22,6 +22,7 @@ class BusinessUpdate(SQLModel):
     name: str | None = Field(min_length=1, max_length=255, default=None)
     owner_id: uuid.UUID | None = Field(default=None)
 
+
 # Shared private properties
 class BusinessImmutable(SQLModel):
     business_public_id: uuid.UUID = Field(default_factory=uuid.uuid4, unique=True)

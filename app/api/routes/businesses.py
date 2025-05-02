@@ -2,7 +2,12 @@ import uuid
 
 from fastapi import APIRouter, status
 
-from app.models.business import BusinessCreate, BusinessesPublic, BusinessPublic, BusinessUpdate
+from app.models.business import (
+    BusinessCreate,
+    BusinessesPublic,
+    BusinessPublic,
+    BusinessUpdate,
+)
 from app.services.business_service import BusinessService
 from app.utilities.dependencies import SessionDep
 from app.utilities.messages import BUSINESS_CREATE, BUSINESS_UPDATE
@@ -39,16 +44,23 @@ async def read_businesses(
     return await service.get_businesses(session, owner_id, skip, limit)
 
 
-@router.patch("/", response_model=BusinessesPublic, status_code=status.HTTP_200_OK, responses=BUSINESS_UPDATE)
+@router.patch(
+    "/",
+    response_model=BusinessPublic,
+    status_code=status.HTTP_200_OK,
+    responses=BUSINESS_UPDATE,
+)
 async def modify_businesses(
-        *,
-        session: SessionDep,
-        owner_id: uuid.UUID,
-        business_public_id: uuid.UUID,
-        business_in: BusinessUpdate
+    *,
+    session: SessionDep,
+    owner_id: uuid.UUID,
+    business_public_id: uuid.UUID,
+    business_in: BusinessUpdate,
 ) -> BusinessPublic:
     """
     Update business.
     """
-    business = await service.update_business(session, owner_id, business_public_id, business_in)
+    business = await service.update_business(
+        session, owner_id, business_public_id, business_in
+    )
     return business

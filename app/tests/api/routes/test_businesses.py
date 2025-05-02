@@ -220,3 +220,85 @@ async def test_create_business_raise_invalid_location(
         params={"owner_id": str(owner_id)},
     )
     assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+async def test_update_business(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == 201
+    content = response.json()
+    business_public_id = content["business_public_id"]
+    assert content["name"] == business_data["name"]
+    assert content["owner_id"] == str(owner_id)
+    new_owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(new_owner)}
+    parameters_data = {
+        "owner_id": str(owner_id),
+        "business_public_id": str(business_public_id),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 200
+    content_up = update_response.json()
+    assert content_up["name"] == data_update["name"]
+    assert content_up["owner_id"] == str(new_owner)
+
+
+async def test_update_business_unauthorized(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == 201
+    content = response.json()
+    business_public_id = content["business_public_id"]
+    assert content["name"] == business_data["name"]
+    assert content["owner_id"] == str(owner_id)
+    new_owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(new_owner)}
+    parameters_data = {
+        "owner_id": str(new_owner),
+        "business_public_id": str(business_public_id),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 401
+    assert update_response.json().get("detail") == "User is not the owner"
