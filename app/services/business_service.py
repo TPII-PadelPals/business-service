@@ -1,6 +1,6 @@
 import uuid
 
-from app.models.business import Business, BusinessCreate, BusinessesPublic
+from app.models.business import Business, BusinessCreate, BusinessesPublic, BusinessUpdate
 from app.repository.business_repository import BusinessRepository
 from app.services.google_service import GoogleService
 from app.utilities.dependencies import SessionDep
@@ -46,3 +46,15 @@ class BusinessService:
             owner_id, business_in, longitude, latitude
         )
         return business
+
+
+    async def update_business(
+            self,
+            session: SessionDep,
+            owner_id: uuid.UUID,
+            business_public_id: uuid.UUID,
+            business_in: BusinessUpdate
+    ) -> Business:
+        await self.validate_user_is_owner(session, business_public_id, owner_id)
+        repo = BusinessRepository(session)
+        return await repo.update_business(business_public_id, business_in)

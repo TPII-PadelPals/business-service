@@ -36,6 +36,10 @@ BUSINESS_CREATE = {
         "description": "Error with Google location service communication"
     },
 }
+BUSINESS_UPDATE = {
+    status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"},
+    **BUSINESS_RESPONSES
+}
 
 # available_date
 AVAILABLE_DATE_UNAUTHORIZED_OWNED = {
