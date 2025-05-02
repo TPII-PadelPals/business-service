@@ -16,11 +16,14 @@ async def seed_db() -> None:
     print("Ok")
 
     print("Loading Seed ...", end=" ")
-    engine = db.get_async_engine()
-    async with AsyncSession(engine, expire_on_commit=True) as _session:
-        _session.add_all(RECORDS)
-        await _session.commit()
-    print("Ok")
+    if RECORDS:
+        engine = db.get_async_engine()
+        async with AsyncSession(engine, expire_on_commit=True) as _session:
+            _session.add_all(RECORDS)
+            await _session.commit()
+        print("Ok")
+    else:
+        print("Empty")
 
 
 if __name__ == "__main__":
