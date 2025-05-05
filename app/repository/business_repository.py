@@ -3,7 +3,12 @@ import uuid
 from sqlalchemy import func
 from sqlmodel import select
 
-from app.models.business import Business, BusinessCreate, BusinessesPublic
+from app.models.business import (
+    Business,
+    BusinessCreate,
+    BusinessesPublic,
+    BusinessUpdate,
+)
 from app.utilities.exceptions import BusinessNotFoundException
 
 
@@ -51,3 +56,14 @@ class BusinessRepository:
         businesses = result.all()
 
         return BusinessesPublic(data=businesses, count=total_count)
+
+    async def update_business(
+        self, business_public_id: uuid.UUID, business_in: BusinessUpdate
+    ) -> Business:
+        business = await self.get_business(business_public_id)
+        update_dict = business_in.model_dump(exclude_none=True)
+        business.sqlmodel_update(update_dict)
+        self.session.add(business)
+        await self.session.commit()
+        await self.session.refresh(business)
+        return business
