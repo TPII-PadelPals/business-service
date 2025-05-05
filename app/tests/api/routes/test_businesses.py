@@ -245,15 +245,13 @@ async def test_update_business(
     business_public_id = content["business_public_id"]
     assert content["name"] == business_data["name"]
     assert content["owner_id"] == str(owner_id)
-    new_owner = uuid.uuid4()
-    data_update = {"name": "Hola_Padel", "owner_id": str(new_owner)}
+    data_update = {"name": "Hola_Padel"}
     parameters_data = {
         "owner_id": str(owner_id),
-        "business_public_id": str(business_public_id),
     }
 
     update_response = await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/",
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
         headers=x_api_key_header,
         json=data_update,
         params=parameters_data,
@@ -261,7 +259,7 @@ async def test_update_business(
     assert update_response.status_code == 200
     content_up = update_response.json()
     assert content_up["name"] == data_update["name"]
-    assert content_up["owner_id"] == str(new_owner)
+    assert content_up["owner_id"] == str(owner_id)
 
 
 async def test_update_business_unauthorized(
@@ -287,18 +285,37 @@ async def test_update_business_unauthorized(
     business_public_id = content["business_public_id"]
     assert content["name"] == business_data["name"]
     assert content["owner_id"] == str(owner_id)
-    new_owner = uuid.uuid4()
-    data_update = {"name": "Hola_Padel", "owner_id": str(new_owner)}
+    other_owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(other_owner)}
     parameters_data = {
-        "owner_id": str(new_owner),
-        "business_public_id": str(business_public_id),
+        "owner_id": str(other_owner),
     }
 
     update_response = await async_client.patch(
-        f"{settings.API_V1_STR}/businesses/",
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
         headers=x_api_key_header,
         json=data_update,
         params=parameters_data,
     )
     assert update_response.status_code == 401
     assert update_response.json().get("detail") == "User is not the owner"
+
+
+async def test_update_business_not_business(
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
+):
+    business_public_id = uuid.uuid4()
+    owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(owner)}
+    parameters_data = {
+        "owner_id": str(owner),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 404
+    assert update_response.json().get("detail") == "Business not found"

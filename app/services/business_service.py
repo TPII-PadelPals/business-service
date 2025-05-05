@@ -9,7 +9,11 @@ from app.models.business import (
 from app.repository.business_repository import BusinessRepository
 from app.services.google_service import GoogleService
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import UnauthorizedUserException
+from app.utilities.exceptions import (
+    BusinessNotFoundException,
+    BusinessNotFoundHTTPException,
+    UnauthorizedUserException,
+)
 
 
 class BusinessService:
@@ -59,6 +63,11 @@ class BusinessService:
         business_public_id: uuid.UUID,
         business_in: BusinessUpdate,
     ) -> Business:
-        await self.validate_user_is_owner(session, business_public_id, owner_id)
+        try:
+            await self.validate_user_is_owner(session, business_public_id, owner_id)
+        except BusinessNotFoundException as e:
+            raise BusinessNotFoundHTTPException(str(e))
+        except Exception as e:
+            raise e
         repo = BusinessRepository(session)
         return await repo.update_business(business_public_id, business_in)

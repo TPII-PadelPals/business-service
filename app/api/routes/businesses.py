@@ -45,7 +45,7 @@ async def read_businesses(
 
 
 @router.patch(
-    "/",
+    "/{business_public_id}",
     response_model=BusinessPublic,
     status_code=status.HTTP_200_OK,
     responses=BUSINESS_UPDATE,

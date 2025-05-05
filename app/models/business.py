@@ -20,7 +20,6 @@ class BusinessCreate(BusinessBase):
 # Properties to change
 class BusinessUpdate(SQLModel):
     name: str | None = Field(min_length=1, max_length=255, default=None)
-    owner_id: uuid.UUID | None = Field(default=None)
 
 
 # Shared private properties
