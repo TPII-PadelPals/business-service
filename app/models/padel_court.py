@@ -44,6 +44,11 @@ class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
             "court_public_id",
             name="uq_padel_court",
         ),
+        UniqueConstraint(
+            "name",
+            "business_public_id",
+            name="uq_name_padel_court",
+        ),
     )
 
 
