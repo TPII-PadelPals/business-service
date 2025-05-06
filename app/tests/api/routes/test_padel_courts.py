@@ -284,3 +284,170 @@ async def test_get_padel_courts_with_pagination(
     page1_ids = [c["court_public_id"] for c in content_page1["data"]]
     page2_ids = [c["court_public_id"] for c in content_page2["data"]]
     assert not any(id in page1_ids for id in page2_ids)
+
+
+async def test_update_padel_court(
+        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner_id = uuid.uuid4()
+    new_business = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Paloma SA",
+        location="Polaca 530",
+        parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
+    )
+    padel_court_data = {"name": "Cancha 1", "price_per_hour": "15000.00"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        json=padel_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "owner_id": owner_id,
+        },
+    )
+    assert response.status_code == 201
+    content = response.json()
+    assert content["name"] == padel_court_data["name"]
+    assert content["price_per_hour"] == padel_court_data["price_per_hour"]
+
+    update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        headers=x_api_key_header,
+        json=update_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "user_id": owner_id,
+            "court_name": content["name"],
+        },
+    )
+
+    assert update_response.status_code == 200
+    update_content = update_response.json()
+    assert update_content["name"] == update_court_data["name"]
+    assert update_content["price_per_hour"] == update_court_data["price_per_hour"]
+    assert update_content["business_public_id"] == content["business_public_id"]
+    assert update_content["court_public_id"] == content["court_public_id"]
+
+
+
+
+async def test_update_padel_court_unauthorized(
+        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner_id = uuid.uuid4()
+    new_business = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Paloma SA",
+        location="Polaca 530",
+        parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
+    )
+    padel_court_data = {"name": "Cancha 1", "price_per_hour": "15000.00"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        json=padel_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "owner_id": owner_id,
+        },
+    )
+    assert response.status_code == 201
+    content = response.json()
+    assert content["name"] == padel_court_data["name"]
+    assert content["price_per_hour"] == padel_court_data["price_per_hour"]
+
+    update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        headers=x_api_key_header,
+        json=update_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "user_id": uuid.uuid4(),
+            "court_name": content["name"],
+        },
+    )
+
+    assert update_response.status_code == 401
+    assert update_response.json().get("detail") == "User is not the owner"
+
+
+async def test_update_padel_court_not_court(
+        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner_id = uuid.uuid4()
+    new_business = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Paloma SA",
+        location="Polaca 530",
+        parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
+    )
+    court_public_id = uuid.uuid4()
+    update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/padel-courts/{court_public_id}",
+        headers=x_api_key_header,
+        json=update_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "user_id": owner_id,
+            "court_name": "name",
+        },
+    )
+
+    assert update_response.status_code == 404
+    assert update_response.json().get("detail") == "Padel court not found"
+
+
+
+async def test_update_padel_court_not_business(
+        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner_id = uuid.uuid4()
+    new_business = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Paloma SA",
+        location="Polaca 530",
+        parameters={"owner_id": owner_id},
+        monkeypatch=monkeypatch,
+    )
+    padel_court_data = {"name": "Cancha 1", "price_per_hour": "15000.00"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/padel-courts/",
+        headers=x_api_key_header,
+        json=padel_court_data,
+        params={
+            "business_public_id": new_business["business_public_id"],
+            "owner_id": owner_id,
+        },
+    )
+    assert response.status_code == 201
+    content = response.json()
+    assert content["name"] == padel_court_data["name"]
+    assert content["price_per_hour"] == padel_court_data["price_per_hour"]
+
+    update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        headers=x_api_key_header,
+        json=update_court_data,
+        params={
+            "business_public_id": uuid.uuid4(),
+            "user_id": owner_id,
+            "court_name": content["name"],
+        },
+    )
+
+
+    assert update_response.status_code == 404
+    assert update_response.json().get("detail") == "Business not found"
+

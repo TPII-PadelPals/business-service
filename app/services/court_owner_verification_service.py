@@ -3,6 +3,7 @@ import uuid
 from app.services.business_service import BusinessService
 from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep
+from app.utilities.exceptions import BusinessNotFoundException, BusinessNotFoundHTTPException
 
 
 class CourtOwnerVerificationService:
@@ -13,9 +14,14 @@ class CourtOwnerVerificationService:
         court_name: str,
         business_public_id: uuid.UUID,
     ) -> None:
-        await BusinessService().validate_user_is_owner(
-            session, business_public_id, user_id
-        )
+        try:
+            await BusinessService().validate_user_is_owner(
+                session, business_public_id, user_id
+            )
+        except BusinessNotFoundException as e:
+            raise BusinessNotFoundHTTPException(str(e))
+        except Exception as e:
+            raise e
         await PadelCourtService().get_padel_court(
             session, court_name, business_public_id
         )

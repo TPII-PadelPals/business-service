@@ -17,13 +17,18 @@ class PadelCourtBase(SQLModel):
     price_per_hour: Decimal = Field(gt=MIN_PRICE_PER_HOUR)
 
 
+# Properties to change
+class PadelCourtUpdate(PadelCourtBase):
+    pass
+
+
 # Properties to receive on item creation
 class PadelCourtCreate(PadelCourtBase):
     pass
 
 
 class PadelCourtImmutable(SQLModel):
-    court_public_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    court_public_id: uuid.UUID = Field(default_factory=uuid.uuid4, unique=True)
     business_public_id: uuid.UUID = Field(
         foreign_key=f"{BUSINESS_TABLE_NAME}.business_public_id"
     )
@@ -35,7 +40,6 @@ class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
 
     __table_args__ = (
         UniqueConstraint(
-            "name",
             "business_public_id",
             "court_public_id",
             name="uq_padel_court",
