@@ -287,7 +287,7 @@ async def test_get_padel_courts_with_pagination(
 
 
 async def test_update_padel_court(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     new_business = await create_business_for_routes(
@@ -305,7 +305,7 @@ async def test_update_padel_court(
         json=padel_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "owner_id": owner_id,
+            "owner_id": str(owner_id),
         },
     )
     assert response.status_code == 201
@@ -320,7 +320,7 @@ async def test_update_padel_court(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": owner_id,
+            "user_id": str(owner_id),
             "court_name": content["name"],
         },
     )
@@ -333,10 +333,8 @@ async def test_update_padel_court(
     assert update_content["court_public_id"] == content["court_public_id"]
 
 
-
-
 async def test_update_padel_court_unauthorized(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     new_business = await create_business_for_routes(
@@ -354,7 +352,7 @@ async def test_update_padel_court_unauthorized(
         json=padel_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "owner_id": owner_id,
+            "owner_id": str(owner_id),
         },
     )
     assert response.status_code == 201
@@ -369,7 +367,7 @@ async def test_update_padel_court_unauthorized(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": uuid.uuid4(),
+            "user_id": str(uuid.uuid4()),
             "court_name": content["name"],
         },
     )
@@ -379,7 +377,7 @@ async def test_update_padel_court_unauthorized(
 
 
 async def test_update_padel_court_not_court(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     new_business = await create_business_for_routes(
@@ -398,7 +396,7 @@ async def test_update_padel_court_not_court(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": owner_id,
+            "user_id": str(owner_id),
             "court_name": "name",
         },
     )
@@ -407,9 +405,8 @@ async def test_update_padel_court_not_court(
     assert update_response.json().get("detail") == "Padel court not found"
 
 
-
 async def test_update_padel_court_not_business(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
     new_business = await create_business_for_routes(
@@ -427,7 +424,7 @@ async def test_update_padel_court_not_business(
         json=padel_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "owner_id": owner_id,
+            "owner_id": str(owner_id),
         },
     )
     assert response.status_code == 201
@@ -442,12 +439,10 @@ async def test_update_padel_court_not_business(
         json=update_court_data,
         params={
             "business_public_id": uuid.uuid4(),
-            "user_id": owner_id,
+            "user_id": str(owner_id),
             "court_name": content["name"],
         },
     )
 
-
     assert update_response.status_code == 404
     assert update_response.json().get("detail") == "Business not found"
-

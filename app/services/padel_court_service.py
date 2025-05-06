@@ -24,10 +24,10 @@ class PadelCourtService:
         return await repo.get_padel_courts(business_public_id, user_id, skip, limit)
 
     async def update_padel_court(
-            self,
-            session: SessionDep,
-            court_public_id: uuid.UUID,
-            court_in: PadelCourtUpdate,
+        self,
+        session: SessionDep,
+        court_public_id: uuid.UUID,
+        court_in: PadelCourtUpdate,
     ) -> PadelCourt:
         repo = PadelCourtRepository(session)
         court = await repo.update_padel_court(court_public_id, court_in)

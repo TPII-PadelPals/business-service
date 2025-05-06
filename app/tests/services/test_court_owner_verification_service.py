@@ -11,9 +11,9 @@ from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
 from app.utilities.exceptions import (
-    BusinessNotFoundException,
+    BusinessNotFoundHTTPException,
     NotFoundException,
-    UnauthorizedUserException, BusinessNotFoundHTTPException,
+    UnauthorizedUserException,
 )
 
 

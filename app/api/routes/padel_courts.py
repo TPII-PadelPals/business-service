@@ -24,6 +24,7 @@ router = APIRouter()
 
 service = PadelCourtService()
 
+
 @router.post(
     "/",
     response_model=PadelCourtPublic,
@@ -76,21 +77,22 @@ async def read_padel_courts(
         session, business_public_id, user_id, skip, limit
     )
 
+
 @router.patch(
     "/{court_public_id}",
     response_model=PadelCourtPublic,
     status_code=status.HTTP_200_OK,
-    responses=COURT_UPDATE,
+    responses={**COURT_UPDATE},
 )
 async def modify_court(
-        *,
-        session: SessionDep,
-        business_public_id: uuid.UUID,
-        court_public_id: uuid.UUID,
-        court_name: str,
-        user_id: uuid.UUID,
-        court_in: PadelCourtUpdate,
-):
+    *,
+    session: SessionDep,
+    business_public_id: uuid.UUID,
+    court_public_id: uuid.UUID,
+    court_name: str,
+    user_id: uuid.UUID,
+    court_in: PadelCourtUpdate,
+) -> PadelCourtPublic:
     """
     Update padel court.
     """

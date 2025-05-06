@@ -3,7 +3,10 @@ import uuid
 from app.services.business_service import BusinessService
 from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import BusinessNotFoundException, BusinessNotFoundHTTPException
+from app.utilities.exceptions import (
+    BusinessNotFoundException,
+    BusinessNotFoundHTTPException,
+)
 
 
 class CourtOwnerVerificationService:
