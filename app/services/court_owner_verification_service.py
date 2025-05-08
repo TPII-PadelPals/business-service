@@ -28,3 +28,22 @@ class CourtOwnerVerificationService:
         await PadelCourtService().get_padel_court(
             session, court_name, business_public_id
         )
+
+    async def verification_of_court_owner_without_name(
+        self,
+        session: SessionDep,
+        user_id: uuid.UUID,
+        business_public_id: uuid.UUID,
+        court_public_id: uuid.UUID,
+    ) -> None:
+        try:
+            await BusinessService().validate_user_is_owner(
+                session, business_public_id, user_id
+            )
+        except BusinessNotFoundException as e:
+            raise BusinessNotFoundHTTPException(str(e))
+        except Exception as e:
+            raise e
+        await PadelCourtService().get_padel_court_without_name(
+            session, court_public_id, business_public_id
+        )

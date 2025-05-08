@@ -12,6 +12,15 @@ class PadelCourtService:
         repo = PadelCourtRepository(session)
         return await repo.get_padel_court(court_name, business_public_id)
 
+    async def get_padel_court_without_name(
+        self,
+        session: SessionDep,
+        court_public_id: uuid.UUID,
+        business_public_id: uuid.UUID,
+    ) -> PadelCourt:
+        repo = PadelCourtRepository(session)
+        return await repo.get_padel_court_without_name(court_public_id)
+
     async def get_padel_courts(
         self,
         session: SessionDep,

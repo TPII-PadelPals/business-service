@@ -321,7 +321,6 @@ async def test_update_padel_court(
         params={
             "business_public_id": new_business["business_public_id"],
             "user_id": str(owner_id),
-            "court_name": content["name"],
         },
     )
 
@@ -368,7 +367,6 @@ async def test_update_padel_court_unauthorized(
         params={
             "business_public_id": new_business["business_public_id"],
             "user_id": str(uuid.uuid4()),
-            "court_name": content["name"],
         },
     )
 
@@ -397,7 +395,6 @@ async def test_update_padel_court_not_court(
         params={
             "business_public_id": new_business["business_public_id"],
             "user_id": str(owner_id),
-            "court_name": "name",
         },
     )
 
@@ -440,7 +437,6 @@ async def test_update_padel_court_not_business(
         params={
             "business_public_id": uuid.uuid4(),
             "user_id": str(owner_id),
-            "court_name": content["name"],
         },
     )
 

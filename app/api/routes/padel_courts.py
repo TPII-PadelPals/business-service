@@ -89,7 +89,6 @@ async def modify_court(
     session: SessionDep,
     business_public_id: uuid.UUID,
     court_public_id: uuid.UUID,
-    court_name: str,
     user_id: uuid.UUID,
     court_in: PadelCourtUpdate,
 ) -> PadelCourtPublic:
@@ -97,8 +96,8 @@ async def modify_court(
     Update padel court.
     """
     service_aux = CourtOwnerVerificationService()
-    await service_aux.verification_of_court_owner(
-        session, user_id, court_name, business_public_id
+    await service_aux.verification_of_court_owner_without_name(
+        session, user_id, business_public_id, court_public_id
     )
     court = await service.update_padel_court(session, court_public_id, court_in)
     return court

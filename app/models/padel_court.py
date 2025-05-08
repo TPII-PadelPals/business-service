@@ -40,14 +40,10 @@ class PadelCourt(PadelCourtBase, PadelCourtImmutable, table=True):
 
     __table_args__ = (
         UniqueConstraint(
+            "name",
             "business_public_id",
             "court_public_id",
             name="uq_padel_court",
-        ),
-        UniqueConstraint(
-            "name",
-            "business_public_id",
-            name="uq_name_padel_court",
         ),
     )
 

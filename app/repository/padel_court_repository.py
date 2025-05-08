@@ -60,6 +60,18 @@ class PadelCourtRepository:
             raise NotFoundException("padel court")
         return padel_court
 
+    async def get_padel_court_without_name(
+        self, court_public_id: uuid.UUID
+    ) -> PadelCourt:
+        query = select(PadelCourt).where(
+            PadelCourt.court_public_id == court_public_id,
+        )
+        result = await self.session.exec(query)
+        court = result.first()
+        if not court:
+            raise NotFoundException("padel court")
+        return court
+
     async def get_padel_courts(
         self,
         business_public_id: uuid.UUID = None,
@@ -92,13 +104,14 @@ class PadelCourtRepository:
     async def update_padel_court(
         self, court_public_id: uuid.UUID, court_in: PadelCourtUpdate
     ) -> PadelCourt:
-        query = select(PadelCourt).where(
-            PadelCourt.court_public_id == court_public_id,
-        )
-        result = await self.session.exec(query)
-        court = result.first()
-        if not court:
-            raise NotFoundException("padel court")
+        # query = select(PadelCourt).where(
+        #     PadelCourt.court_public_id == court_public_id,
+        # )
+        # result = await self.session.exec(query)
+        # court = result.first()
+        # if not court:
+        #     raise NotFoundException("padel court")
+        court = await self.get_padel_court_without_name(court_public_id)
 
         update_dict = court_in.model_dump(exclude_none=True)
         court.sqlmodel_update(update_dict)
