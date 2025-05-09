@@ -11,7 +11,7 @@ from app.services.court_owner_verification_service import (
     CourtOwnerVerificationService,
 )
 from app.utilities.exceptions import (
-    BusinessNotFoundException,
+    BusinessNotFoundHTTPException,
     NotFoundException,
     UnauthorizedUserException,
 )
@@ -48,12 +48,12 @@ async def test_verification_fail_not_business_of_court_owner_service(
 ) -> None:
     service = CourtOwnerVerificationService()
     # test
-    with pytest.raises(BusinessNotFoundException) as e:
+    with pytest.raises(BusinessNotFoundHTTPException) as e:
         await service.verification_of_court_owner(
             session, uuid.uuid4(), "NAME", uuid.uuid4()
         )
     # assert
-    assert str(e.value) == "Business not found"
+    assert str(e.value.detail) == "Business not found"
 
 
 async def test_verification_fail_not_owner_of_court_owner_service(
