@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     # Frontend
     FRONTEND_SERVICE_HTTP: bool
     FRONTEND_SERVICE_HOST: str
-    FRONTEND_SERVICE_PORT: str
+    FRONTEND_SERVICE_PORT: int
 
     # Google
     GOOGLE_API_KEY: str

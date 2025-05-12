@@ -4,7 +4,7 @@ from .base_service import BaseService
 
 
 class FrontendService(BaseService):
-    def __init__(self):
+    def __init__(self) -> None:
         """Init the service."""
         super().__init__()
         self._set_base_url(
