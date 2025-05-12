@@ -24,9 +24,15 @@ class Settings(BaseSettings):
     API_KEY: str
 
     # Services
+    ITEMS_SERVICE_HTTP: bool
     ITEMS_SERVICE_HOST: str
     ITEMS_SERVICE_PORT: int | None = None
     ITEMS_SERVICE_API_KEY: str | None = None
+
+    # Frontend
+    FRONTEND_SERVICE_HTTP: bool
+    FRONTEND_SERVICE_HOST: str
+    FRONTEND_SERVICE_PORT: str
 
     # Google
     GOOGLE_API_KEY: str

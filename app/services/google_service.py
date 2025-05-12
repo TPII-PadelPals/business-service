@@ -25,7 +25,7 @@ class GoogleService(BaseService):
                 detail="Failed to fetch coordinates from Google",
             )
 
-        self._set_base_url(ADDRESS_VALIDATION_HOST)
+        self._set_base_url(is_http=False, host=ADDRESS_VALIDATION_HOST)
         json_data = {
             "address": {"regionCode": "AR", "addressLines": [address]},
         }
