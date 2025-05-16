@@ -142,6 +142,46 @@ async def test_get_businesses_filtered_by_owner(
     assert "Owner2 API Business" not in business_names
 
 
+
+async def test_get_businesses_filtered_by_public_id(
+        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner1_id = uuid.uuid4()
+    owner2_id = uuid.uuid4()
+
+    info = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Owner1 API Business",
+        location="Owner1 Location",
+        parameters={"owner_id": str(owner1_id)},
+        monkeypatch=monkeypatch,
+    )
+
+    await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Owner2 API Business",
+        location="Owner2 Location",
+        parameters={"owner_id": str(owner2_id)},
+        monkeypatch=monkeypatch,
+    )
+
+    response = await async_client.get(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        params={"business_public_id": str(info["business_public_id"])},
+    )
+
+    assert response.status_code == 200
+    content = response.json()
+
+    for business in content["data"]:
+        assert business["business_public_id"] == str(info["business_public_id"])
+
+    business_names = [b["name"] for b in content["data"]]
+    assert "Owner2 API Business" not in business_names
+
 async def test_get_businesses_with_pagination(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
