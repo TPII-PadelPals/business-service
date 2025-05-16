@@ -59,3 +59,15 @@ class PadelCourtPublic(PadelCourtBase, PadelCourtImmutable):
 class PadelCourtsPublic(SQLModel):
     data: list[PadelCourtPublic]
     count: int
+
+
+class PadelCourtFilter(PadelCourtBase, PadelCourtImmutable):
+    name: str | None = None
+    price_per_hour: Decimal | None = None
+    court_public_id: uuid.UUID | None = None
+    business_public_id: uuid.UUID | None = None
+
+    def is_valid_filter_for_business_public_id(
+        self, owner_id: uuid.UUID | None
+    ) -> bool:
+        return (self.business_public_id is None) != (owner_id is None)

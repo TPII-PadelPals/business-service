@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.models.padel_court import (
     PadelCourtCreate,
+    PadelCourtFilter,
     PadelCourtPublic,
     PadelCourtsPublic,
     PadelCourtUpdate,
@@ -58,23 +59,23 @@ async def create_padel_court(
 async def read_padel_courts(
     *,
     session: SessionDep,
-    business_public_id: uuid.UUID = None,
     user_id: uuid.UUID = None,
     skip: int = 0,
     limit: int = 100,
+    prov_court_filters: PadelCourtFilter = Depends(),
 ) -> PadelCourtsPublic:
     """
     Get all padel courts, optionally filtered by business_public_id.
     With pagination using skip and limit parameters.
     """
-    if (business_public_id is None) != (user_id is None):
+    if prov_court_filters.is_valid_filter_for_business_public_id(user_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Both business_public_id and user_id must be provided together or both omitted.",
         )
 
     return await service.get_padel_courts(
-        session, business_public_id, user_id, skip, limit
+        session, user_id, skip, limit, prov_court_filters
     )
 
 

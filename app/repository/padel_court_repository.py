@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from sqlalchemy import func
 from sqlmodel import and_, select
@@ -78,9 +79,13 @@ class PadelCourtRepository:
         user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
+        **filters: Any,
     ) -> PadelCourtsPublic:
         query = select(PadelCourt)
 
+        print("ASDASDASDASDASDASDASD")
+        print(filters)
+        print(business_public_id)
         if business_public_id and user_id:
             query = query.join(
                 Business, PadelCourt.business_public_id == Business.business_public_id
@@ -90,6 +95,9 @@ class PadelCourtRepository:
                     Business.owner_id == user_id,
                 )
             )
+        for key, value in filters.items():
+            attr = getattr(PadelCourt, key)
+            query = query.where(attr == value)
 
         count_query = select(func.count()).select_from(query.subquery())
         count_result = await self.session.exec(count_query)
