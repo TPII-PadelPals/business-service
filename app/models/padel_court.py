@@ -1,6 +1,7 @@
 import uuid
 from decimal import Decimal
 
+from pydantic import field_validator
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
@@ -15,6 +16,11 @@ MIN_PRICE_PER_HOUR = 0
 class PadelCourtBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
     price_per_hour: Decimal = Field(gt=MIN_PRICE_PER_HOUR)
+
+    @field_validator("price_per_hour", mode="before")
+    def normalize_decimal(cls, v):
+        v = Decimal(v)
+        return Decimal(format(v, "f"))
 
 
 # Properties to change
