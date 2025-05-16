@@ -61,7 +61,7 @@ class PadelCourtsPublic(SQLModel):
     count: int
 
 
-class PadelCourtFilter(PadelCourtBase, PadelCourtImmutable):
+class PadelCourtFilter(SQLModel):
     name: str | None = None
     price_per_hour: Decimal | None = None
     court_public_id: uuid.UUID | None = None
