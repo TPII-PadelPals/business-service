@@ -50,3 +50,8 @@ class BusinessPublic(BusinessBase, BusinessImmutable):
 class BusinessesPublic(SQLModel):
     data: list[BusinessPublic]
     count: int
+
+
+class BusinessesFilters(SQLModel):
+    business_public_id: uuid.UUID | None = None
+    owner_id: uuid.UUID | None = None
