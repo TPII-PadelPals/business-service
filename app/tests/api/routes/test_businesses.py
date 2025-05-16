@@ -142,9 +142,8 @@ async def test_get_businesses_filtered_by_owner(
     assert "Owner2 API Business" not in business_names
 
 
-
 async def test_get_businesses_filtered_by_public_id(
-        async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner1_id = uuid.uuid4()
     owner2_id = uuid.uuid4()
@@ -181,6 +180,7 @@ async def test_get_businesses_filtered_by_public_id(
 
     business_names = [b["name"] for b in content["data"]]
     assert "Owner2 API Business" not in business_names
+
 
 async def test_get_businesses_with_pagination(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
