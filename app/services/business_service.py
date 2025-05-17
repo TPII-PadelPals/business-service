@@ -3,6 +3,7 @@ import uuid
 from app.models.business import (
     Business,
     BusinessCreate,
+    BusinessesFilters,
     BusinessesPublic,
     BusinessUpdate,
 )
@@ -38,12 +39,13 @@ class BusinessService:
     async def get_businesses(
         self,
         session: SessionDep,
-        owner_id: uuid.UUID = None,
+        business_filter: BusinessesFilters = BusinessesFilters(),
         skip: int = 0,
         limit: int = 100,
     ) -> BusinessesPublic:
         repo = BusinessRepository(session)
-        return await repo.get_businesses(owner_id, skip, limit)
+        filters = business_filter.model_dump(exclude_unset=True, exclude_none=True)
+        return await repo.get_businesses(skip, limit, **filters)
 
     async def create_business(
         self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate

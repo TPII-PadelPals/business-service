@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from sqlalchemy import func
 from sqlmodel import select
@@ -41,12 +42,16 @@ class BusinessRepository:
         return business
 
     async def get_businesses(
-        self, owner_id: uuid.UUID = None, skip: int = 0, limit: int = 100
+        self,
+        skip: int = 0,
+        limit: int = 100,
+        **filters: Any,
     ) -> BusinessesPublic:
         query = select(Business)
-        if owner_id is not None:
-            query = query.where(Business.owner_id == owner_id)
-
+        # Filters
+        for key, value in filters.items():
+            attr = getattr(Business, key)
+            query = query.where(attr == value)
         count_query = select(func.count()).select_from(query.subquery())
         count_result = await self.session.exec(count_query)
         total_count = count_result.one()
