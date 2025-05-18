@@ -32,10 +32,10 @@ class PadelCourtService:
         user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
-        prov_court_filters: PadelCourtFilter = PadelCourtFilter(),
+        court_filters: PadelCourtFilter = PadelCourtFilter(),
     ) -> PadelCourtsPublic:
         repo = PadelCourtRepository(session)
-        filters = prov_court_filters.model_dump(exclude_unset=True, exclude_none=True)
+        filters = court_filters.model_dump(exclude_unset=True, exclude_none=True)
         business_public_id = filters.pop("business_public_id", None)
         return await repo.get_padel_courts(
             business_public_id, user_id, skip, limit, **filters

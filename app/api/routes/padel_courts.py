@@ -62,20 +62,20 @@ async def read_padel_courts(
     user_id: uuid.UUID = None,
     skip: int = 0,
     limit: int = 100,
-    prov_court_filters: PadelCourtFilter = Depends(),
+    court_filters: PadelCourtFilter = Depends(),
 ) -> PadelCourtsPublic:
     """
     Get all padel courts, optionally filtered by business_public_id.
     With pagination using skip and limit parameters.
     """
-    if prov_court_filters.is_valid_filter_for_business_public_id(user_id):
+    if court_filters.is_valid_filter_for_business_public_id(user_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Both business_public_id and user_id must be provided together or both omitted.",
         )
 
     return await service.get_padel_courts(
-        session, user_id, skip, limit, prov_court_filters
+        session, user_id, skip, limit, court_filters
     )
 
 

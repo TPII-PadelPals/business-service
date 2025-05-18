@@ -83,9 +83,6 @@ class PadelCourtRepository:
     ) -> PadelCourtsPublic:
         query = select(PadelCourt)
 
-        print("ASDASDASDASDASDASDASD")
-        print(filters)
-        print(business_public_id)
         if business_public_id and user_id:
             query = query.join(
                 Business, PadelCourt.business_public_id == Business.business_public_id
