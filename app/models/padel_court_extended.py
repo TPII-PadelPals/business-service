@@ -1,8 +1,6 @@
-import uuid
-
 from sqlmodel import Field, SQLModel
 
-from app.models.business import BusinessImmutable, Business
+from app.models.business import Business, BusinessImmutable
 from app.models.padel_court import PadelCourtPublic
 
 

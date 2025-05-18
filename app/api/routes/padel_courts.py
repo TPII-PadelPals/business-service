@@ -6,7 +6,6 @@ from app.models.padel_court import (
     PadelCourtCreate,
     PadelCourtFilter,
     PadelCourtPublic,
-    PadelCourtsPublic,
     PadelCourtUpdate,
 )
 from app.models.padel_court_extended import PadelCourtsPublicExtended
@@ -79,7 +78,9 @@ async def read_padel_courts(
     public_courts = await service.get_padel_courts(
         session, user_id, skip, limit, court_filters
     )
-    return await PadelCourtExtendedService().get_public_courts_extended(session, public_courts)
+    return await PadelCourtExtendedService().get_public_courts_extended(
+        session, public_courts
+    )
 
 
 @router.patch(

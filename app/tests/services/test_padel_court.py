@@ -72,9 +72,7 @@ async def test_get_padel_courts_with_business_filter(session: AsyncSession) -> N
 
         service = PadelCourtService()
         court_filters = PadelCourtFilter(business_public_id=business_public_id)
-        result = await service.get_padel_courts(
-            session, court_filters=court_filters
-        )
+        result = await service.get_padel_courts(session, court_filters=court_filters)
 
         mock_get.assert_called_once_with(business_public_id, None, 0, 100)
         assert result.count == 2
