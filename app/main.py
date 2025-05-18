@@ -4,6 +4,7 @@ from fastapi import Depends, FastAPI
 from fastapi.routing import APIRoute
 
 from app.api.main import api_router
+from app.api.middlewares.main import HeaderToQueryMiddleware
 from app.core.config import settings
 from app.core.db import init_db
 from app.utilities.dependencies import get_token_header
@@ -27,6 +28,8 @@ app = FastAPI(
     dependencies=[Depends(get_token_header)],
     lifespan=lifespan,
 )
+
+app.add_middleware(HeaderToQueryMiddleware)
 
 # Register routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
