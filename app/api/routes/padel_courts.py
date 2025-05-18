@@ -9,7 +9,9 @@ from app.models.padel_court import (
     PadelCourtsPublic,
     PadelCourtUpdate,
 )
+from app.models.padel_court_extended import PadelCourtsPublicExtended
 from app.repository.padel_court_repository import PadelCourtRepository
+from app.services.court_extended_service import PadelCourtExtendedService
 from app.services.court_owner_verification_service import CourtOwnerVerificationService
 from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep, get_business_public_id_param
@@ -55,7 +57,7 @@ async def create_padel_court(
         raise NotEnoughPermissionsException()
 
 
-@router.get("/", response_model=PadelCourtsPublic)
+@router.get("/", response_model=PadelCourtsPublicExtended)
 async def read_padel_courts(
     *,
     session: SessionDep,
@@ -63,7 +65,7 @@ async def read_padel_courts(
     skip: int = 0,
     limit: int = 100,
     court_filters: PadelCourtFilter = Depends(),
-) -> PadelCourtsPublic:
+) -> PadelCourtsPublicExtended:
     """
     Get all padel courts, optionally filtered by business_public_id.
     With pagination using skip and limit parameters.
@@ -74,9 +76,10 @@ async def read_padel_courts(
             detail="Both business_public_id and user_id must be provided together or both omitted.",
         )
 
-    return await service.get_padel_courts(
+    public_courts = await service.get_padel_courts(
         session, user_id, skip, limit, court_filters
     )
+    return await PadelCourtExtendedService().get_public_courts_extended(session, public_courts)
 
 
 @router.patch(

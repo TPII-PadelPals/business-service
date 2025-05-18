@@ -60,6 +60,17 @@ class PadelCourtsPublic(SQLModel):
     data: list[PadelCourtPublic]
     count: int
 
+    def get_padel_courts_for_business(self) -> dict[uuid.UUID, list[PadelCourtPublic]]:
+        result = {}
+        for court in self.data:
+            business_public_id = court.business_public_id
+            list = result.get(business_public_id)
+            if list is not None:
+                list.append(court)
+            else:
+                result[business_public_id] = [court]
+        return result
+
 
 class PadelCourtFilter(PadelCourtBase):
     name: str | None = Field(min_length=1, max_length=255, default=None)
