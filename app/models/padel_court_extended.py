@@ -14,7 +14,7 @@ class PadelCourtsPublicExtended(SQLModel):
     data: list[PadelCourtPublicExtended] = []
     count: int = 0
 
-    def add_court(self, court: PadelCourtPublic, business: Business):
+    def add_court(self, court: PadelCourtPublic, business: Business) -> None:
         data_business = business.model_dump()
         data = {"business_name": data_business.pop("name")}
         data.update(data_business)
