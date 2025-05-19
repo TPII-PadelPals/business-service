@@ -48,15 +48,11 @@ COURT_UPDATE = {
 }
 
 COURT_EXTENDED_GET = {
-    status.HTTP_400_BAD_REQUEST: {
-        "description": "Both business_public_id and user_id must be provided together or both omitted."
-    },
-    status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
     status.HTTP_200_OK: {
-        "description": "Get court",
+        "description": "Get court extended with business info.",
         "content": {
             "application/json": {
-                "examples": {
+                "example": {
                     "data": [
                         {
                             "business_public_id": "98671492-667d-4b48-a77e-a92f0519ded1",
@@ -75,6 +71,10 @@ COURT_EXTENDED_GET = {
             }
         },
     },
+    status.HTTP_400_BAD_REQUEST: {
+        "description": "Both business_public_id and user_id must be provided together or both omitted."
+    },
+    status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
 }
 
 # available_date
