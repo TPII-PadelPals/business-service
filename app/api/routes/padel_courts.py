@@ -4,11 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.models.padel_court import (
     PadelCourtCreate,
+    PadelCourtFilter,
     PadelCourtPublic,
-    PadelCourtsPublic,
     PadelCourtUpdate,
 )
+from app.models.padel_court_extended import PadelCourtsPublicExtended
 from app.repository.padel_court_repository import PadelCourtRepository
+from app.services.court_extended_service import PadelCourtExtendedService
 from app.services.court_owner_verification_service import CourtOwnerVerificationService
 from app.services.padel_court_service import PadelCourtService
 from app.utilities.dependencies import SessionDep, get_business_public_id_param
@@ -18,7 +20,7 @@ from app.utilities.exceptions import (
     NotEnoughPermissionsException,
     UnauthorizedPadelCourtOperationException,
 )
-from app.utilities.messages import BUSINESS_RESPONSES, COURT_UPDATE
+from app.utilities.messages import BUSINESS_RESPONSES, COURT_EXTENDED_GET, COURT_UPDATE
 
 router = APIRouter()
 
@@ -54,27 +56,34 @@ async def create_padel_court(
         raise NotEnoughPermissionsException()
 
 
-@router.get("/", response_model=PadelCourtsPublic)
+@router.get(
+    "/",
+    responses={**COURT_EXTENDED_GET},  # type: ignore[dict-item]
+    response_model=PadelCourtsPublicExtended,
+)
 async def read_padel_courts(
     *,
     session: SessionDep,
-    business_public_id: uuid.UUID = None,
     user_id: uuid.UUID = None,
     skip: int = 0,
     limit: int = 100,
-) -> PadelCourtsPublic:
+    court_filters: PadelCourtFilter = Depends(),
+) -> PadelCourtsPublicExtended:
     """
     Get all padel courts, optionally filtered by business_public_id.
     With pagination using skip and limit parameters.
     """
-    if (business_public_id is None) != (user_id is None):
+    if court_filters.is_valid_filter_for_business_public_id(user_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Both business_public_id and user_id must be provided together or both omitted.",
         )
 
-    return await service.get_padel_courts(
-        session, business_public_id, user_id, skip, limit
+    public_courts = await service.get_padel_courts(
+        session, user_id, skip, limit, court_filters
+    )
+    return await PadelCourtExtendedService().get_public_courts_extended(
+        session, public_courts
     )
 
 

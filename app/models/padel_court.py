@@ -65,3 +65,26 @@ class PadelCourtPublic(PadelCourtBase, PadelCourtImmutable):
 class PadelCourtsPublic(SQLModel):
     data: list[PadelCourtPublic]
     count: int
+
+    def get_padel_courts_for_business(self) -> dict[uuid.UUID, list[PadelCourtPublic]]:
+        result = {}
+        for court in self.data:
+            business_public_id = court.business_public_id
+            courts_by_business = result.get(business_public_id)
+            if courts_by_business is not None:
+                courts_by_business.append(court)
+            else:
+                result[business_public_id] = [court]
+        return result
+
+
+class PadelCourtFilter(PadelCourtBase):
+    name: str | None = Field(min_length=1, max_length=255, default=None)
+    price_per_hour: Decimal | None = Field(gt=MIN_PRICE_PER_HOUR, default=None)
+    court_public_id: uuid.UUID | None = None
+    business_public_id: uuid.UUID | None = None
+
+    def is_valid_filter_for_business_public_id(
+        self, owner_id: uuid.UUID | None
+    ) -> bool:
+        return (self.business_public_id is None) != (owner_id is None)

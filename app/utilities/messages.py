@@ -47,6 +47,36 @@ COURT_UPDATE = {
     status.HTTP_200_OK: {"description": "Returns court updated."},
 }
 
+COURT_EXTENDED_GET = {
+    status.HTTP_200_OK: {
+        "description": "Get court extended with business info.",
+        "content": {
+            "application/json": {
+                "example": {
+                    "data": [
+                        {
+                            "business_public_id": "98671492-667d-4b48-a77e-a92f0519ded1",
+                            "owner_id": "11f19bef-8e11-4ab3-9aaa-bc4c15def106",
+                            "latitude": 0.3,
+                            "longitude": 0.4,
+                            "court_public_id": "b2b4e866-d7aa-4886-b0d6-622f64769ee6",
+                            "name": "API Court A",
+                            "price_per_hour": "100.00",
+                            "business_name": "API Court Business 1",
+                            "business_location": "API Court Location 1",
+                        }
+                    ],
+                    "count": 1,
+                }
+            }
+        },
+    },
+    status.HTTP_400_BAD_REQUEST: {
+        "description": "Both business_public_id and user_id must be provided together or both omitted."
+    },
+    status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
+}
+
 # available_date
 AVAILABLE_DATE_UNAUTHORIZED_OWNED = {
     status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"}
