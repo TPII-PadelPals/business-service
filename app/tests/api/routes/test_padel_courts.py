@@ -315,7 +315,7 @@ async def test_update_padel_court(
 
     update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
     update_response = await async_client.patch(
-        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        f"{settings.API_V1_STR}/padel-courts/{content['court_public_id']}",
         headers=x_api_key_header,
         json=update_court_data,
         params={
@@ -361,7 +361,7 @@ async def test_update_padel_court_unauthorized(
 
     update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
     update_response = await async_client.patch(
-        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        f"{settings.API_V1_STR}/padel-courts/{content['court_public_id']}",
         headers=x_api_key_header,
         json=update_court_data,
         params={
@@ -431,7 +431,7 @@ async def test_update_padel_court_not_business(
 
     update_court_data = {"name": "Cancha sol", "price_per_hour": "25000.00"}
     update_response = await async_client.patch(
-        f"{settings.API_V1_STR}/padel-courts/{content["court_public_id"]}",
+        f"{settings.API_V1_STR}/padel-courts/{content['court_public_id']}",
         headers=x_api_key_header,
         json=update_court_data,
         params={
