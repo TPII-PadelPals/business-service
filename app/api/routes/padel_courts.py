@@ -20,7 +20,7 @@ from app.utilities.exceptions import (
     NotEnoughPermissionsException,
     UnauthorizedPadelCourtOperationException,
 )
-from app.utilities.messages import BUSINESS_RESPONSES, COURT_UPDATE
+from app.utilities.messages import BUSINESS_RESPONSES, COURT_EXTENDED_GET, COURT_UPDATE
 
 router = APIRouter()
 
@@ -56,7 +56,11 @@ async def create_padel_court(
         raise NotEnoughPermissionsException()
 
 
-@router.get("/", response_model=PadelCourtsPublicExtended)
+@router.get(
+    "/",
+    responses={**COURT_EXTENDED_GET},  # type: ignore[dict-item]
+    response_model=PadelCourtsPublicExtended,
+)
 async def read_padel_courts(
     *,
     session: SessionDep,
