@@ -64,9 +64,9 @@ class PadelCourtsPublic(SQLModel):
         result = {}
         for court in self.data:
             business_public_id = court.business_public_id
-            list = result.get(business_public_id)
-            if list is not None:
-                list.append(court)
+            courts_by_business = result.get(business_public_id)
+            if courts_by_business is not None:
+                courts_by_business.append(court)
             else:
                 result[business_public_id] = [court]
         return result

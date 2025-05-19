@@ -617,8 +617,9 @@ async def test_get_padel_courts_whit_filter_by_court_public_id(
     court = content["data"][0]
     assert court["name"] == "API Court A"
     assert court["business_name"] == "API Court Business 1"
-    assert court["location"] == "API Court Location 1"
+    assert court["business_location"] == "API Court Location 1"
     assert court["business_public_id"] == business1["business_public_id"]
     assert court["owner_id"] == business1["owner_id"]
     assert court["latitude"] == business1["latitude"]
     assert court["longitude"] == business1["longitude"]
+    assert court["price_per_hour"] == "100.00"
