@@ -78,7 +78,7 @@ class PadelCourtsPublic(SQLModel):
         return result
 
 
-class PadelCourtFilter(PadelCourtBase):
+class PadelCourtFilter(SQLModel):
     name: str | None = Field(min_length=1, max_length=255, default=None)
     price_per_hour: Decimal | None = Field(gt=MIN_PRICE_PER_HOUR, default=None)
     court_public_id: uuid.UUID | None = None
