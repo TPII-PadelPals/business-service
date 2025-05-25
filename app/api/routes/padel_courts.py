@@ -64,7 +64,7 @@ async def create_padel_court(
 async def read_padel_courts(
     *,
     session: SessionDep,
-    user_id: uuid.UUID = None,
+    owner_id: uuid.UUID = None,
     skip: int = 0,
     limit: int = 100,
     court_filters: PadelCourtFilter = Depends(),
@@ -73,14 +73,14 @@ async def read_padel_courts(
     Get all padel courts, optionally filtered by business_public_id.
     With pagination using skip and limit parameters.
     """
-    if court_filters.is_valid_filter_for_business_public_id(user_id):
+    if court_filters.is_valid_filter_for_business_public_id(owner_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Both business_public_id and user_id must be provided together or both omitted.",
+            detail="Both business_public_id and owner_id must be provided together or both omitted.",
         )
 
     public_courts = await service.get_padel_courts(
-        session, user_id, skip, limit, court_filters
+        session, owner_id, skip, limit, court_filters
     )
     return await PadelCourtExtendedService().get_public_courts_extended(
         session, public_courts
@@ -98,7 +98,7 @@ async def modify_court(
     session: SessionDep,
     business_public_id: uuid.UUID,
     court_public_id: uuid.UUID,
-    user_id: uuid.UUID,
+    owner_id: uuid.UUID,
     court_in: PadelCourtUpdate,
 ) -> PadelCourtPublic:
     """
@@ -106,7 +106,7 @@ async def modify_court(
     """
     service_aux = CourtOwnerVerificationService()
     await service_aux.verification_of_court_owner_without_name(
-        session, user_id, business_public_id, court_public_id
+        session, owner_id, business_public_id, court_public_id
     )
     court = await service.update_padel_court(session, court_public_id, court_in)
     return court
