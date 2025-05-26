@@ -213,7 +213,7 @@ async def test_get_padel_courts_filtered_by_business(
         headers=x_api_key_header,
         params={
             "business_public_id": business1["business_public_id"],
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
         },
     )
 
@@ -256,7 +256,7 @@ async def test_get_padel_courts_with_pagination(
         headers=x_api_key_header,
         params={
             "business_public_id": business["business_public_id"],
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "skip": "0",
             "limit": "2",
         },
@@ -267,7 +267,7 @@ async def test_get_padel_courts_with_pagination(
         headers=x_api_key_header,
         params={
             "business_public_id": business["business_public_id"],
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "skip": "2",
             "limit": "2",
         },
@@ -320,7 +320,7 @@ async def test_update_padel_court(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
         },
     )
 
@@ -366,7 +366,7 @@ async def test_update_padel_court_unauthorized(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": str(uuid.uuid4()),
+            "owner_id": str(uuid.uuid4()),
         },
     )
 
@@ -394,7 +394,7 @@ async def test_update_padel_court_not_court(
         json=update_court_data,
         params={
             "business_public_id": new_business["business_public_id"],
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
         },
     )
 
@@ -436,7 +436,7 @@ async def test_update_padel_court_not_business(
         json=update_court_data,
         params={
             "business_public_id": uuid.uuid4(),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
         },
     )
 
