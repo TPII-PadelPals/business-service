@@ -19,8 +19,6 @@ class PadelCourtBase(SQLModel):
 
     @field_validator("price_per_hour", mode="before")
     def normalize_decimal(cls, v):
-        if v is None:
-            return v
         v = Decimal(v)
         return Decimal(format(v, "f"))
 
