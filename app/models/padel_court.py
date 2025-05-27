@@ -22,7 +22,6 @@ class PadelCourtBase(SQLModel):
         v = Decimal(v)
         return Decimal(format(v, "f"))
 
-
 # Properties to change
 class PadelCourtUpdate(PadelCourtBase):
     pass

@@ -34,7 +34,7 @@ service_available_match_public = AvailableMatchServicePublic()
 async def add_available_matches_in_date(
     *,
     session: SessionDep,
-    user_id: uuid.UUID,
+    owner_id: uuid.UUID,
     court_name: str,
     business_public_id: uuid.UUID,
     available_match_in: AvailableMatchCreate,
@@ -44,7 +44,7 @@ async def add_available_matches_in_date(
     """
     available_matches = (
         await service_available_match_public.create_available_matches_in_date(
-            session, user_id, court_name, business_public_id, available_match_in
+            session, owner_id, court_name, business_public_id, available_match_in
         )
     )
     return available_matches
@@ -59,7 +59,7 @@ async def add_available_matches_in_date(
 async def delete_available_matches_in_date(
     *,
     session: SessionDep,
-    user_id: uuid.UUID,
+    owner_id: uuid.UUID,
     court_name: str,
     business_public_id: uuid.UUID,
     date: date,
@@ -68,7 +68,7 @@ async def delete_available_matches_in_date(
     Delete a item.
     """
     await service_available_match.delete_available_matches_in_date(
-        session, user_id, court_name, business_public_id, date
+        session, owner_id, court_name, business_public_id, date
     )
     return
 
