@@ -17,7 +17,7 @@ BUSINESS_RESPONSES = {**BUSINESS_NOT_FOUND, **NOT_ENOUGH_PERMISSIONS}
 BUSINESS_CREATE = {
     status.HTTP_404_NOT_FOUND: {"description": "No se encontró establecimiento"},
     status.HTTP_201_CREATED: {
-        "description": "Business created",
+        "description": "Establecimiento Creado",
         "content": {
             "application/json": {
                 "examples": {
@@ -32,10 +32,10 @@ BUSINESS_CREATE = {
         },
     },
     status.HTTP_422_UNPROCESSABLE_ENTITY: {
-        "description": "The necessary data (owner public ID) has not been provided"
+        "description": "La información necesaria (owner public ID) no fue provista."
     },
     status.HTTP_500_INTERNAL_SERVER_ERROR: {
-        "description": "Error with Google location service communication"
+        "description": "Error con servicio de localización de Google"
     },
 }
 BUSINESS_UPDATE = {
@@ -49,13 +49,15 @@ COURT_UPDATE = {
     status.HTTP_401_UNAUTHORIZED: {
         "description": "No autorizado. Usuario no es el dueño"
     },
-    status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
-    status.HTTP_200_OK: {"description": "Returns court updated."},
+    status.HTTP_404_NOT_FOUND: {
+        "description": "Cancha o Establecimiento no encontrado."
+    },
+    status.HTTP_200_OK: {"description": "Retorna cancha actualizada."},
 }
 
 COURT_EXTENDED_GET = {
     status.HTTP_200_OK: {
-        "description": "Get court extended with business info.",
+        "description": "Obtener cancha extendida con información de establecimiento.",
         "content": {
             "application/json": {
                 "example": {
@@ -78,9 +80,11 @@ COURT_EXTENDED_GET = {
         },
     },
     status.HTTP_400_BAD_REQUEST: {
-        "description": "Both business_public_id and user_id must be provided together or both omitted."
+        "description": "Ambos business_public_id y user_id deben ser provistos juntos o ambos omitidos."
     },
-    status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
+    status.HTTP_404_NOT_FOUND: {
+        "description": "Cancha o Establecimiento no encontrado."
+    },
 }
 
 # available_date
@@ -90,16 +94,18 @@ AVAILABLE_DATE_UNAUTHORIZED_OWNED = {
     }
 }
 AVAILABLE_DATE_NOT_FOUND = {
-    status.HTTP_404_NOT_FOUND: {"description": "Business or court not found"}
+    status.HTTP_404_NOT_FOUND: {
+        "description": "Cancha o Establecimiento no encontrado."
+    }
 }
 AVAILABLE_DATE_NOT_UNIQUE = {
-    status.HTTP_409_CONFLICT: {"description": "Available date already created"}
+    status.HTTP_409_CONFLICT: {"description": "Disponbilidad ya existente"}
 }
 AVAILABLE_DATE_NOT_ACCEPTABLE = {
     status.HTTP_406_NOT_ACCEPTABLE: {"description": "Información no aceptada"}
 }
 AVAILABLE_DATE_ALREADY_RESERVED = {
-    status.HTTP_409_CONFLICT: {"description": "Available date already created"}
+    status.HTTP_409_CONFLICT: {"description": "La cancha ya fue reservada"}
 }
 
 AVAILABLE_DATE_POST_RESPONSES = {
@@ -114,7 +120,7 @@ AVAILABLE_DATE_DELETE_RESPONSES = {
 }
 AVAILABLE_DATE_GET_RESPONSES = {
     status.HTTP_200_OK: {
-        "description": "Returns a list of available matches given a date"
+        "description": "Retorna una lista de disponbilidades de emparejamiento dada una fecha."
     }
 }
 AVAILABLE_DATE_PATCH_RESPONSES = {
