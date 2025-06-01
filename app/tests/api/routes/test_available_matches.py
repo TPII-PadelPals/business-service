@@ -216,7 +216,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
     assert response is not None
     assert response.status_code == status.HTTP_409_CONFLICT
     content = response.json()
-    assert content["detail"] == "Available date already exists."
+    assert content["detail"] == "Disponibilidad ya existente."
 
 
 async def test_multiple_valid_create_available_matches(

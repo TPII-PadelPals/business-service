@@ -118,7 +118,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
             available_date_create_new,
         )
     # assert
-    assert e.value.detail == "available date already exists."
+    assert e.value.detail == "Disponibilidad ya existente."
 
 
 async def test_delete_empty_date(session: AsyncSession) -> None:
