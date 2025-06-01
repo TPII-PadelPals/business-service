@@ -46,7 +46,8 @@ class NotAcceptableException(HTTPException):
 class UnauthorizedUserException(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not the owner"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No autorizado. Usuario no es el dueño",
         )
 
 

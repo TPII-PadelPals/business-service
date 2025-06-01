@@ -85,7 +85,7 @@ async def test_verification_fail_not_owner_of_court_owner_service(
             session, not_owner, "NAME", business_public_id
         )
     # assert
-    assert e.value.detail == "User is not the owner"
+    assert e.value.detail == "No autorizado. Usuario no es el dueño"
 
 
 async def test_verification_fail_not_court_of_court_owner_service(

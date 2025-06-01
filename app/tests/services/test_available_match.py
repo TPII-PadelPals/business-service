@@ -192,7 +192,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
             date(2025, 1, 1),
         )
     # assert
-    assert e.value.detail == "User is not the owner"
+    assert e.value.detail == "No autorizado. Usuario no es el dueño"
 
 
 async def test_delete(session: AsyncSession) -> None:

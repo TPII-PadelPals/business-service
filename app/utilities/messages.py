@@ -39,12 +39,16 @@ BUSINESS_CREATE = {
     },
 }
 BUSINESS_UPDATE = {
-    status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"},
+    status.HTTP_401_UNAUTHORIZED: {
+        "description": "No autorizado. Usuario no es el dueño"
+    },
     **BUSINESS_RESPONSES,
 }
 
 COURT_UPDATE = {
-    status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"},
+    status.HTTP_401_UNAUTHORIZED: {
+        "description": "No autorizado. Usuario no es el dueño"
+    },
     status.HTTP_404_NOT_FOUND: {"description": "Court or Business, not found"},
     status.HTTP_200_OK: {"description": "Returns court updated."},
 }
@@ -81,7 +85,9 @@ COURT_EXTENDED_GET = {
 
 # available_date
 AVAILABLE_DATE_UNAUTHORIZED_OWNED = {
-    status.HTTP_401_UNAUTHORIZED: {"description": "User is not the owner"}
+    status.HTTP_401_UNAUTHORIZED: {
+        "description": "No autorizado. Usuario no es el dueño"
+    }
 }
 AVAILABLE_DATE_NOT_FOUND = {
     status.HTTP_404_NOT_FOUND: {"description": "Business or court not found"}

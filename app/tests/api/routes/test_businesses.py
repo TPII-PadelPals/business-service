@@ -338,7 +338,9 @@ async def test_update_business_unauthorized(
         params=parameters_data,
     )
     assert update_response.status_code == 401
-    assert update_response.json().get("detail") == "User is not the owner"
+    assert (
+        update_response.json().get("detail") == "No autorizado. Usuario no es el dueño"
+    )
 
 
 async def test_update_business_not_business(

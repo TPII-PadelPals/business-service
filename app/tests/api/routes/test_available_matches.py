@@ -136,7 +136,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
     assert response is not None
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     content = response.json()
-    assert content["detail"] == "User is not the owner"
+    assert content["detail"] == "No autorizado. Usuario no es el dueño"
 
 
 async def test_create_available_matches_with_time_superposition_on_same_date_returns_409(
@@ -708,4 +708,4 @@ async def test_delete_available_matches_with_not_authorized_owner_owner_id_retur
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_401_UNAUTHORIZED
     content = response_delete.json()
-    assert content["detail"] == "User is not the owner"
+    assert content["detail"] == "No autorizado. Usuario no es el dueño"
