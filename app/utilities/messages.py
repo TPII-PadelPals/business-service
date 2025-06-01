@@ -96,7 +96,7 @@ AVAILABLE_DATE_NOT_UNIQUE = {
     status.HTTP_409_CONFLICT: {"description": "Available date already created"}
 }
 AVAILABLE_DATE_NOT_ACCEPTABLE = {
-    status.HTTP_406_NOT_ACCEPTABLE: {"description": "The information is not acceptable"}
+    status.HTTP_406_NOT_ACCEPTABLE: {"description": "Información no aceptada"}
 }
 AVAILABLE_DATE_ALREADY_RESERVED = {
     status.HTTP_409_CONFLICT: {"description": "Available date already created"}

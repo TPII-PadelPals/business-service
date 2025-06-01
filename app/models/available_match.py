@@ -45,11 +45,13 @@ class AvailableMatchCreate(AvailableMatchBase):
 
     def validate_create(self) -> None:
         if self.n_matches <= 0:
-            raise NotAcceptableException("n_matches cannot be less than 0")
+            raise NotAcceptableException("n_matches no puede ser menor a 0")
         if (
             self.n_matches * self.TIME_OF_MATCH
         ) + self.initial_hour > self.TIME_LIMIT_MAX + 1:
-            raise NotAcceptableException("n_matches cannot exceed the time of one day")
+            raise NotAcceptableException(
+                "n_matches no puede exceder el horario de un día"
+            )
 
 
 # Database model, database table inferred from class name
