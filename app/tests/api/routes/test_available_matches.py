@@ -546,7 +546,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
     content = reserve.json()
-    assert content["detail"] == "Available match not found"
+    assert content["detail"] == "No se encontró Disponibilidad para el match"
 
 
 async def test_delete_all_available_matches_in_a_date(

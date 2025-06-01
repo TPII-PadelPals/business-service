@@ -358,4 +358,4 @@ async def test_update_business_not_business(
         params=parameters_data,
     )
     assert update_response.status_code == 404
-    assert update_response.json().get("detail") == "Business not found"
+    assert update_response.json().get("detail") == "No se encontró establecimiento"

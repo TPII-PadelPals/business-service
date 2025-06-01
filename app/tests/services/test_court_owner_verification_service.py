@@ -53,7 +53,7 @@ async def test_verification_fail_not_business_of_court_owner_service(
             session, uuid.uuid4(), "NAME", uuid.uuid4()
         )
     # assert
-    assert str(e.value.detail) == "Business not found"
+    assert str(e.value.detail) == "No se encontró establecimiento"
 
 
 async def test_verification_fail_not_owner_of_court_owner_service(
@@ -110,4 +110,4 @@ async def test_verification_fail_not_court_of_court_owner_service(
             session, owner_id, "NAME", business_public_id
         )
     # assert
-    assert e.value.detail == "Padel court not found"
+    assert e.value.detail == "No se encontró Cancha"

@@ -58,7 +58,7 @@ async def test_create_padel_court_with_nonexistent_business_public_id_return_exc
             created_business.owner_id, nonexistent_business_public_id, padel_court
         )
 
-    assert str(e.value) == "Business not found"
+    assert str(e.value) == "No se encontró establecimiento"
 
 
 async def test_create_padel_court_with_unauthorized_owner_id_returns_exception(

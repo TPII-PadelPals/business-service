@@ -309,7 +309,7 @@ async def test_reserve_match_not_found(session: AsyncSession) -> None:
         await service.reserve_available_match(
             session, "name", business_public_id, create_date, 5
         )
-    assert e.value.detail == "Available match not found"
+    assert e.value.detail == "No se encontró Disponibilidad para el match"
 
 
 async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedException(

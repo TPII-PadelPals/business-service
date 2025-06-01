@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 class NotFoundException(HTTPException):
     def __init__(self, item: str) -> None:
-        detail = f"{item.capitalize()} not found"
+        detail = f"No se encontró {item.capitalize()}"
         super().__init__(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
 
 
@@ -28,7 +28,7 @@ class BusinessNotFoundHTTPException(HTTPException):
 
 class BusinessNotFoundException(Exception):
     def __init__(self) -> None:
-        super().__init__("Business not found")
+        super().__init__("No se encontró establecimiento")
 
 
 class UnauthorizedPadelCourtOperationException(Exception):
