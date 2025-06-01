@@ -2,7 +2,7 @@ from fastapi import status
 
 # Common responses
 NOT_ENOUGH_PERMISSIONS = {
-    status.HTTP_403_FORBIDDEN: {"description": "Not enough permissions"}
+    status.HTTP_403_FORBIDDEN: {"description": "Permisos insuficientes"}
 }
 
 # Item responses

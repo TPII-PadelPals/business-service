@@ -107,7 +107,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
 
     assert response.status_code == 403
     content = response.json()
-    assert content["detail"] == "Not enough permissions"
+    assert content["detail"] == "Permisos insuficientes"
 
 
 async def test_get_all_padel_courts(

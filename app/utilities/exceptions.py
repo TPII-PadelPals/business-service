@@ -10,14 +10,14 @@ class NotFoundException(HTTPException):
 class NotAuthorizedException(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not Authorized"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="No autorizado"
         )
 
 
 class NotEnoughPermissionsException(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Permisos insuficientes"
         )
 
 
