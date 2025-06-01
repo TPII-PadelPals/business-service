@@ -367,6 +367,5 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
         )
     # assert
     assert (
-        e.value.detail
-        == f"The court {str(padel_court_data['name'])} is already reserved."
+        e.value.detail == f"La cancha {str(padel_court_data['name'])} está reservada."
     )

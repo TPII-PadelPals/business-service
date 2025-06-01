@@ -59,7 +59,7 @@ class NotUniqueException(HTTPException):
 
 class CourtAlreadyReservedException(HTTPException):
     def __init__(self, name: str) -> None:
-        detail = f"The court {name} is already reserved."
+        detail = f"La cancha {name} está reservada."
         super().__init__(status_code=status.HTTP_409_CONFLICT, detail=detail)
 
 
