@@ -22,7 +22,7 @@ class GoogleService(BaseService):
         if not address:
             raise ExternalServiceException(
                 service_name="google-address",
-                detail="Failed to fetch coordinates from Google",
+                detail="Falló al obtener coordenadas de Google",
             )
 
         self._set_base_url(ADDRESS_VALIDATION_HOST)
@@ -38,7 +38,7 @@ class GoogleService(BaseService):
         if response is None:
             raise ExternalServiceException(
                 service_name="google-address",
-                detail="Failed to fetch coordinates from Google",
+                detail="Falló al obtener coordenadas de Google",
             )
 
         if "result" not in response or "geocode" not in response["result"]:

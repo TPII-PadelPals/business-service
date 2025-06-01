@@ -227,7 +227,7 @@ async def test_create_business_raise_invalid_conection_whit_google(
     async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
         raise ExternalServiceException(
             service_name="google-address",
-            detail="Failed to fetch coordinates from Google",
+            detail="Falló al obtener coordenadas de Google",
         )
 
     monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)

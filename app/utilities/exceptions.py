@@ -73,7 +73,7 @@ class ExternalServiceException(HTTPException):
 
 class ExternalServiceInvalidLocalizationException(HTTPException):
     def __init__(self, service_name: str) -> None:
-        detail = f"EXT_SERVICE:{service_name}: Invalid location."
+        detail = f"EXT_SERVICE:{service_name}:Dirección inválida."
         super().__init__(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=detail
         )
