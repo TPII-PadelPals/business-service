@@ -1,10 +1,20 @@
 import uuid
 
-from app.models.business import Business, BusinessCreate, BusinessesPublic
+from app.models.business import (
+    Business,
+    BusinessCreate,
+    BusinessesFilters,
+    BusinessesPublic,
+    BusinessUpdate,
+)
 from app.repository.business_repository import BusinessRepository
 from app.services.google_service import GoogleService
 from app.utilities.dependencies import SessionDep
-from app.utilities.exceptions import UnauthorizedUserException
+from app.utilities.exceptions import (
+    BusinessNotFoundException,
+    BusinessNotFoundHTTPException,
+    UnauthorizedUserException,
+)
 
 
 class BusinessService:
@@ -29,12 +39,13 @@ class BusinessService:
     async def get_businesses(
         self,
         session: SessionDep,
-        owner_id: uuid.UUID = None,
+        business_filter: BusinessesFilters = BusinessesFilters(),
         skip: int = 0,
         limit: int = 100,
     ) -> BusinessesPublic:
         repo = BusinessRepository(session)
-        return await repo.get_businesses(owner_id, skip, limit)
+        filters = business_filter.model_dump(exclude_unset=True, exclude_none=True)
+        return await repo.get_businesses(skip, limit, **filters)
 
     async def create_business(
         self, session: SessionDep, owner_id: uuid.UUID, business_in: BusinessCreate
@@ -46,3 +57,19 @@ class BusinessService:
             owner_id, business_in, longitude, latitude
         )
         return business
+
+    async def update_business(
+        self,
+        session: SessionDep,
+        owner_id: uuid.UUID,
+        business_public_id: uuid.UUID,
+        business_in: BusinessUpdate,
+    ) -> Business:
+        try:
+            await self.validate_user_is_owner(session, business_public_id, owner_id)
+        except BusinessNotFoundException as e:
+            raise BusinessNotFoundHTTPException(str(e))
+        except Exception as e:
+            raise e
+        repo = BusinessRepository(session)
+        return await repo.update_business(business_public_id, business_in)

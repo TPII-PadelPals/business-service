@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models.business import Business, BusinessesPublic
+from app.models.business import Business, BusinessesFilters, BusinessesPublic
 from app.services.business_service import BusinessService
 
 
@@ -39,7 +39,7 @@ async def test_get_businesses_all(session: AsyncSession) -> None:
         service = BusinessService()
         result = await service.get_businesses(session)
 
-        mock_get.assert_called_once_with(None, 0, 100)
+        mock_get.assert_called_once_with(0, 100)
         assert result.count == 2
         assert len(result.data) == 2
         assert result.data[0].name == "Service Test 1"
@@ -77,9 +77,10 @@ async def test_get_businesses_with_owner_filter(session: AsyncSession) -> None:
         mock_get.return_value = mock_result
 
         service = BusinessService()
-        result = await service.get_businesses(session, owner_id=owner_id)
+        business_filter = BusinessesFilters(owner_id=owner_id)
+        result = await service.get_businesses(session, business_filter=business_filter)
 
-        mock_get.assert_called_once_with(owner_id, 0, 100)
+        mock_get.assert_called_once_with(0, 100, owner_id=owner_id)
         assert result.count == 2
         assert all(b.owner_id == owner_id for b in result.data)
 
@@ -114,6 +115,6 @@ async def test_get_businesses_with_pagination(session: AsyncSession) -> None:
         service = BusinessService()
         result = await service.get_businesses(session, skip=0, limit=2)
 
-        mock_get.assert_called_once_with(None, 0, 2)
+        mock_get.assert_called_once_with(0, 2)
         assert result.count == 5
         assert len(result.data) == 2

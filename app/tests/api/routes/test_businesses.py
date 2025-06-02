@@ -142,6 +142,46 @@ async def test_get_businesses_filtered_by_owner(
     assert "Owner2 API Business" not in business_names
 
 
+async def test_get_businesses_filtered_by_public_id(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+) -> None:
+    owner1_id = uuid.uuid4()
+    owner2_id = uuid.uuid4()
+
+    info = await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Owner1 API Business",
+        location="Owner1 Location",
+        parameters={"owner_id": str(owner1_id)},
+        monkeypatch=monkeypatch,
+    )
+
+    await create_business_for_routes(
+        async_client=async_client,
+        x_api_key=x_api_key_header,
+        name="Owner2 API Business",
+        location="Owner2 Location",
+        parameters={"owner_id": str(owner2_id)},
+        monkeypatch=monkeypatch,
+    )
+
+    response = await async_client.get(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        params={"business_public_id": str(info["business_public_id"])},
+    )
+
+    assert response.status_code == 200
+    content = response.json()
+
+    for business in content["data"]:
+        assert business["business_public_id"] == str(info["business_public_id"])
+
+    business_names = [b["name"] for b in content["data"]]
+    assert "Owner2 API Business" not in business_names
+
+
 async def test_get_businesses_with_pagination(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
@@ -187,7 +227,7 @@ async def test_create_business_raise_invalid_conection_whit_google(
     async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
         raise ExternalServiceException(
             service_name="google-address",
-            detail="Failed to fetch coordinates from Google",
+            detail="Falló al obtener coordenadas de Google",
         )
 
     monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
@@ -220,3 +260,104 @@ async def test_create_business_raise_invalid_location(
         params={"owner_id": str(owner_id)},
     )
     assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+async def test_update_business(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == 201
+    content = response.json()
+    business_public_id = content["business_public_id"]
+    assert content["name"] == business_data["name"]
+    assert content["owner_id"] == str(owner_id)
+    data_update = {"name": "Hola_Padel"}
+    parameters_data = {
+        "owner_id": str(owner_id),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 200
+    content_up = update_response.json()
+    assert content_up["name"] == data_update["name"]
+    assert content_up["owner_id"] == str(owner_id)
+
+
+async def test_update_business_unauthorized(
+    async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
+):
+    GET_COORDS_RESULT = (0.4, 0.3)
+
+    async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
+        return GET_COORDS_RESULT
+
+    monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
+
+    owner_id = uuid.uuid4()
+    business_data = {"name": "Foo", "location": "Av. Belgrano 3450"}
+    response = await async_client.post(
+        f"{settings.API_V1_STR}/businesses/",
+        headers=x_api_key_header,
+        json=business_data,
+        params={"owner_id": str(owner_id)},
+    )
+    assert response.status_code == 201
+    content = response.json()
+    business_public_id = content["business_public_id"]
+    assert content["name"] == business_data["name"]
+    assert content["owner_id"] == str(owner_id)
+    other_owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(other_owner)}
+    parameters_data = {
+        "owner_id": str(other_owner),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 401
+    assert (
+        update_response.json().get("detail") == "No autorizado. Usuario no es el dueño"
+    )
+
+
+async def test_update_business_not_business(
+    async_client: AsyncClient, x_api_key_header: dict[str, str]
+):
+    business_public_id = uuid.uuid4()
+    owner = uuid.uuid4()
+    data_update = {"name": "Hola_Padel", "owner_id": str(owner)}
+    parameters_data = {
+        "owner_id": str(owner),
+    }
+
+    update_response = await async_client.patch(
+        f"{settings.API_V1_STR}/businesses/{business_public_id}",
+        headers=x_api_key_header,
+        json=data_update,
+        params=parameters_data,
+    )
+    assert update_response.status_code == 404
+    assert update_response.json().get("detail") == "No se encontró establecimiento"

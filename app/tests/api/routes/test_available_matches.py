@@ -57,7 +57,7 @@ async def test_create_available_matches(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -127,7 +127,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(uuid.uuid4()),
+            "owner_id": str(uuid.uuid4()),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -136,7 +136,7 @@ async def test_create_available_matches_with_another_owner_id_returns_401(
     assert response is not None
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     content = response.json()
-    assert content["detail"] == "User is not the owner"
+    assert content["detail"] == "No autorizado. Usuario no es el dueño"
 
 
 async def test_create_available_matches_with_time_superposition_on_same_date_returns_409(
@@ -184,7 +184,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -207,7 +207,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
         json=data_available_match_new,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -216,7 +216,7 @@ async def test_create_available_matches_with_time_superposition_on_same_date_ret
     assert response is not None
     assert response.status_code == status.HTTP_409_CONFLICT
     content = response.json()
-    assert content["detail"] == "Available date already exists."
+    assert content["detail"] == "Disponibilidad ya existente."
 
 
 async def test_multiple_valid_create_available_matches(
@@ -263,7 +263,7 @@ async def test_multiple_valid_create_available_matches(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -284,7 +284,7 @@ async def test_multiple_valid_create_available_matches(
         json=data_available_match_new_after,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": court_public_id,
         },
@@ -304,7 +304,7 @@ async def test_multiple_valid_create_available_matches(
         params={
             "business_public_id": str(business_public_id),
             "court_public_id": str(court_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
@@ -363,7 +363,7 @@ async def test_get_available_matches(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": str(court_public_id),
         },
@@ -445,7 +445,7 @@ async def test_update_for_reserve_available_matches(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
             "court_public_id": str(court_public_id),
         },
@@ -526,7 +526,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
@@ -546,7 +546,7 @@ async def test_update_for_reserve_available_matches_with_inexistent_hour_returns
     assert reserve is not None
     assert reserve.status_code == status.HTTP_404_NOT_FOUND
     content = reserve.json()
-    assert content["detail"] == "Available match not found"
+    assert content["detail"] == "No se encontró Disponibilidad para el match"
 
 
 async def test_delete_all_available_matches_in_a_date(
@@ -591,7 +591,7 @@ async def test_delete_all_available_matches_in_a_date(
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
@@ -613,7 +613,7 @@ async def test_delete_all_available_matches_in_a_date(
         params={
             "court_name": str(court_name),
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "date": str(data_available_match["date"]),
         },
     )
@@ -636,7 +636,7 @@ async def test_delete_all_available_matches_in_a_date(
     assert get_result.get("count") == 0
 
 
-async def test_delete_available_matches_with_not_authorized_owner_user_id_returns_401(
+async def test_delete_available_matches_with_not_authorized_owner_owner_id_returns_401(
     async_client: AsyncClient, x_api_key_header: dict[str, str], monkeypatch: Any
 ) -> None:
     owner_id = uuid.uuid4()
@@ -678,7 +678,7 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
         json=data_available_match,
         params={
             "business_public_id": str(business_public_id),
-            "user_id": str(owner_id),
+            "owner_id": str(owner_id),
             "court_name": str(court_name),
         },
     )
@@ -700,7 +700,7 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
         params={
             "court_name": str(court_name),
             "business_public_id": str(business_public_id),
-            "user_id": str(uuid.uuid4()),
+            "owner_id": str(uuid.uuid4()),
             "date": str(data_available_match["date"]),
         },
     )
@@ -708,4 +708,4 @@ async def test_delete_available_matches_with_not_authorized_owner_user_id_return
     assert response_delete is not None
     assert response_delete.status_code == status.HTTP_401_UNAUTHORIZED
     content = response_delete.json()
-    assert content["detail"] == "User is not the owner"
+    assert content["detail"] == "No autorizado. Usuario no es el dueño"

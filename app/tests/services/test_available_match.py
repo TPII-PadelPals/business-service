@@ -118,7 +118,7 @@ async def create_available_dates_invalid_not_unique(session: AsyncSession) -> No
             available_date_create_new,
         )
     # assert
-    assert e.value.detail == "available date already exists."
+    assert e.value.detail == "Disponibilidad ya existente."
 
 
 async def test_delete_empty_date(session: AsyncSession) -> None:
@@ -192,7 +192,7 @@ async def test_delete_wrong_owner_id(session: AsyncSession) -> None:
             date(2025, 1, 1),
         )
     # assert
-    assert e.value.detail == "User is not the owner"
+    assert e.value.detail == "No autorizado. Usuario no es el dueño"
 
 
 async def test_delete(session: AsyncSession) -> None:
@@ -309,7 +309,7 @@ async def test_reserve_match_not_found(session: AsyncSession) -> None:
         await service.reserve_available_match(
             session, "name", business_public_id, create_date, 5
         )
-    assert e.value.detail == "Available match not found"
+    assert e.value.detail == "No se encontró Disponibilidad para el match"
 
 
 async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedException(
@@ -367,6 +367,5 @@ async def test_reserve_match_already_reserved_raise_CourtAlreadyReservedExceptio
         )
     # assert
     assert (
-        e.value.detail
-        == f"The court {str(padel_court_data['name'])} is already reserved."
+        e.value.detail == f"La cancha {str(padel_court_data['name'])} está reservada."
     )

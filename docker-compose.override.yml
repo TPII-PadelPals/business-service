@@ -30,6 +30,8 @@ services:
     labels:
       - "traefik.http.routers.businesses.rule=PathPrefix(`/api/v1/businesses`)"
       - "traefik.http.routers.courts.rule=PathPrefix(`/api/v1/padel-courts`)"
+      - "traefik.http.routers.businesses.middlewares=cors,x-api-key@file,my-easy-traefik-rate-limit-jwt@file"
+      - "traefik.http.routers.courts.middlewares=cors,x-api-key@file,my-easy-traefik-rate-limit-jwt@file"
     networks:
       - tpii-network
 

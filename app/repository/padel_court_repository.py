@@ -1,11 +1,17 @@
 import uuid
+from typing import Any
 
 from sqlalchemy import func
 from sqlmodel import and_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.business import Business
-from app.models.padel_court import PadelCourt, PadelCourtCreate, PadelCourtsPublic
+from app.models.padel_court import (
+    PadelCourt,
+    PadelCourtCreate,
+    PadelCourtsPublic,
+    PadelCourtUpdate,
+)
 from app.utilities.exceptions import (
     BusinessNotFoundException,
     NotFoundException,
@@ -52,8 +58,20 @@ class PadelCourtRepository:
         result = await self.session.exec(query)
         padel_court = result.first()
         if not padel_court:
-            raise NotFoundException("padel court")
+            raise NotFoundException("cancha")
         return padel_court
+
+    async def get_padel_court_without_name(
+        self, court_public_id: uuid.UUID
+    ) -> PadelCourt:
+        query = select(PadelCourt).where(
+            PadelCourt.court_public_id == court_public_id,
+        )
+        result = await self.session.exec(query)
+        court = result.first()
+        if not court:
+            raise NotFoundException("cancha")
+        return court
 
     async def get_padel_courts(
         self,
@@ -61,6 +79,7 @@ class PadelCourtRepository:
         user_id: uuid.UUID = None,
         skip: int = 0,
         limit: int = 100,
+        **filters: Any,
     ) -> PadelCourtsPublic:
         query = select(PadelCourt)
 
@@ -73,6 +92,9 @@ class PadelCourtRepository:
                     Business.owner_id == user_id,
                 )
             )
+        for key, value in filters.items():
+            attr = getattr(PadelCourt, key)
+            query = query.where(attr == value)
 
         count_query = select(func.count()).select_from(query.subquery())
         count_result = await self.session.exec(count_query)
@@ -83,3 +105,15 @@ class PadelCourtRepository:
         padel_courts = result.all()
 
         return PadelCourtsPublic(data=padel_courts, count=total_count)
+
+    async def update_padel_court(
+        self, court_public_id: uuid.UUID, court_in: PadelCourtUpdate
+    ) -> PadelCourt:
+        court = await self.get_padel_court_without_name(court_public_id)
+
+        update_dict = court_in.model_dump(exclude_none=True)
+        court.sqlmodel_update(update_dict)
+        self.session.add(court)
+        await self.session.commit()
+        await self.session.refresh(court)
+        return court

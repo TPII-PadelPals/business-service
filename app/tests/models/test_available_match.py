@@ -110,7 +110,7 @@ async def test_create_invalid_exceed_hour() -> None:
         create.validate_create()
     assert (
         e.value.detail
-        == "The information is not acceptable. Reason: n_matches cannot exceed the time of one day."
+        == "Información no aceptada. Motivo: n_matches no puede exceder el horario de un día."
     )
 
 
@@ -130,7 +130,7 @@ async def test_create_invalid_number_games() -> None:
         create.validate_create()
     assert (
         e.value.detail
-        == "The information is not acceptable. Reason: n_matches cannot be less than 0."
+        == "Información no aceptada. Motivo: n_matches no puede ser menor a 0."
     )
 
 

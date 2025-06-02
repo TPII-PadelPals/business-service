@@ -33,7 +33,7 @@ class AvailableMatchService:
             return result
         except IntegrityError:
             await session.rollback()
-            raise NotUniqueException("available date")
+            raise NotUniqueException("Disponibilidad")
         except Exception as e:
             raise e
 
