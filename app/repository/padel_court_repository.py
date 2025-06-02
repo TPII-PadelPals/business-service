@@ -58,7 +58,7 @@ class PadelCourtRepository:
         result = await self.session.exec(query)
         padel_court = result.first()
         if not padel_court:
-            raise NotFoundException("padel court")
+            raise NotFoundException("cancha")
         return padel_court
 
     async def get_padel_court_without_name(
@@ -70,7 +70,7 @@ class PadelCourtRepository:
         result = await self.session.exec(query)
         court = result.first()
         if not court:
-            raise NotFoundException("padel court")
+            raise NotFoundException("cancha")
         return court
 
     async def get_padel_courts(

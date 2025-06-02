@@ -75,7 +75,7 @@ class AvailableMatchesRepository:
         available_date_result = await self.session.exec(query)
         available_date: AvailableMatch | None = available_date_result.first()
         if available_date is None:
-            raise NotFoundException("available match")
+            raise NotFoundException("Disponibilidad para el match")
         return available_date
 
     async def update_available_match(

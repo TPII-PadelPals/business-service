@@ -74,7 +74,7 @@ async def test_create_padel_court_with_nonexisting_business_public_id_returns_er
 
     assert response.status_code == 404
     content = response.json()
-    assert content["detail"] == "Business not found"
+    assert content["detail"] == "No se encontró establecimiento"
 
 
 async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
@@ -107,7 +107,7 @@ async def test_create_padel_court_with_unauthorized_owner_id_returns_error(
 
     assert response.status_code == 403
     content = response.json()
-    assert content["detail"] == "Not enough permissions"
+    assert content["detail"] == "Permisos insuficientes"
 
 
 async def test_get_all_padel_courts(
@@ -371,7 +371,9 @@ async def test_update_padel_court_unauthorized(
     )
 
     assert update_response.status_code == 401
-    assert update_response.json().get("detail") == "User is not the owner"
+    assert (
+        update_response.json().get("detail") == "No autorizado. Usuario no es el dueño"
+    )
 
 
 async def test_update_padel_court_not_court(
@@ -399,7 +401,7 @@ async def test_update_padel_court_not_court(
     )
 
     assert update_response.status_code == 404
-    assert update_response.json().get("detail") == "Padel court not found"
+    assert update_response.json().get("detail") == "No se encontró Cancha"
 
 
 async def test_update_padel_court_not_business(
@@ -441,7 +443,7 @@ async def test_update_padel_court_not_business(
     )
 
     assert update_response.status_code == 404
-    assert update_response.json().get("detail") == "Business not found"
+    assert update_response.json().get("detail") == "No se encontró establecimiento"
 
 
 async def test_get_padel_courts_whit_filter_by_name(

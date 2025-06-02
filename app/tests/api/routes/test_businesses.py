@@ -227,7 +227,7 @@ async def test_create_business_raise_invalid_conection_whit_google(
     async def mock_get_coordinates(_self: Any, _: str) -> tuple[float, float]:
         raise ExternalServiceException(
             service_name="google-address",
-            detail="Failed to fetch coordinates from Google",
+            detail="Falló al obtener coordenadas de Google",
         )
 
     monkeypatch.setattr(GoogleService, "get_coordinates", mock_get_coordinates)
@@ -338,7 +338,9 @@ async def test_update_business_unauthorized(
         params=parameters_data,
     )
     assert update_response.status_code == 401
-    assert update_response.json().get("detail") == "User is not the owner"
+    assert (
+        update_response.json().get("detail") == "No autorizado. Usuario no es el dueño"
+    )
 
 
 async def test_update_business_not_business(
@@ -358,4 +360,4 @@ async def test_update_business_not_business(
         params=parameters_data,
     )
     assert update_response.status_code == 404
-    assert update_response.json().get("detail") == "Business not found"
+    assert update_response.json().get("detail") == "No se encontró establecimiento"

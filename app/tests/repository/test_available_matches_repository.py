@@ -223,7 +223,7 @@ async def test_get_specific_match_invalid_available_match_not_exist(
             padel_court_name, business_public_id, date_whitout_available_dates, 8
         )
     # assert
-    assert e.value.detail == "Available match not found"
+    assert e.value.detail == "No se encontró Disponibilidad para el match"
 
 
 async def test_update_to_reserve_available_date(session: AsyncSession) -> None:
